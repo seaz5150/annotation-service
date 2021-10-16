@@ -1,5 +1,3 @@
-import { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css"
 import { Responsive as ResponsiveGridLayout } from 'react-grid-layout';
 import { withSize } from 'react-sizeme';
 import "react-grid-layout/css/styles.css"
@@ -7,19 +5,11 @@ import "react-resizable/css/styles.css"
 
 import AudioPlayer from "./AudioPlayer"
 
-// const [name, setName] = useState("mario");
-// setName("luigi");
-
-const url = "https://www.mfiles.co.uk/mp3-downloads/gs-cd-track2.mp3";
-
 function Dashboard({ size: { width } }) 
 {
     const layouts = {
     lg: [
-        { i: 'a', x: 0, y: 0, w: 1, h: 2 },
-        { i: 'b', x: 1, y: 0, w: 3, h: 2 },
-        { i: 'c', x: 4, y: 0, w: 1, h: 2 },
-        { i: 'd', x: 0, y: 2, w: 2, h: 2 },
+        { i: 'AudioPlayer', x: 1, y: 0, w: 10, h: 1.5, isResizable: false },
     ],
     };
     return (
@@ -31,8 +21,9 @@ function Dashboard({ size: { width } })
         rowHeight={120}
         width={width}
     >
-        <div key="a">
-        <AudioPlayer url={url}/>
+        <div key="AudioPlayer">
+            {/* <AudioPlayer url={url}/> */}
+            <AudioPlayer />
         </div>
     </ResponsiveGridLayout>
     );
