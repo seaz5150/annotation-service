@@ -17,6 +17,7 @@ const url = "https://audio.jukehost.co.uk/Z26Iwin2gXvItglzITnoCT96fCpzo9Bh.mp3";
 
 export default function AudioPlayer() {
   const [playing, setPlayStatus] = useState(false);
+  const [currentZoom, setCurrentZoom] = useState();
   const intervalRef = useRef(null);
 
   const plugins = useMemo(() => {
@@ -100,6 +101,9 @@ export default function AudioPlayer() {
 
         wavesurferRef.current.on("region-created", regionCreatedHandler);
 
+        wavesurferRef.current.on("pause", () => {setPlayStatus(false)});
+        wavesurferRef.current.on("play", () => {setPlayStatus(true)});
+
         if (window) 
         {
           window.surferidze = wavesurferRef.current;
@@ -110,12 +114,12 @@ export default function AudioPlayer() {
   );
 
   const playAudio = useCallback(() => {
-    setPlayStatus(!playing);
     wavesurferRef.current.playPause();
-  }, [playing]);
+  }, []);
 
   const startSkip = useCallback((direction) => {
     if (intervalRef.current) return;
+    wavesurferRef.current.setMute(true);
     intervalRef.current = setInterval(() => {
       let currentWindingUnit = windingUnit;
       if (direction === "backward")
@@ -126,8 +130,14 @@ export default function AudioPlayer() {
     }, windingSpeed);
   }, []);
 
+  const replayAudio = useCallback(() => {
+    wavesurferRef.current.stop();
+    playAudio();
+  }, [playAudio]);
+
   const stopSkip = () => {
     if (intervalRef.current) {
+      wavesurferRef.current.setMute(false);
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
@@ -139,53 +149,63 @@ export default function AudioPlayer() {
 
   return (
     <div className="card card-body module">
+      <div className="module-content">
+        <div className="play-area" onMouseDown={e => handlePress(e)}>
+          <WaveSurfer plugins={plugins} onMount={handleWSMount}>
+            <WaveForm id="waveform"
+            height="100"
+            barWidth="2"
+            responsive= "true"
+            normalize= "true"
+            partialRender= "true"
+            pixelRatio= "1"
+            waveColor= "#969393"
+            progressColor= "#2aabd2"
+            cursorColor= "#2aabd2"
+            >
+              {regions.map(regionProps => (
+                <Region
+                  key={regionProps.id}
+                  {...regionProps}
+                />
+              ))}
+            </WaveForm>
 
-      <WaveSurfer plugins={plugins} onMount={handleWSMount} onMouseDown={handlePress}>
-        <WaveForm id="waveform"
-         height="100"
-         barWidth="2"
-         responsive= "true"
-         normalize= "true"
-         partialRender= "true"
-         pixelRatio= "1"
-         waveColor= "#969393"
-         progressColor= "#2aabd2"
-         cursorColor= "#2aabd2"
-         >
-          {regions.map(regionProps => (
-            <Region
-              key={regionProps.id}
-              {...regionProps}
-            />
-          ))}
-        </WaveForm>
+            <div id="timeline" />
+          </WaveSurfer>
+        </div>
+        
+        <div className="audiocontrols-wrapper">
+          <div className="audiocontrols" onMouseDown={e => handlePress(e)}>
+            <Button className="audiocontrols-button mx-1" 
+                      onMouseDown={replayAudio}
+              >
+                  <i className="audiocontrols-button-icon bi bi-arrow-clockwise"></i>
+              </Button>
 
-        <div id="timeline" />
-      </WaveSurfer>
+              <Button className="audiocontrols-button mx-1" 
+                      onMouseDown={() => startSkip("backward")}
+                      onMouseUp={stopSkip}
+                      onMouseLeave={stopSkip}
+              >
+                  <i className="audiocontrols-button-icon bi bi-skip-backward-fill"></i>
+              </Button>
 
-      <div className="audiocontrols">
-        <Button className="audiocontrols-button mx-1" 
-                onMouseDown={() => startSkip("backward")}
-                onMouseUp={stopSkip}
-                onMouseLeave={stopSkip}
-        >
-            <i className="audiocontrols-button-icon bi bi-skip-backward-fill"></i>
-        </Button>
+              <Button className="audiocontrols-button" onClick={playAudio}>
+                <i className={"audiocontrols-button-icon " + (playing ? "bi bi-pause-fill" : "bi bi-play-fill")}></i>
+              </Button>
 
-        <Button className="audiocontrols-button" onClick={playAudio}>
-          <i className={"audiocontrols-button-icon " + (playing ? "bi bi-pause-fill" : "bi bi-play-fill")}></i>
-        </Button>
+              <Button className="audiocontrols-button mx-1" 
+                      onMouseDown={() => startSkip("forward")}
+                      onMouseUp={stopSkip}
+                      onMouseLeave={stopSkip}
+              >
+                  <i className="audiocontrols-button-icon bi bi-skip-forward-fill"></i>
+              </Button>
 
-        <Button className="audiocontrols-button mx-1" 
-                onMouseDown={() => startSkip("forward")}
-                onMouseUp={stopSkip}
-                onMouseLeave={stopSkip}
-        >
-            <i className="audiocontrols-button-icon bi bi-skip-forward-fill"></i>
-        </Button>
-
-        {/* <input type="range" className="" min="0" max="5" step="0.5" id="customRange3"></input> */}
-      
+              {/* <input type="range" className="" min="0" max="5" step="0.5" id="customRange3"></input> */}
+            </div>
+        </div>
       </div>
     </div>
   );

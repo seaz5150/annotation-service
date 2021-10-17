@@ -9,7 +9,7 @@ function Dashboard({ size: { width } })
 {
     const layouts = {
     lg: [
-        { i: 'AudioPlayer', x: 1, y: 0, w: 10, h: 1.5, isResizable: false },
+        { i: 'AudioPlayer', x: 1, y: 0, w: 100, h: 1.68, isResizable: false },
     ],
     };
     return (

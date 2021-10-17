@@ -24,8 +24,12 @@ body{
   color: white;
 }
 
-.audiocontrols{
+.audiocontrols-wrapper{
   text-align: center;
+}
+
+.audiocontrols{
+  display: inline-block;
 }
 
 .module{
@@ -34,4 +38,9 @@ body{
 
 .wavesurfer-region{
 
+}
+
+*:focus:not(:focus-visible) {
+  outline: 0 !important;
+  box-shadow: none !important;
 }
