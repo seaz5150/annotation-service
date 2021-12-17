@@ -111,44 +111,43 @@ export default function AudioPlayer() {
     <div className="card card-body module">
       <div className="module-content">
         <div className="play-area" onMouseDown={e => handlePress(e)}></div>
-          <div id="waveform" ref={waveformRef} />
-          <div id="wave-timeline"></div>
           <div className="row audiocontrols-wrapper">
-        <div className="col audiocontrols">
-          <button className="btn btn-primary audiocontrols-button me-1" 
-                    onClick={replayAudio}
-                    onMouseDown={e => handlePress(e)}
-            >
-                <i className="audiocontrols-button-icon bi bi-arrow-clockwise"></i>
-            </button>
+            <div className="col audiocontrols">
+              {/* <button className="btn btn-primary audiocontrols-button me-1" 
+                      onClick={replayAudio}
+                      onMouseDown={e => handlePress(e)}
+              >
+                  <i className="audiocontrols-button-icon bi bi-arrow-clockwise"></i>
+              </button> */}
 
-            <button className="btn btn-primary audiocontrols-button mx-1" 
-                    onMouseDown={(e) => startSkip(e, "backward")}
-                    onMouseUp={stopSkip}
-                    onMouseLeave={stopSkip}
-            >
-                <i className="audiocontrols-button-icon bi bi-skip-backward-fill"></i>
-            </button>
+              <button className="btn btn-primary audiocontrols-button mx-1" 
+                      onMouseDown={(e) => startSkip(e, "backward")}
+                      onMouseUp={stopSkip}
+                      onMouseLeave={stopSkip}
+              >
+                  <i className="audiocontrols-button-icon bi bi-skip-backward-fill"></i>
+              </button>
 
-            <button className="btn btn-primary audiocontrols-button" onClick={playAudio} onMouseDown={e => handlePress(e)}>
-              <i className={"audiocontrols-button-icon " + (playing ? "bi bi-pause-fill" : "bi bi-play-fill")}></i>
-            </button>
+              <button className="btn btn-primary audiocontrols-button" onClick={playAudio} onMouseDown={e => handlePress(e)}>
+                <i className={"audiocontrols-button-icon " + (playing ? "bi bi-pause-fill" : "bi bi-play-fill")}></i>
+              </button>
 
-            <button className="btn btn-primary audiocontrols-button ms-1" 
-                    onMouseDown={(e) => startSkip(e, "forward")}
-                    onMouseUp={stopSkip}
-                    onMouseLeave={stopSkip}
-                    
-            >
+              <button className="btn btn-primary audiocontrols-button ms-1" 
+                      onMouseDown={(e) => startSkip(e, "forward")}
+                      onMouseUp={stopSkip}
+                      onMouseLeave={stopSkip}     
+              >
                 <i className="audiocontrols-button-icon bi bi-skip-forward-fill"></i>
-            </button>
-            <div className="audiocontrols-volume">
-              <i className="audiocontrols-volume-icon bi bi-volume-down-fill me-1"></i>
-              <input type="range" className="form-range audiocontrols-volume-slider" min="0" max="1"  step="0.1" onChange={(e) => (wavesurfer.current?.setVolume(parseFloat(e.target.value)))} onMouseDown={e => handlePress(e)}></input>
-              <i className="audiocontrols-volume-icon bi bi-volume-up-fill ms-1"></i>
-            </div>
+              </button>
+              {/* <div className="audiocontrols-volume">
+                <i className="audiocontrols-volume-icon bi bi-volume-down-fill me-1"></i>
+                <input type="range" className="form-range audiocontrols-volume-slider" min="0" max="1"  step="0.1" onChange={(e) => (wavesurfer.current?.setVolume(parseFloat(e.target.value)))} onMouseDown={e => handlePress(e)}></input>
+                <i className="audiocontrols-volume-icon bi bi-volume-up-fill ms-1"></i>
+              </div> */}
           </div>
         </div>
+        <div id="waveform" ref={waveformRef} />
+        <div id="wave-timeline"></div>
       </div>
     </div>
   );

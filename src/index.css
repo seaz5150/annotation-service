@@ -19,8 +19,6 @@ code {
 }
 
 body{
-  padding-top: 20px;
-  padding-bottom: 20px;
   margin: 0;
 }
 
@@ -29,16 +27,21 @@ body{
 }
 
 .audiocontrols-button{
-  margin-top: 1em;
+  height: 30px !important;
+  line-height: 10px !important;
+  background-color:rgba(80, 80, 80, 0.274) !important;
+  border-color: #2aabd2 !important;
 }
 
 .audiocontrols-button-icon{
   font-size: 1em;
-  color: white;
+  color: #2aabd2;
 }
 
 .audiocontrols-wrapper{
   text-align: center;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.8em !important;
 }
 
 .audiocontrols{
@@ -82,6 +85,105 @@ body{
   float: right;
 }
 
+.card-body{
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
+}
+
 #waveform{
 
+}
+
+/* https://stackoverflow.com/questions/2460100/remove-the-complete-styling-of-an-html-button-submit */
+.icon-button{
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.segment-play-button{
+  color: #2aabd2;
+  font-size: 1.8em;
+  padding: 0 !important;
+}
+
+.segment-play-panel{
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  border-radius: 0 5px 5px 0;
+  max-width: 100px !important;
+  background-color: rgba(80, 80, 80, 0.274);
+  margin-right: 0.5em;
+  align-items: center;
+  display: flex;
+}
+
+.segment-play-panel-content{
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.segment-times{
+  font-size: 0.9em;
+  color: rgb(224, 224, 224);
+  display: flex;
+  flex-direction: column;
+}
+
+.segment-time-start, .segment-time-end{
+  margin-bottom: 0;
+}
+
+.segment-text{
+  margin-bottom: 0;
+  color: rgb(224, 224, 224);
+  text-align: left;
+}
+
+.segment-text-panel{
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.segment{
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+.custom-dropdown{
+  color: rgb(224, 224, 224) !important;
+  background-color: rgb(63, 63, 63) !important;
+  border-color: rgb(85, 85, 85) !important;
+  font-size: 0.8em !important;
+}
+
+.custom-dropdown:hover, .custom-dropdown:focus{
+  background-color: rgb(85, 85, 85) !important;
+}
+
+.custom-dropdown-option{
+  color: rgb(224, 224, 224) !important;
+  background-color: rgba(46, 46, 46, 0.274) !important;
+}
+
+.dropdown-menu{
+  line-height: 50px;
+  background-color: rgb(80, 80, 80) !important;
+}
+
+.speaker-select{
+  width: 200px !important;
+}
+
+.segment-tag-bar{
+  margin-top: 0.5em;
+  text-align: left;
 }

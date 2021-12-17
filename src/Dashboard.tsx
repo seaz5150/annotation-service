@@ -5,6 +5,7 @@ import "react-resizable/css/styles.css"
 
 import AudioPlayer from "./AudioPlayer"
 import Settings from "./Settings"
+import AnnotationText from "./AnnotationText"
 
 import React, {
     useRef,
@@ -28,8 +29,9 @@ function Dashboard({ size: { width } }: {size: SizeParams})
 
     const layouts = {
     lg: [
-        { i: 'AudioPlayer', x: 1, y: 0, w: 10, h: 11, minH: 11, maxH:11, minW: 5},
-        { i: 'Settings', x: 1, y: 0, w: 1, h: 5, minH: 5, minW: 1},
+        { i: 'AudioPlayer', x: 0, y: 0, w: 12, h: 9, isResizable: false},
+        { i: 'AnnotationText', x: 3, y: 0, w: 6, h: 5, isResizable: false},
+        { i: 'Settings', x: 0, y: 0, w: 2.7, h: 5, isResizable: false},
     ],
     };
 
@@ -48,9 +50,12 @@ function Dashboard({ size: { width } }: {size: SizeParams})
         <div key="AudioPlayer">
             <AudioPlayer />
         </div>
-        <div key="Settings">
-            <Settings />
+        <div key="AnnotationText">
+            <AnnotationText />
         </div>
+        {/* <div key="Settings">
+            <Settings />
+        </div> */}
     </ResponsiveGridLayout>
     );
 }
