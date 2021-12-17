@@ -117,7 +117,8 @@ export default function AudioPlayer() {
     wavesurferRef.current.playPause();
   }, []);
 
-  const startSkip = useCallback((direction) => {
+  const startSkip = useCallback((e, direction) => {
+    handlePress(e)
     if (intervalRef.current) return;
     wavesurferRef.current.setMute(true);
     intervalRef.current = setInterval(() => {
@@ -175,35 +176,40 @@ export default function AudioPlayer() {
           </WaveSurfer>
         </div>
         
-        <div className="audiocontrols-wrapper">
-          <div className="audiocontrols" onMouseDown={e => handlePress(e)}>
-            <Button className="audiocontrols-button mx-1" 
-                      onMouseDown={replayAudio}
+        <div className="row audiocontrols-wrapper">
+          <div className="col audiocontrols">
+            <Button className="audiocontrols-button me-1" 
+                      onClick={replayAudio}
+                      onMouseDown={e => handlePress(e)}
               >
                   <i className="audiocontrols-button-icon bi bi-arrow-clockwise"></i>
               </Button>
 
               <Button className="audiocontrols-button mx-1" 
-                      onMouseDown={() => startSkip("backward")}
+                      onMouseDown={(e) => startSkip(e, "backward")}
                       onMouseUp={stopSkip}
                       onMouseLeave={stopSkip}
               >
                   <i className="audiocontrols-button-icon bi bi-skip-backward-fill"></i>
               </Button>
 
-              <Button className="audiocontrols-button" onClick={playAudio}>
+              <Button className="audiocontrols-button" onClick={playAudio} onMouseDown={e => handlePress(e)}>
                 <i className={"audiocontrols-button-icon " + (playing ? "bi bi-pause-fill" : "bi bi-play-fill")}></i>
               </Button>
 
-              <Button className="audiocontrols-button mx-1" 
-                      onMouseDown={() => startSkip("forward")}
+              <Button className="audiocontrols-button ms-1" 
+                      onMouseDown={(e) => startSkip(e, "forward")}
                       onMouseUp={stopSkip}
                       onMouseLeave={stopSkip}
+                      
               >
                   <i className="audiocontrols-button-icon bi bi-skip-forward-fill"></i>
               </Button>
-
-              {/* <input type="range" className="" min="0" max="5" step="0.5" id="customRange3"></input> */}
+              <div className="audiocontrols-volume">
+                <i className="audiocontrols-volume-icon bi bi-volume-down-fill me-1"></i>
+                <input type="range" className="form-range audiocontrols-volume-slider" min="0" max="1"  step="0.1" onChange={(e) => (wavesurferRef.current.setVolume(e.target.value))} onMouseDown={e => handlePress(e)}></input>
+                <i className="audiocontrols-volume-icon bi bi-volume-up-fill ms-1"></i>
+              </div>
             </div>
         </div>
       </div>

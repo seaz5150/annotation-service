@@ -34,6 +34,8 @@ body{
 
 .module{
   background-color: rgba(0, 0, 0, 0.3) !important;
+  width: 100%;
+  height: 100%;
 }
 
 .wavesurfer-region{
@@ -43,4 +45,26 @@ body{
 *:focus:not(:focus-visible) {
   outline: 0 !important;
   box-shadow: none !important;
+}
+
+.module-settings{
+  text-align: center;
+}
+
+.card-header{
+  height: 20px;
+  font-size: 0.7em;
+  text-align: left;
+  line-height: 4px;
+  color: rgba(255, 255, 255, 0.8)
+}
+
+.audiocontrols-volume-icon{
+  font-size: 1em;
+  color: white;
+}
+
+.audiocontrols-volume{
+  height: 100%;
+  float: right;
 }

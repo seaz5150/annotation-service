@@ -3,9 +3,7 @@ import Dashboard from './Dashboard';
 function App() {
   return (
     <div className="App">
-      <div className="container">
-        <Dashboard />
-      </div>
+      <Dashboard />
     </div>
   );
 }
