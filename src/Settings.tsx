@@ -1,18 +1,18 @@
-import Button from "react-bootstrap/Button";
+import { MouseEvent } from "react";
 
 const Settings = () => {
 
-    const handlePress = (e) => {
+    const handlePress = (e: any) => {
         e.stopPropagation();
     }
     
     return (  
         <div className="card module module-settings">
-            <div class="card-header">
+            <div className="card-header">
                 Settings
             </div>
             <div className="module-content card-body">
-                <Button onMouseDown={e => handlePress(e)}>Button</Button>
+                <button className="btn btn-primary" onMouseDown={e => handlePress(e)}>Button</button>
             </div>
         </div>
     );

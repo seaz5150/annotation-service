@@ -10,7 +10,11 @@ import React, {
     useRef,
   } from "react";
 
-function Dashboard({ size: { width } }) 
+type SizeParams = {
+    width: number;
+};
+
+function Dashboard({ size: { width } }: {size: SizeParams}) 
 {
     // const originalModules = ["AudioPlayer", "Settings"];
 
@@ -42,7 +46,6 @@ function Dashboard({ size: { width } })
         // originalModules={originalModules}
     >
         <div key="AudioPlayer">
-            {/* <AudioPlayer url={url}/> */}
             <AudioPlayer />
         </div>
         <div key="Settings">
