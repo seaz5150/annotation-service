@@ -133,7 +133,7 @@ body{
 
 .segment-times{
   font-size: 0.9em;
-  color: rgb(224, 224, 224);
+  color: rgb(184, 184, 184);
   display: flex;
   flex-direction: column;
 }

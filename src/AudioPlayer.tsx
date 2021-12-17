@@ -30,12 +30,16 @@ export default function AudioPlayer() {
     barWidth: 1,
     pixelRatio: 1,
     waveColor: "#969393",
-    progressColor: "rgba(255, 255, 255, 0.6)",
+    progressColor: "rgba(42, 171, 210, 0.3)",
     cursorColor: "#2aabd2",
     height: 90,
     plugins: [
       TimelinePlugin.create({
-          container: "#wave-timeline"
+          container: "#wave-timeline",
+          primaryColor: "white",
+          primaryFontColor: "white",
+          secondaryColor: "rgb(184, 184, 184)",
+          secondaryFontColor: "rgb(184, 184, 184)"
       })
     ]
   });

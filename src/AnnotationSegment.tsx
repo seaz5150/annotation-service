@@ -16,7 +16,7 @@ export default function AnnotationSegment() {
         <div className="segment-text-panel">
             <p className="segment-text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus et lorem id felis nonummy placerat. Integer lacinia. Praesent in mauris eu tortor porttitor accumsan.</p>
             <div className="segment-tag-bar">
-                <select className="form-select form-select-sm custom-dropdown">
+                <select className="form-select form-select-sm custom-dropdown speaker-select">
                     <option selected>Speaker</option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
