@@ -21,6 +21,7 @@ export default function AnnotationSegment() {
         </div>
         <div className="segment-text-panel">
             <p className="segment-text"
+                contentEditable="true"
                onMouseDown={e => handlePress(e)}
             >
                 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus et lorem id felis nonummy placerat. Integer lacinia. Praesent in mauris eu tortor porttitor accumsan.
