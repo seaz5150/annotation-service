@@ -15,16 +15,16 @@ export default function AnnotationSegment() {
         </div>
         <div className="segment-text-panel">
             <p className="segment-text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus et lorem id felis nonummy placerat. Integer lacinia. Praesent in mauris eu tortor porttitor accumsan.</p>
-            {/* <select className="form-select form-select-sm custom-select speaker-select">
-                <option selected>Open this select menu</option>
-                <option className="custom-select-option" value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select> */}
             <div className="segment-tag-bar">
+                <select className="form-select form-select-sm custom-dropdown">
+                    <option selected>Speaker</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
                 <div className="dropdown">
                 <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    Speaker
+                    Segment labels
                 </button>
                 <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                     <li><a className="dropdown-item" href="#">Action</a></li>
