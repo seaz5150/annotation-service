@@ -16,6 +16,7 @@ export default function AnnotationText() {
   return (
     <div className="">
         <AnnotationSegment />
+        <AnnotationSegment />
     </div>
   );
 }

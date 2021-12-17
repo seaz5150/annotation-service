@@ -30,7 +30,7 @@ export default function AudioPlayer() {
     barWidth: 1,
     pixelRatio: 1,
     waveColor: "#969393",
-    progressColor: "#2aabd2",
+    progressColor: "rgba(255, 255, 255, 0.6)",
     cursorColor: "#2aabd2",
     height: 90,
     plugins: [
