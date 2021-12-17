@@ -30,7 +30,7 @@ body{
   height: 30px !important;
   line-height: 10px !important;
   background-color:rgba(80, 80, 80, 0.274) !important;
-  border-color: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .audiocontrols-button-icon{
@@ -124,10 +124,7 @@ body{
 }
 
 .segment-play-panel-content{
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  margin-left: 0.5em;
-  margin-right: 0.5em;
+  margin: 0.5em;
   display: inline-flex;
   justify-content: center;
 }
