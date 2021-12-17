@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import WaveSurfer from "wavesurfer.js";
 import TimelinePlugin from "wavesurfer.js/src/plugin/timeline";
+import RegionsPlugin from "wavesurfer.js/src/plugin/regions";
 import { PluginDefinition, PluginParams } from "wavesurfer.js/types/plugin";
 
 const url = "https://audio.jukehost.co.uk/Z26Iwin2gXvItglzITnoCT96fCpzo9Bh.mp3";
@@ -27,6 +28,7 @@ export default function AudioPlayer() {
     normalize: true,
     partialRender: true,
     responsive: true,
+    // vertical: true,
     barWidth: 1,
     pixelRatio: 1,
     waveColor: "#969393",
@@ -34,6 +36,10 @@ export default function AudioPlayer() {
     cursorColor: "#2aabd2",
     height: 90,
     plugins: [
+      RegionsPlugin.create({
+        dragSelection: true,
+        minLength: 0.2
+      }),
       TimelinePlugin.create({
           container: "#wave-timeline",
           primaryColor: "white",

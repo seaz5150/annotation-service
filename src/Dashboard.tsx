@@ -6,6 +6,7 @@ import "react-resizable/css/styles.css"
 import AudioPlayer from "./AudioPlayer"
 import Settings from "./Settings"
 import AnnotationText from "./AnnotationText"
+import RecordingDetails from "./RecordingDetails"
 
 import React, {
     useRef,
@@ -32,6 +33,7 @@ function Dashboard({ size: { width } }: {size: SizeParams})
         { i: 'AudioPlayer', x: 0, y: 0, w: 12, h: 9, isResizable: false},
         { i: 'AnnotationText', x: 3, y: 0, w: 6, h: 5, isResizable: false},
         { i: 'Settings', x: 0, y: 0, w: 2.7, h: 5, isResizable: false},
+        { i: 'RecordingDetails', x: 10, y: 0, w: 2.7, h: 10, isResizable: false},
     ],
     };
 
@@ -56,6 +58,9 @@ function Dashboard({ size: { width } }: {size: SizeParams})
         {/* <div key="Settings">
             <Settings />
         </div> */}
+        <div key="RecordingDetails">
+            <RecordingDetails />
+        </div>
     </ResponsiveGridLayout>
     );
 }
