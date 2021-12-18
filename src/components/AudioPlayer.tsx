@@ -9,6 +9,8 @@ import WaveSurfer from "wavesurfer.js";
 import TimelinePlugin from "wavesurfer.js/src/plugin/timeline";
 import RegionsPlugin from "wavesurfer.js/src/plugin/regions";
 import { PluginDefinition, PluginParams } from "wavesurfer.js/types/plugin";
+import moment from "moment";
+import { getFormattedTime } from "../TimeUtils";
 
 const url = "https://audio.jukehost.co.uk/Z26Iwin2gXvItglzITnoCT96fCpzo9Bh.mp3";
 
@@ -18,6 +20,8 @@ export default function AudioPlayer() {
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [currentZoom, setCurrentZoom] = useState();
+  const [currentTime, setCurrentTime] = useState<number | undefined>(undefined);
+  const [durationTime, setDurationTime] = useState<number | undefined>(undefined);
   const intervalRef = useRef<any>(null);
 
   const windingUnit = 0.1;
@@ -63,8 +67,12 @@ export default function AudioPlayer() {
         wavesurfer.current.setVolume(volume);
         setVolume(volume);
 
+        setDurationTime(wavesurfer.current?.getDuration());
+
         wavesurfer.current?.on("pause", () => {setPlaying(false)});
         wavesurfer.current?.on("play", () => {setPlaying(true)});
+        wavesurfer.current?.on("audioprocess", () => {setCurrentTime(wavesurfer.current?.getCurrentTime())});
+        wavesurfer.current?.on("seek", () => {setCurrentTime(wavesurfer.current?.getCurrentTime())});
       }
     });
     
@@ -114,8 +122,11 @@ export default function AudioPlayer() {
     <div className="card card-body module module-player">
       <div className="module-content">
         <div className="play-area" onMouseDown={e => handlePress(e)}></div>
-          <div className="row audiocontrols-wrapper">
-            <div className="col audiocontrols">
+          <div className="audiocontrols-wrapper">
+          <div className="audiocontrols-left">
+
+          </div>
+            <div className="audiocontrols-center">
               {/* <button className="btn btn-primary audiocontrols-button me-1" 
                       onClick={replayAudio}
                       onMouseDown={e => handlePress(e)}
@@ -147,6 +158,17 @@ export default function AudioPlayer() {
                 <input type="range" className="form-range audiocontrols-volume-slider" min="0" max="1"  step="0.1" onChange={(e) => (wavesurfer.current?.setVolume(parseFloat(e.target.value)))} onMouseDown={e => handlePress(e)}></input>
                 <i className="audiocontrols-volume-icon bi bi-volume-up-fill ms-1"></i>
               </div> */}
+          </div>
+          <div className="audiocontrols-right">
+            <div className="audiocontrols-times">
+              <p className="recording-time">
+                {getFormattedTime(currentTime)}
+              </p>
+              <p className="recording-time">&nbsp;/&nbsp;</p>
+              <p className="recording-time">
+                {getFormattedTime(durationTime)}
+              </p>
+            </div>
           </div>
         </div>
         <div id="waveform" ref={waveformRef} onMouseDown={e => handlePress(e)} />

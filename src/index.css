@@ -39,13 +39,36 @@ body{
 }
 
 .audiocontrols-wrapper{
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content : center;
   margin-top: 0.5em !important;
   margin-bottom: 0.8em !important;
 }
 
-.audiocontrols{
-  display: inline-block;
+.audiocontrols-left{
+  flex: 1;
+}
+
+.audiocontrols-right{
+  flex: 1;
+}
+
+.audiocontrols-center{
+
+}
+
+
+.audiocontrols-times{
+  margin-left: 1em;
+  margin-bottom: 0;
+  display: flex;
+}
+
+.recording-time{
+  font-size: 0.9em;
+  color: rgb(184, 184, 184);
+  margin-bottom: 0;
 }
 
 .module{
@@ -141,7 +164,10 @@ body{
 }
 
 .segment-play-panel-content{
-  margin: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-left: 0.25em;
   display: inline-flex;
   justify-content: center;
 }
@@ -176,14 +202,15 @@ body{
   flex-direction: row !important;
   background-color: rgba(149, 125, 173, 0.904) !important;
   border: none !important;
+  border-radius: 0 !important;
 }
 
-.segment:not(:last-child){
-  border-radius: .25rem .25rem 0 0;
+.segment:last-child{
+  border-radius: 0 0 .25rem .25rem !important;
 }
 
-.segment:not(:first-child){
-  border-radius: 0 0 .25rem .25rem;
+.segment:first-child{
+  border-radius: .25rem .25rem 0 0 !important;
 }
 
 .custom-dropdown{

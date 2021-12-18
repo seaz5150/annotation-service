@@ -1,8 +1,18 @@
-export default function AnnotationSegment() {
+import { getFormattedTime } from "../TimeUtils";
+
+interface AnnotationSegmentInterface {
+    speakerTags: any,
+    segmentTags: any,
+    textTags: any,
+    segment: any
+}
+
+const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const handlePress = (e: any) => {
         e.stopPropagation();
-      }
-  return (
+        }
+
+    return (
     <div className="card card-body module module-content p-0 segment">
         <div className="p-0 segment-play-panel">
             <div className="segment-play-panel-content">
@@ -11,18 +21,18 @@ export default function AnnotationSegment() {
                 >
                     <i className="bi bi-play-fill"></i>
                 </button>
-                <div className="segment-times ms-2"
-                     onMouseDown={e => handlePress(e)}
+                <div className="segment-times ps-1"
+                        onMouseDown={e => handlePress(e)}
                 >
-                    <p className="segment-time-start">00:00.0</p>
-                    <p className="segment-time-end">00:00.0</p>
+                    <p className="segment-time-start">{getFormattedTime(Number(props.segment.start))}</p>
+                    <p className="segment-time-end">{getFormattedTime(Number(props.segment.end))}</p>
                 </div>
             </div>
         </div>
         <div className="segment-text-panel">
             <p className="segment-text"
                 contentEditable="true"
-               onMouseDown={e => handlePress(e)}
+                onMouseDown={e => handlePress(e)}
             >
                 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus et lorem id felis nonummy placerat. Integer lacinia. Praesent in mauris eu tortor porttitor accumsan.
             </p>
@@ -36,22 +46,22 @@ export default function AnnotationSegment() {
                     <option value="3">Three</option>
                 </select>
                 <div className="dropdown">
-                <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"
+                    <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"
+                            onMouseDown={e => handlePress(e)}
+                            type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                    >
+                        Segment labels
+                    </button>
+                    <ul className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton1" 
                         onMouseDown={e => handlePress(e)}
-                        type="button" id="dropdownMenuButton1"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                >
-                    Segment labels
-                </button>
-                <ul className="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton1" 
-                    onMouseDown={e => handlePress(e)}
-                >
-                    <li><a className="dropdown-item" href="#">Action</a></li>
-                    <li><a className="dropdown-item" href="#">Another action</a></li>
-                    <li><a className="dropdown-item" href="#">Something else here</a></li>
-                </ul>
+                    >
+                        <li><a className="dropdown-item" href="#">Action</a></li>
+                        <li><a className="dropdown-item" href="#">Another action</a></li>
+                        <li><a className="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
                 </div>
 
                 <button className="icon-button segment-delete-button"
@@ -62,5 +72,7 @@ export default function AnnotationSegment() {
             </div>
         </div>
     </div>
-  );
+    );
 }
+
+export default AnnotationSegment;

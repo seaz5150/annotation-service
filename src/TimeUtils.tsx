@@ -1,0 +1,12 @@
+import moment from "moment";
+
+export const getFormattedTime = (timeSeconds: number | undefined) => {
+    if (timeSeconds != undefined) {
+        const timeMiliseconds = Math.floor(timeSeconds * 1000);
+        const timeDuration = moment.duration(timeMiliseconds);
+        return moment.utc(timeDuration.as('milliseconds')).format("mm:ss.S");
+    }
+    else {
+        return "00:00.0";
+    }
+};
