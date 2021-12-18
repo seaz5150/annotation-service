@@ -111,7 +111,7 @@ export default function AudioPlayer() {
   };
 
   return (
-    <div className="card card-body module">
+    <div className="card card-body module module-player">
       <div className="module-content">
         <div className="play-area" onMouseDown={e => handlePress(e)}></div>
           <div className="row audiocontrols-wrapper">
