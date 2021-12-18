@@ -18,7 +18,7 @@ export default function AudioPlayer() {
   const waveformRef = useRef(null);
   const wavesurfer = useRef<WaveSurfer | null>(null);
   const [playing, setPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.5);
+  const [volume, setVolume] = useState(1);
   const [currentZoom, setCurrentZoom] = useState();
   const [currentTime, setCurrentTime] = useState<number | undefined>(undefined);
   const [durationTime, setDurationTime] = useState<number | undefined>(undefined);
@@ -79,24 +79,20 @@ export default function AudioPlayer() {
     return () => wavesurfer.current!.destroy();
   }, [url]);
 
-  const handlePress = (e: any) => {
+  const handlePress = (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
   }
 
-  useEffect(() => {
-    return () => stopSkip();
-  }, []);
-
-  const playAudio = useCallback(() => {
+  const playAudio = () => {
     wavesurfer.current?.playPause();
-  }, []);
+  };
 
-  const replayAudio = useCallback(() => {
+  const replayAudio = () => {
     wavesurfer.current?.stop();
     playAudio();
-  }, [playAudio]);
+  };
 
-  const startSkip = useCallback((e, direction) => {
+  const startSkip = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, direction: string) => {
     handlePress(e)
     if (intervalRef.current) return;
     wavesurfer.current?.setMute(true);
@@ -108,7 +104,7 @@ export default function AudioPlayer() {
       }
       wavesurfer.current?.skip(currentWindingUnit);
     }, windingSpeed);
-  }, []);
+  };
 
   const stopSkip = () => {
     if (intervalRef.current) {
@@ -124,17 +120,15 @@ export default function AudioPlayer() {
         <div className="play-area" onMouseDown={e => handlePress(e)}></div>
           <div className="audiocontrols-wrapper">
           <div className="audiocontrols-left">
-
-          </div>
-            <div className="audiocontrols-center">
-              {/* <button className="btn btn-primary audiocontrols-button me-1" 
+              <button className="btn btn-primary audiocontrols-button me-2" 
                       onClick={replayAudio}
                       onMouseDown={e => handlePress(e)}
               >
                   <i className="audiocontrols-button-icon bi bi-arrow-clockwise"></i>
-              </button> */}
-
-              <button className="btn btn-primary audiocontrols-button mx-1" 
+              </button>
+          </div>
+            <div className="audiocontrols-center">
+              <button className="btn btn-primary audiocontrols-button me-1" 
                       onMouseDown={(e) => startSkip(e, "backward")}
                       onMouseUp={stopSkip}
                       onMouseLeave={stopSkip}
@@ -153,14 +147,9 @@ export default function AudioPlayer() {
               >
                 <i className="audiocontrols-button-icon bi bi-skip-forward-fill"></i>
               </button>
-              {/* <div className="audiocontrols-volume">
-                <i className="audiocontrols-volume-icon bi bi-volume-down-fill me-1"></i>
-                <input type="range" className="form-range audiocontrols-volume-slider" min="0" max="1"  step="0.1" onChange={(e) => (wavesurfer.current?.setVolume(parseFloat(e.target.value)))} onMouseDown={e => handlePress(e)}></input>
-                <i className="audiocontrols-volume-icon bi bi-volume-up-fill ms-1"></i>
-              </div> */}
           </div>
           <div className="audiocontrols-right">
-            <div className="audiocontrols-times">
+            <div className="audiocontrols-times ms-2">
               <p className="recording-time">
                 {getFormattedTime(currentTime)}
               </p>
@@ -169,6 +158,10 @@ export default function AudioPlayer() {
                 {getFormattedTime(durationTime)}
               </p>
             </div>
+            <div className="audiocontrols-volume ms-auto">
+                <input type="range" className="form-range audiocontrols-volume-slider" min="0" max="1"  step="0.1" onChange={(e) => (wavesurfer.current?.setVolume(parseFloat(e.target.value)))} onMouseDown={e => handlePress(e)}></input>
+                <i className="audiocontrols-volume-icon bi bi-volume-up-fill ms-2"></i>
+              </div>
           </div>
         </div>
         <div id="waveform" ref={waveformRef} onMouseDown={e => handlePress(e)} />
