@@ -59,11 +59,6 @@ export default function AudioPlayer() {
     wavesurfer.current.load(url);
 
     wavesurfer.current.on("ready", function() {
-      // https://wavesurfer-js.org/docs/methods.html
-      // wavesurfer.current.play();
-      // setPlay(true);
-
-      // make sure object stillavailable when file loaded
       if (wavesurfer.current) {
         wavesurfer.current.setVolume(volume);
         setVolume(volume);
@@ -72,9 +67,7 @@ export default function AudioPlayer() {
         wavesurfer.current?.on("play", () => {setPlaying(true)});
       }
     });
-
-    // Removes events, elements and disconnects Web Audio nodes.
-    // when component unmount
+    
     return () => wavesurfer.current!.destroy();
   }, [url]);
 
