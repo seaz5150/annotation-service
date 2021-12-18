@@ -53,6 +53,12 @@ export default function AnnotationSegment() {
                     <li><a className="dropdown-item" href="#">Something else here</a></li>
                 </ul>
                 </div>
+
+                <button className="icon-button segment-delete-button"
+                        onMouseDown={e => handlePress(e)}
+                >
+                    <i className="bi bi-x"></i>
+                </button>
             </div>
         </div>
     </div>

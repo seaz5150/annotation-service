@@ -112,6 +112,15 @@ body{
   padding: 0 !important;
 }
 
+.segment-delete-button{
+  color: rgba(224, 224, 224, 0.651);
+  font-size: 1.3em !important;
+  padding: 0 !important;
+  position: absolute;
+  top: 0;
+  right: 0.25em;
+}
+
 .segment-play-panel{
   margin-top: 0.5em;
   margin-bottom: 0.5em;
@@ -142,6 +151,7 @@ body{
 
 .segment-text{
   margin-bottom: 0;
+  margin-right: 1.5em;
   color: rgb(0, 0, 0);
   text-align: left;
 }
