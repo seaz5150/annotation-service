@@ -48,10 +48,13 @@ body{
 
 .audiocontrols-left{
   flex: 1;
+  display: flex;
+  justify-content: end;
 }
 
 .audiocontrols-right{
   flex: 1;
+  display: flex;
 }
 
 .audiocontrols-center{
@@ -60,7 +63,6 @@ body{
 
 
 .audiocontrols-times{
-  margin-left: 1em;
   margin-bottom: 0;
   display: flex;
 }
@@ -108,12 +110,12 @@ body{
 
 .audiocontrols-volume-icon{
   font-size: 1em;
-  color: white;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .audiocontrols-volume{
-  height: 100%;
-  float: right;
+  display: flex;
+  width: 10em;
 }
 
 .card-body{
