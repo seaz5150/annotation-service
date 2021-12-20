@@ -10,12 +10,12 @@ import TimelinePlugin from "wavesurfer.js/src/plugin/timeline";
 import RegionsPlugin from "wavesurfer.js/src/plugin/regions";
 import { PluginDefinition, PluginParams } from "wavesurfer.js/types/plugin";
 import moment from "moment";
-import { getFormattedTime } from "../TimeUtils";
+import { getFormattedTime, rgbaToHexAlpha } from "../CommonUtilities";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../state/index";
 
-const url = "https://audio.jukehost.co.uk/Z26Iwin2gXvItglzITnoCT96fCpzo9Bh.mp3";
+const url = "https://audio.jukehost.co.uk/CQlpPUaaYwtJknyv7cgNCQxADk0OVCJr.wav";
 
 export default function AudioPlayer() {
   const waveformRef = useRef(null);
@@ -33,6 +33,8 @@ export default function AudioPlayer() {
 
   const segments = useSelector((state: any) => state.recordingTranscript.segments);
 
+  const segmentColorAlpha: number = 0.4; // Alpha values 0-1
+
   useEffect(() => {
     if (audioReady) {
       for (var segment in segments) {
@@ -41,7 +43,7 @@ export default function AudioPlayer() {
           id: segmentObj.id,
           start: segmentObj.start,
           end: segmentObj.end,
-          color: segmentObj.color + "64" // Add alpha to hex code.
+          color: segmentObj.color + rgbaToHexAlpha(segmentColorAlpha) // Add alpha to hex code.
         });
       }
     }

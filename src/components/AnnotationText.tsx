@@ -562,7 +562,7 @@ export default function AnnotationText() {
     }, []);
 
     return (
-    <div className="">
+    <div className="segments">
         {segments &&
             segments.map((segment: any) => 
                 <AnnotationSegment segmentId={segment.id} key={segment.id}/>

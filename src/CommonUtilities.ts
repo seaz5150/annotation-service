@@ -9,4 +9,8 @@ export const getFormattedTime = (timeSeconds: number | undefined) => {
     else {
         return "00:00.0";
     }
-};
+}
+
+export const rgbaToHexAlpha = (value: number) => {
+    return (Math.floor(value * 255)).toString(16);
+}

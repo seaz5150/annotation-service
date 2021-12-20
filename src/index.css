@@ -202,17 +202,16 @@ body{
 .segment{
   display: flex !important;
   flex-direction: row !important;
-  background-color: rgba(149, 125, 173, 0.904) !important;
   border: none !important;
   border-radius: 0 !important;
 }
 
-.segment:last-child{
-  border-radius: 0 0 .25rem .25rem !important;
+.segment:first-of-type{
+  border-radius: .25rem .25rem 0 0 !important;
 }
 
-.segment:first-child{
-  border-radius: .25rem .25rem 0 0 !important;
+.segment:last-of-type{
+  border-radius: 0 0 .25rem .25rem !important;
 }
 
 .custom-dropdown{
