@@ -52,7 +52,15 @@ export default function AudioPlayer() {
 
   useEffect(() => {
     if (audioReady) {
-      wavesurfer.current?.regions.list[audioPlay.segmentId].play();
+      switch (audioPlay.type) {
+        case "AUDIO_PLAY_SEGMENT":
+          wavesurfer.current?.regions.list[audioPlay.segmentId].play();
+          break;
+        case "AUDIO_PLAY_FROM_TIME":
+          wavesurfer.current?.play(audioPlay.time);
+          break;
+        default:
+      }
     }
   }, [audioPlay]);
 
@@ -103,7 +111,7 @@ export default function AudioPlayer() {
 
         setDurationTime(wavesurfer.current?.getDuration());
 
-        wavesurfer.current?.on("region-update-end", (region) => {setPlaying(false)});
+        // wavesurfer.current?.on("region-update-end", (region) => {});
 
         wavesurfer.current?.on("pause", () => {setPlaying(false)});
         wavesurfer.current?.on("play", () => {setPlaying(true)});

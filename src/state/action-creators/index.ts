@@ -9,6 +9,17 @@ export const createActionAudioPlaySegment = (segmentId: string) => {
   }
 }
 
+export const createActionAudioPlayFromTime = (time: number) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "AUDIO_PLAY_FROM_TIME",
+      payload: {
+        time: time
+      }
+    })
+  }
+}
+
 export const createActionTranscriptInitialize = (transcript: any) => {
   return (dispatch: any) => {
     dispatch({

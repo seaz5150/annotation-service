@@ -129,7 +129,7 @@ body{
 }
 
 /* https://stackoverflow.com/questions/2460100/remove-the-complete-styling-of-an-html-button-submit */
-.icon-button{
+.strip-button-style{
   background: none;
 	color: inherit;
 	border: none;

@@ -11,7 +11,7 @@ interface AnnotationSegmentInterface {
 
 const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const dispatch = useDispatch();
-    const { createActionAudioPlaySegment } = bindActionCreators(actionCreators, dispatch);
+    const { createActionAudioPlaySegment, createActionAudioPlayFromTime } = bindActionCreators(actionCreators, dispatch);
 
     const segment = useSelector((state: any) => state.recordingTranscript.segments.find((segment: { id: string; }) => segment.id === props.segmentId));
     const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
@@ -28,7 +28,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                      <div className="card card-body module module-content p-0 segment" ref={(el) => el && el.style.setProperty("background-color", speakerTags.find((tag: { id: any; }) => tag.id === segment.speaker).color + rgbaToHexAlpha(segmentColorAlpha), "important")}>
                         <div className="p-0 segment-play-panel">
                             <div className="segment-play-panel-content">
-                                <button className="icon-button segment-play-button"
+                                <button className="strip-button-style segment-play-button"
                                         onMouseDown={e => handlePress(e)}
                                         onClick={() => createActionAudioPlaySegment(segment.id)}
                                 >
@@ -37,8 +37,15 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                 <div className="segment-times ps-1"
                                         onMouseDown={e => handlePress(e)}
                                 >
-                                    <p className="segment-time-start">{getFormattedTime(Number(segment.start))}</p>
-                                    <p className="segment-time-end">{getFormattedTime(Number(segment.end))}</p>
+                                    <button className="strip-button-style segment-time-start"
+                                        onMouseDown={e => handlePress(e)}
+                                        onClick={() => createActionAudioPlayFromTime(Number(segment.start))}
+                                    >{getFormattedTime(Number(segment.start))}</button>
+                                
+                                    <button className="strip-button-style segment-time-end"
+                                        onMouseDown={e => handlePress(e)}
+                                        onClick={() => createActionAudioPlayFromTime(Number(segment.end))}
+                                    >{getFormattedTime(Number(segment.end))}</button>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +84,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                     </ul>
                                 </div>
                 
-                                <button className="icon-button segment-delete-button"
+                                <button className="strip-button-style segment-delete-button"
                                         onMouseDown={e => handlePress(e)}
                                 >
                                     <i className="bi bi-x"></i>
