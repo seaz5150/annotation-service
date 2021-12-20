@@ -27,11 +27,28 @@ export default function AudioPlayer() {
   const [durationTime, setDurationTime] = useState<number | undefined>(undefined);
   const intervalRef = useRef<any>(null);
 
+  const [audioReady, setAudioReady] = useState(false);
+
   const audioPlay = useSelector((state: any) => state.audioPlay);
 
+  const segments = useSelector((state: any) => state.recordingTranscript.segments);
+
   useEffect(() => {
-    if (audioPlay.start) {
-      playSegment(audioPlay.start, audioPlay.end);
+    if (audioReady) {
+      for (var segment in segments) {
+        var segmentObj = segments[segment];
+        wavesurfer.current?.addRegion({
+          id: segmentObj.id,
+          start: segmentObj.start,
+          end: segmentObj.end
+        });
+      }
+    }
+  }, [segments, audioReady]);
+
+  useEffect(() => {
+    if (audioReady) {
+      wavesurfer.current?.regions.list[audioPlay.segmentId].play();
     }
   }, [audioPlay]);
 
@@ -75,6 +92,8 @@ export default function AudioPlayer() {
 
     wavesurfer.current.on("ready", function() {
       if (wavesurfer.current) {
+        setAudioReady(true);
+
         wavesurfer.current.setVolume(volume);
         setVolume(volume);
 
@@ -93,19 +112,6 @@ export default function AudioPlayer() {
   const handlePress = (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
   }
-
-  const playSegment = (start: number, end?: number) => {
-    if (start && end) {
-      wavesurfer.current?.seekTo(start);
-      wavesurfer.current?.play(start, end);
-      console.log("Playing from " + start + "to " + end);
-    }
-    else if (start) {
-      wavesurfer.current?.seekTo(start);
-      wavesurfer.current?.play(start);
-      console.log("Playing from " + start);
-    }
-  };
 
   const playAudio = () => {
     wavesurfer.current?.playPause();

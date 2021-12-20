@@ -6,6 +6,9 @@ import React, {
   useMemo
 } from "react";
 import AnnotationSegment from './AnnotationSegment';
+import { bindActionCreators } from "redux";
+import { actionCreators } from "../state/index";
+import { useDispatch, useSelector } from "react-redux";
 
 const recordingJson = {
     "transcript": {
@@ -549,23 +552,22 @@ const recordingJson = {
   }};
 
 export default function AnnotationText() {
-    const [speakerTags, setSpeakerTags] = useState(recordingJson.transcript.speakerTags);
-    const [segmentTags, setSegmentTags] = useState(recordingJson.transcript.segmentTags);
-    const [textTags, setTextTags] = useState(recordingJson.transcript.textTags);
-    const [segments, setSegments] = useState(recordingJson.transcript.segments);
+    const dispatch = useDispatch();
+    const { createActionRecordingTranscriptInitialize } = bindActionCreators(actionCreators, dispatch);
 
-  return (
+    const segments = useSelector((state: any) => state.recordingTranscript.segments);
+
+    useEffect(() => {
+        createActionRecordingTranscriptInitialize(recordingJson.transcript);
+    }, []);
+
+    return (
     <div className="">
-        {
-            segments.map((segment) => 
-                <AnnotationSegment 
-                    speakerTags={speakerTags}
-                    segmentTags={segmentTags}
-                    textTags={textTags}
-                    segment={segment}
-                />
+        {segments &&
+            segments.map((segment: any) => 
+                <AnnotationSegment segmentId={segment.id} key={segment.id}/>
             )
         }
     </div>
-  );
+    );
 }

@@ -1,11 +1,19 @@
-export const createActionAudioPlaySegment = (start: number, end?: number) => {
+export const createActionAudioPlaySegment = (segmentId: string) => {
   return (dispatch: any) => {
     dispatch({
       type: "AUDIO_PLAY_SEGMENT",
       payload: {
-        start: start,
-        end: end
+        segmentId: segmentId
       }
+    })
+  }
+}
+
+export const createActionRecordingTranscriptInitialize = (transcript: any) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "RECORDING_TRANSCRIPT_INITIALIZE",
+      payload: transcript
     })
   }
 }
