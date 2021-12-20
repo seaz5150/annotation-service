@@ -40,7 +40,8 @@ export default function AudioPlayer() {
         wavesurfer.current?.addRegion({
           id: segmentObj.id,
           start: segmentObj.start,
-          end: segmentObj.end
+          end: segmentObj.end,
+          color: segmentObj.color + "64" // Add alpha to hex code.
         });
       }
     }
@@ -98,6 +99,8 @@ export default function AudioPlayer() {
         setVolume(volume);
 
         setDurationTime(wavesurfer.current?.getDuration());
+
+        wavesurfer.current?.on("region-update-end", (region) => {setPlaying(false)});
 
         wavesurfer.current?.on("pause", () => {setPlaying(false)});
         wavesurfer.current?.on("play", () => {setPlaying(true)});

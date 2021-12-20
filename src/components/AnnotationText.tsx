@@ -553,12 +553,12 @@ const recordingJson = {
 
 export default function AnnotationText() {
     const dispatch = useDispatch();
-    const { createActionRecordingTranscriptInitialize } = bindActionCreators(actionCreators, dispatch);
+    const { createActionTranscriptInitialize } = bindActionCreators(actionCreators, dispatch);
 
     const segments = useSelector((state: any) => state.recordingTranscript.segments);
 
     useEffect(() => {
-        createActionRecordingTranscriptInitialize(recordingJson.transcript);
+        createActionTranscriptInitialize(recordingJson.transcript);
     }, []);
 
     return (
