@@ -1,4 +1,7 @@
 import { getFormattedTime } from "../TimeUtils";
+import { bindActionCreators } from "redux";
+import { actionCreators } from "../state/index";
+import { useDispatch } from "react-redux";
 
 interface AnnotationSegmentInterface {
     speakerTags: any,
@@ -8,9 +11,12 @@ interface AnnotationSegmentInterface {
 }
 
 const AnnotationSegment = (props: AnnotationSegmentInterface) => {
+    const dispatch = useDispatch();
+    const { createActionAudioPlaySegment } = bindActionCreators(actionCreators, dispatch);
+
     const handlePress = (e: any) => {
         e.stopPropagation();
-        }
+    }
 
     return (
     <div className="card card-body module module-content p-0 segment">
@@ -18,6 +24,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
             <div className="segment-play-panel-content">
                 <button className="icon-button segment-play-button"
                         onMouseDown={e => handlePress(e)}
+                        onClick={() => createActionAudioPlaySegment(props.segment.start, props.segment.end)}
                 >
                     <i className="bi bi-play-fill"></i>
                 </button>

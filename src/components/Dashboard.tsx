@@ -9,7 +9,7 @@ import AnnotationText from "./AnnotationText"
 import RecordingDetails from "./RecordingDetails"
 
 import React, {
-    useRef,
+    useRef, useState,
   } from "react";
 
 type SizeParams = {

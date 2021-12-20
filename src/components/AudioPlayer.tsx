@@ -11,6 +11,9 @@ import RegionsPlugin from "wavesurfer.js/src/plugin/regions";
 import { PluginDefinition, PluginParams } from "wavesurfer.js/types/plugin";
 import moment from "moment";
 import { getFormattedTime } from "../TimeUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
+import { actionCreators } from "../state/index";
 
 const url = "https://audio.jukehost.co.uk/Z26Iwin2gXvItglzITnoCT96fCpzo9Bh.mp3";
 
@@ -23,6 +26,14 @@ export default function AudioPlayer() {
   const [currentTime, setCurrentTime] = useState<number | undefined>(undefined);
   const [durationTime, setDurationTime] = useState<number | undefined>(undefined);
   const intervalRef = useRef<any>(null);
+
+  const audioPlay = useSelector((state: any) => state.audioPlay);
+
+  useEffect(() => {
+    if (audioPlay.start) {
+      playSegment(audioPlay.start, audioPlay.end);
+    }
+  }, [audioPlay]);
 
   const windingUnit = 0.1;
   const windingSpeed = 10;
@@ -83,6 +94,19 @@ export default function AudioPlayer() {
     e.stopPropagation();
   }
 
+  const playSegment = (start: number, end?: number) => {
+    if (start && end) {
+      wavesurfer.current?.seekTo(start);
+      wavesurfer.current?.play(start, end);
+      console.log("Playing from " + start + "to " + end);
+    }
+    else if (start) {
+      wavesurfer.current?.seekTo(start);
+      wavesurfer.current?.play(start);
+      console.log("Playing from " + start);
+    }
+  };
+
   const playAudio = () => {
     wavesurfer.current?.playPause();
   };
@@ -98,8 +122,7 @@ export default function AudioPlayer() {
     wavesurfer.current?.setMute(true);
     intervalRef.current = setInterval(() => {
       let currentWindingUnit = windingUnit;
-      if (direction === "backward")
-      {
+      if (direction === "backward") {
         currentWindingUnit = -currentWindingUnit;
       }
       wavesurfer.current?.skip(currentWindingUnit);
