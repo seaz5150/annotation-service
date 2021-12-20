@@ -13,11 +13,26 @@ var usedColors = [] as number[];
 const RecordingTranscriptReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case "TRANSCRIPT_INITIALIZE":
-            // Add unique IDs and random colors to the segments before saving them to the store.
             var segments = action.payload.segments;
-            for (var segment in action.payload.segments) {
+            var speakerTags = action.payload.speakerTags;
+
+            for (var segment in segments) {
                 var segmentObj = segments[segment];
+                // Add unique IDs to the segments before saving them to the store.
                 segmentObj.id = uuidv4();
+
+                // Some speaker labels may not be specified and used in the segments anyway, so add those.
+                if (!speakerTags.find((tag: { id: any; }) => tag.id === segmentObj.speaker)) {
+                    speakerTags.push({
+                        id: segmentObj.speaker,
+                        label: ""
+                    })
+                }
+            }
+
+            // Add unique (if possible) colors to speaker tags.
+            for (var speakerTag in speakerTags) {
+                var speakerTagObj = speakerTags[speakerTag];
 
                 // https://stackoverflow.com/questions/33026791/how-do-i-get-a-random-value-from-enums-in-javascript
                 var foundUniqueColor = false;
@@ -34,11 +49,10 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     }
                 }
                 var randomColor = SegmentColors[Object.keys(SegmentColors)[random]];
-                console.log(randomColor);
-                segmentObj.color = randomColor;
+                speakerTagObj.color = randomColor;
             }
             return {
-                speakerTags: action.payload.speakerTags,
+                speakerTags: speakerTags,
                 segmentTags: action.payload.segmentTags,
                 textTags: action.payload.textTags,
                 segments: segments

@@ -13,7 +13,8 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const dispatch = useDispatch();
     const { createActionAudioPlaySegment } = bindActionCreators(actionCreators, dispatch);
 
-    const segment = useSelector((state: any) => state.recordingTranscript.segments.filter((segment: { id: string; }) => segment.id === props.segmentId));
+    const segment = useSelector((state: any) => state.recordingTranscript.segments.find((segment: { id: string; }) => segment.id === props.segmentId));
+    const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
 
     const segmentColorAlpha: number = 0.75; // Alpha values 0-1
 
@@ -24,20 +25,20 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     return (
         <React.Fragment>
                  {segment &&
-                     <div className="card card-body module module-content p-0 segment" ref={(el) => el && el.style.setProperty("background-color", segment[0].color + rgbaToHexAlpha(segmentColorAlpha), "important")}>
+                     <div className="card card-body module module-content p-0 segment" ref={(el) => el && el.style.setProperty("background-color", speakerTags.find((tag: { id: any; }) => tag.id === segment.speaker).color + rgbaToHexAlpha(segmentColorAlpha), "important")}>
                         <div className="p-0 segment-play-panel">
                             <div className="segment-play-panel-content">
                                 <button className="icon-button segment-play-button"
                                         onMouseDown={e => handlePress(e)}
-                                        onClick={() => createActionAudioPlaySegment(segment[0].id)}
+                                        onClick={() => createActionAudioPlaySegment(segment.id)}
                                 >
                                     <i className="bi bi-play-fill"></i>
                                 </button>
                                 <div className="segment-times ps-1"
                                         onMouseDown={e => handlePress(e)}
                                 >
-                                    <p className="segment-time-start">{getFormattedTime(Number(segment[0].start))}</p>
-                                    <p className="segment-time-end">{getFormattedTime(Number(segment[0].end))}</p>
+                                    <p className="segment-time-start">{getFormattedTime(Number(segment.start))}</p>
+                                    <p className="segment-time-end">{getFormattedTime(Number(segment.end))}</p>
                                 </div>
                             </div>
                         </div>

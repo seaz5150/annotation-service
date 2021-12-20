@@ -32,6 +32,7 @@ export default function AudioPlayer() {
   const audioPlay = useSelector((state: any) => state.audioPlay);
 
   const segments = useSelector((state: any) => state.recordingTranscript.segments);
+  const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
 
   const segmentColorAlpha: number = 0.4; // Alpha values 0-1
 
@@ -43,7 +44,7 @@ export default function AudioPlayer() {
           id: segmentObj.id,
           start: segmentObj.start,
           end: segmentObj.end,
-          color: segmentObj.color + rgbaToHexAlpha(segmentColorAlpha) // Add alpha to hex code.
+          color: speakerTags.find((tag: { id: any; }) => tag.id === segmentObj.speaker).color + rgbaToHexAlpha(segmentColorAlpha) // Add alpha to hex code.
         });
       }
     }
