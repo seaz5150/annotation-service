@@ -10,7 +10,8 @@ const initialState = {
 
     segmentId: null,
     segmentStart: null,
-    segmentEnd: null
+    segmentEnd: null,
+    segmentSpeakerId: null
 };
 
 var usedColors = [] as number[];
@@ -69,8 +70,12 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 type: "TRANSCRIPT_SEGMENT_UPDATE",
                 segments: state.segments.map(
                     segment => segment.id === action.payload.segmentId ?
-                        {...segment, start: action.payload.segmentStart,
-                            end: action.payload.segmentEnd} : segment
+                        {...segment, 
+                            start: (action.payload.segmentStart ? action.payload.segmentStart : segment.start),
+                            end: (action.payload.segmentEnd ? action.payload.segmentEnd : segment.end),
+                            speaker: (action.payload.segmentSpeakerId ? action.payload.segmentSpeakerId : segment.speaker)
+                        }
+                    : segment
                 )
             };
         case "TRANSCRIPT_SEGMENT_DELETE":

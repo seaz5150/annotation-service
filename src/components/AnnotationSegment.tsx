@@ -14,21 +14,26 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const dispatch = useDispatch();
     const { createActionAudioPlaySegment,
             createActionAudioPlayFromTime,
-            createActionTranscriptSegmentDelete
+            createActionTranscriptSegmentDelete,
+            createActionTranscriptSegmentUpdate
           } = bindActionCreators(actionCreators, dispatch);
 
     const segment = useSelector((state: any) => state.recordingTranscript.segments.find((segment: { id: string; }) => segment.id === props.segmentId));
     const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
-
-    const segmentSpeakerTagId = segment.speaker;
-    const segmentSpeakerTag = speakerTags.find((tag: { id: any; }) => tag.id === segmentSpeakerTagId);
-    const segmentSpeakerTagViewName = (segmentSpeakerTag && (segmentSpeakerTag.label ? segmentSpeakerTag.label : segmentSpeakerTagId));
 
     const segmentColorAlpha = 0.75; // Alpha values 0-1
     const segmentColorAlphaHex = rgbaToHexAlpha(segmentColorAlpha);
 
     const segmentSpeaker = speakerTags.find((tag: { id: any; }) => tag.id === segment.speaker);
     const segmentColor = (segmentSpeaker ? segmentSpeaker.color : UnassignedColor + segmentColorAlphaHex);
+
+    const [speakerId, setSpeakerId] = useState((segment.speaker));
+
+    useEffect(() => {
+        if (speakerId !== segment.speaker) {
+            createActionTranscriptSegmentUpdate(segment.id, undefined, undefined, speakerId);
+        }
+    }, [speakerId]);
 
     const handlePress = (e: any) => {
         e.stopPropagation();
@@ -73,9 +78,15 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                             <div className="segment-tag-bar">
                                 <select className="form-select form-select-sm custom-dropdown speaker-select"
                                         onMouseDown={e => handlePress(e)}
+                                        value={speakerId}
+                                        onChange={e => setSpeakerId(e.target.value)}
                                 >
-                                    <option selected>{segmentSpeakerTagViewName}</option>
-                                    <option value="1">One</option>
+                                    <option value=""></option>
+                                    {speakerTags &&
+                                        speakerTags.map((speakerTag: any) =>
+                                            <option value={speakerTag.id} key={speakerTag.id}>{speakerTag.label ? speakerTag.label : speakerTag.id}</option>                                                   
+                                        )
+                                    }
                                 </select>
                                 <div className="dropdown">
                                     <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"

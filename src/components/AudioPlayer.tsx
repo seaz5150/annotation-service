@@ -56,6 +56,11 @@ export default function AudioPlayer() {
          case "TRANSCRIPT_SEGMENT_DELETE":
           wavesurfer.current?.clearRegions();
           addSegments();
+          break;
+        case "TRANSCRIPT_SEGMENT_UPDATE":
+          wavesurfer.current?.clearRegions();
+          addSegments();
+          break;
       }
     }
   }, [transcript, audioReady]);
@@ -72,7 +77,8 @@ export default function AudioPlayer() {
         id: segmentObj.id,
         start: segmentObj.start,
         end: segmentObj.end,
-        color: segmentSpeakerTagColor
+        color: segmentSpeakerTagColor,
+        minLength: 0.2
       });
     }
   };
@@ -141,7 +147,7 @@ export default function AudioPlayer() {
             createActionTranscriptSegmentCreate(region.id, region.start, region.end);
           }
           else {
-            createActionTranscriptSegmentUpdate(region.id, region.start, region.end);
+            createActionTranscriptSegmentUpdate(region.id, region.start, region.end, undefined);
           }
         });
 
