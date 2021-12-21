@@ -181,8 +181,18 @@ body{
   flex-direction: column;
 }
 
+.segment-time-start:hover,
+.segment-time-end:hover{
+  color: rgb(221, 221, 221);
+}
+
+.segment-play-button:hover{
+  color: rgb(255, 255, 255);
+}
+
 .segment-time-start, .segment-time-end{
   margin-bottom: 0;
+  font-weight: 400;
 }
 
 .segment-text{

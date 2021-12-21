@@ -31,24 +31,31 @@ export default function AudioPlayer() {
 
   const audioPlay = useSelector((state: any) => state.audioPlay);
 
-  const segments = useSelector((state: any) => state.recordingTranscript.segments);
+  const transcript = useSelector((state: any) => state.recordingTranscript);
+  const segments = transcript.segments;
   const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
 
   const segmentColorAlpha: number = 0.4; // Alpha values 0-1
 
+  const dispatch = useDispatch();
+  const { createActionTranscriptSegmentUpdate } = bindActionCreators(actionCreators, dispatch);
+
   useEffect(() => {
-    if (audioReady) {
-      for (var segment in segments) {
-        var segmentObj = segments[segment];
-        wavesurfer.current?.addRegion({
-          id: segmentObj.id,
-          start: segmentObj.start,
-          end: segmentObj.end,
-          color: speakerTags.find((tag: { id: any; }) => tag.id === segmentObj.speaker).color + rgbaToHexAlpha(segmentColorAlpha) // Add alpha to hex code.
-        });
+    if (transcript.type !== "TRANSCRIPT_SEGMENT_UPDATE") {
+      if (audioReady) {
+        for (var segment in segments) {
+          var segmentObj = segments[segment];
+          wavesurfer.current?.addRegion({
+            id: segmentObj.id,
+            start: segmentObj.start,
+            end: segmentObj.end,
+            color: speakerTags.find((tag: { id: any; }) => tag.id === segmentObj.speaker).color
+             + rgbaToHexAlpha(segmentColorAlpha) // Add alpha to hex code.
+          });
+        }
       }
     }
-  }, [segments, audioReady]);
+  }, [transcript, audioReady]);
 
   useEffect(() => {
     if (audioReady) {
@@ -111,7 +118,9 @@ export default function AudioPlayer() {
 
         setDurationTime(wavesurfer.current?.getDuration());
 
-        // wavesurfer.current?.on("region-update-end", (region) => {});
+        wavesurfer.current?.on("region-update-end", (region) => {
+          createActionTranscriptSegmentUpdate(region.id, region.start, region.end);
+        });
 
         wavesurfer.current?.on("pause", () => {setPlaying(false)});
         wavesurfer.current?.on("play", () => {setPlaying(true)});
@@ -162,14 +171,14 @@ export default function AudioPlayer() {
       <div className="module-content">
         <div className="play-area" onMouseDown={e => handlePress(e)}></div>
           <div className="audiocontrols-wrapper">
-          <div className="audiocontrols-left">
+            <div className="audiocontrols-left">
               <button className="btn btn-primary audiocontrols-button me-2" 
                       onClick={replayAudio}
                       onMouseDown={e => handlePress(e)}
               >
                   <i className="audiocontrols-button-icon bi bi-arrow-clockwise"></i>
               </button>
-          </div>
+            </div>
             <div className="audiocontrols-center">
               <button className="btn btn-primary audiocontrols-button me-1" 
                       onMouseDown={(e) => startSkip(e, "backward")}
@@ -202,7 +211,9 @@ export default function AudioPlayer() {
               </p>
             </div>
             <div className="audiocontrols-volume ms-auto">
-                <input type="range" className="form-range audiocontrols-volume-slider" min="0" max="1"  step="0.1" onChange={(e) => (wavesurfer.current?.setVolume(parseFloat(e.target.value)))} onMouseDown={e => handlePress(e)}></input>
+                <input type="range" className="form-range audiocontrols-volume-slider" min="0" max="1"  step="0.1"
+                  onChange={(e) => (wavesurfer.current?.setVolume(parseFloat(e.target.value)))} onMouseDown={e => handlePress(e)}>
+                  </input>
                 <i className="audiocontrols-volume-icon bi bi-volume-up-fill ms-2"></i>
               </div>
           </div>

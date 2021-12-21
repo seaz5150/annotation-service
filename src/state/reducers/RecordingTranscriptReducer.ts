@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { SegmentColors } from "../../enums/SegmentColors"
 
@@ -5,7 +6,11 @@ const initialState = {
     speakerTags: null,
     segmentTags: null,
     textTags: null,
-    segments: null
+    segments: [] as any[],
+
+    segmentId: null,
+    segmentStart: null,
+    segmentEnd: null
 };
 
 var usedColors = [] as number[];
@@ -55,9 +60,19 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 speakerTags: speakerTags,
                 segmentTags: action.payload.segmentTags,
                 textTags: action.payload.textTags,
-                segments: segments
+                segments: segments,
+                type: "TRANSCRIPT_INITIALIZE"
             };
         case "TRANSCRIPT_SEGMENT_UPDATE":
+            return {
+                ...state,
+                type: "TRANSCRIPT_SEGMENT_UPDATE",
+                segments: state.segments.map(
+                    segment => segment.id === action.payload.segmentId ?
+                        {...segment, start: action.payload.segmentStart,
+                            end: action.payload.segmentEnd} : segment
+                )
+            };
         default:
             return state;
     }

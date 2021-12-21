@@ -29,11 +29,15 @@ export const createActionTranscriptInitialize = (transcript: any) => {
   }
 }
 
-export const createActionTranscriptSegmentUpdate = (segment: any) => {
+export const createActionTranscriptSegmentUpdate = (segmentId: string, segmentStart: number, segmentEnd: number) => {
   return (dispatch: any) => {
     dispatch({
       type: "TRANSCRIPT_SEGMENT_UPDATE",
-      payload: segment
+      payload: {
+        segmentId: segmentId,
+        segmentStart: segmentStart,
+        segmentEnd: segmentEnd
+      }
     })
   }
 }
