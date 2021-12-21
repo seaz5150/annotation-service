@@ -16,6 +16,10 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const segment = useSelector((state: any) => state.recordingTranscript.segments.find((segment: { id: string; }) => segment.id === props.segmentId));
     const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
 
+    const segmentSpeakerTagId = segment.speaker;
+    const segmentSpeakerTag = speakerTags.find((tag: { id: any; }) => tag.id === segmentSpeakerTagId);
+    const segmentSpeakerTagViewName = (segmentSpeakerTag.label ? segmentSpeakerTag.label : segmentSpeakerTagId);
+
     const segmentColorAlpha: number = 0.75; // Alpha values 0-1
 
     const handlePress = (e: any) => {
@@ -60,10 +64,8 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                 <select className="form-select form-select-sm custom-dropdown speaker-select"
                                         onMouseDown={e => handlePress(e)}
                                 >
-                                    <option selected>Speaker</option>
+                                    <option selected>{segmentSpeakerTagViewName}</option>
                                     <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
                                 </select>
                                 <div className="dropdown">
                                     <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"
