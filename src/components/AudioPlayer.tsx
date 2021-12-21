@@ -42,6 +42,11 @@ export default function AudioPlayer() {
   const dispatch = useDispatch();
   const { createActionTranscriptSegmentUpdate, createActionTranscriptSegmentCreate } = bindActionCreators(actionCreators, dispatch);
 
+  const windingUnit = 0.1;
+  const windingSpeed = 10;
+
+  var regionCreatedByUser = false;
+
   useEffect(() => {
     if (audioReady) {
       switch (transcript.type) {
@@ -86,9 +91,6 @@ export default function AudioPlayer() {
     }
   }, [audioPlay]);
 
-  const windingUnit = 0.1;
-  const windingSpeed = 10;
-
   const formWaveSurferOptions = (ref: any) => ({
     container: ref,
     normalize: true,
@@ -116,8 +118,6 @@ export default function AudioPlayer() {
     ]
   });
 
-  var regionCreated = false;
-
   useEffect(() => {
     setPlaying(false);
 
@@ -136,8 +136,8 @@ export default function AudioPlayer() {
         setDurationTime(wavesurfer.current?.getDuration());
 
         wavesurfer.current?.on("region-update-end", (region) => {
-          if (regionCreated === true) {
-            regionCreated = false;
+          if (regionCreatedByUser === true) {
+            regionCreatedByUser = false;
             createActionTranscriptSegmentCreate(region.id, region.start, region.end);
           }
           else {
@@ -146,9 +146,12 @@ export default function AudioPlayer() {
         });
 
         wavesurfer.current?.on("region-created", (region) => {
-          region.color = "#dadada" + rgbaToHexAlpha(segmentColorAlpha);
-          region.id = uuidv4();
-          regionCreated = true;
+          const newRegionIdBeginning = "wavesurfer_";
+          if ((region.id).substr(0, newRegionIdBeginning.length) === newRegionIdBeginning) {
+            region.color = "#dadada" + rgbaToHexAlpha(segmentColorAlpha);
+            region.id = uuidv4();
+            regionCreatedByUser = true;
+          }
         });
 
         wavesurfer.current?.on("pause", () => {setPlaying(false)});
