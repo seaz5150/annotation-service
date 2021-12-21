@@ -97,13 +97,16 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                     >
                                         Segment labels
                                     </button>
-                                    <ul className="dropdown-menu"
+                                    <ul className="dropdown-menu dropdown-menu-end segment-label-dropdown-menu"
                                         aria-labelledby="dropdownMenuButton1" 
                                         onMouseDown={e => handlePress(e)}
                                     >
-                                        <li><a className="dropdown-item" href="#">Action</a></li>
-                                        <li><a className="dropdown-item" href="#">Another action</a></li>
-                                        <li><a className="dropdown-item" href="#">Something else here</a></li>
+                                        <li>
+                                            <a className="dropdown-item segment-label-dropdown-item" href="#">
+                                                Action
+                                                <input className="form-check-input custom-checkbox col-2 ms-auto me-3" type="checkbox" value="" onMouseDown={e => handlePress(e)} />
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                 

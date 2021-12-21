@@ -259,11 +259,6 @@ body{
   background-color: rgba(46, 46, 46, 0.274) !important;
 }
 
-.dropdown-menu{
-  line-height: 50px;
-  background-color: rgb(80, 80, 80) !important;
-}
-
 .speaker-select{
   max-width: 132px !important;
   margin-right: 0.5em;
@@ -298,6 +293,27 @@ body{
 .custom-checkbox{
   padding: 0 !important;
   margin-top: 0 !important;
+}
+
+.segment-label-dropdown-menu{
+  line-height: 20px;
+  background-color: rgb(49, 49, 49) !important;
+  padding-top: 0.3em !important;
+  padding-bottom: 0.3em !important;
+  top: -2px !important;
+}
+
+.segment-label-dropdown-item{
+  color: rgb(224, 224, 224) !important;
+  font-size: 0.8em;
+  display: flex !important;
+  align-items: center !important;
+  padding-right: 0 !important;
+}
+
+.segment-label-dropdown-item:hover{
+  background-color: rgb(83, 83, 83) !important;
+  color: rgb(255, 255, 255) !important;
 }
 
 /* ::-webkit-scrollbar {
