@@ -50,3 +50,16 @@ export const createActionTranscriptSegmentDelete = (segmentId: string) => {
     })
   }
 }
+
+export const createActionTranscriptSegmentCreate = (segmentId: string, segmentStart: number, segmentEnd: number) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_SEGMENT_CREATE",
+      payload: {
+        segmentStart: segmentStart,
+        segmentEnd: segmentEnd,
+        segmentId: segmentId,
+      }
+    })
+  }
+}

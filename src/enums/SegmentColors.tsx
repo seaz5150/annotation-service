@@ -27,3 +27,5 @@ export const SegmentColors : { [key: string]: any } = {
     Color24: "#a2e1db",
     Color25: "#55cbcd"
 }
+
+export const UnassignedColor = "#dadada";

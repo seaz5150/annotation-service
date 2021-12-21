@@ -4,6 +4,7 @@ import { actionCreators } from "../state/index";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import React from "react";
+import { UnassignedColor } from "../enums/SegmentColors";
 
 interface AnnotationSegmentInterface {
     segmentId: string
@@ -21,9 +22,13 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
 
     const segmentSpeakerTagId = segment.speaker;
     const segmentSpeakerTag = speakerTags.find((tag: { id: any; }) => tag.id === segmentSpeakerTagId);
-    const segmentSpeakerTagViewName = (segmentSpeakerTag.label ? segmentSpeakerTag.label : segmentSpeakerTagId);
+    const segmentSpeakerTagViewName = (segmentSpeakerTag && (segmentSpeakerTag.label ? segmentSpeakerTag.label : segmentSpeakerTagId));
 
-    const segmentColorAlpha: number = 0.75; // Alpha values 0-1
+    const segmentColorAlpha = 0.75; // Alpha values 0-1
+    const segmentColorAlphaHex = rgbaToHexAlpha(segmentColorAlpha);
+
+    const segmentSpeaker = speakerTags.find((tag: { id: any; }) => tag.id === segment.speaker);
+    const segmentColor = (segmentSpeaker ? segmentSpeaker.color : UnassignedColor + segmentColorAlphaHex);
 
     const handlePress = (e: any) => {
         e.stopPropagation();
@@ -32,7 +37,9 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     return (
         <React.Fragment>
                  {segment &&
-                     <div className="card card-body module module-content p-0 segment" ref={(el) => el && el.style.setProperty("background-color", speakerTags.find((tag: { id: any; }) => tag.id === segment.speaker).color + rgbaToHexAlpha(segmentColorAlpha), "important")}>
+                     <div className="card card-body module module-content p-0 segment" 
+                        ref={(el) => el && el.style.setProperty("background-color", 
+                            segmentColor, "important")}>
                         <div className="p-0 segment-play-panel">
                             <div className="segment-play-panel-content">
                                 <button className="strip-button-style segment-play-button"

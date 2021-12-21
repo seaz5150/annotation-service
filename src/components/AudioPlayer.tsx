@@ -14,6 +14,8 @@ import { getFormattedTime, rgbaToHexAlpha } from "../CommonUtilities";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../state/index";
+import { v4 as uuidv4 } from "uuid";
+import { UnassignedColor } from "../enums/SegmentColors";
 
 const url = "https://audio.jukehost.co.uk/CQlpPUaaYwtJknyv7cgNCQxADk0OVCJr.wav";
 
@@ -35,10 +37,10 @@ export default function AudioPlayer() {
   const segments = transcript.segments;
   const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
 
-  const segmentColorAlpha: number = 0.4; // Alpha values 0-1
+  const segmentColorAlpha = 0.4; // Alpha values 0-1
 
   const dispatch = useDispatch();
-  const { createActionTranscriptSegmentUpdate } = bindActionCreators(actionCreators, dispatch);
+  const { createActionTranscriptSegmentUpdate, createActionTranscriptSegmentCreate } = bindActionCreators(actionCreators, dispatch);
 
   useEffect(() => {
     if (audioReady) {
@@ -56,12 +58,16 @@ export default function AudioPlayer() {
   const addSegments = () => {
     for (var segment in segments) {
       var segmentObj = segments[segment];
+
+      var segmentSpeakerTag = speakerTags.find((tag: { id: any; }) => tag.id === segmentObj.speaker);
+      var segmentSpeakerTagColor = (segmentSpeakerTag ? segmentSpeakerTag.color : UnassignedColor)
+      segmentSpeakerTagColor = segmentSpeakerTagColor + rgbaToHexAlpha(segmentColorAlpha);
+
       wavesurfer.current?.addRegion({
         id: segmentObj.id,
         start: segmentObj.start,
         end: segmentObj.end,
-        color: speakerTags.find((tag: { id: any; }) => tag.id === segmentObj.speaker).color
-         + rgbaToHexAlpha(segmentColorAlpha) // Add alpha to hex code.
+        color: segmentSpeakerTagColor
       });
     }
   };
@@ -110,6 +116,8 @@ export default function AudioPlayer() {
     ]
   });
 
+  var regionCreated = false;
+
   useEffect(() => {
     setPlaying(false);
 
@@ -128,7 +136,19 @@ export default function AudioPlayer() {
         setDurationTime(wavesurfer.current?.getDuration());
 
         wavesurfer.current?.on("region-update-end", (region) => {
-          createActionTranscriptSegmentUpdate(region.id, region.start, region.end);
+          if (regionCreated === true) {
+            regionCreated = false;
+            createActionTranscriptSegmentCreate(region.id, region.start, region.end);
+          }
+          else {
+            createActionTranscriptSegmentUpdate(region.id, region.start, region.end);
+          }
+        });
+
+        wavesurfer.current?.on("region-created", (region) => {
+          region.color = "#dadada" + rgbaToHexAlpha(segmentColorAlpha);
+          region.id = uuidv4();
+          regionCreated = true;
         });
 
         wavesurfer.current?.on("pause", () => {setPlaying(false)});
@@ -136,7 +156,7 @@ export default function AudioPlayer() {
         wavesurfer.current?.on("audioprocess", () => {setCurrentTime(wavesurfer.current?.getCurrentTime())});
         wavesurfer.current?.on("seek", () => {setCurrentTime(wavesurfer.current?.getCurrentTime())});
       }
-    });
+  });
     
     return () => wavesurfer.current!.destroy();
   }, [url]);
