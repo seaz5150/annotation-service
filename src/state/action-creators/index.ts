@@ -41,3 +41,12 @@ export const createActionTranscriptSegmentUpdate = (segmentId: string, segmentSt
     })
   }
 }
+
+export const createActionTranscriptSegmentDelete = (segmentId: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_SEGMENT_DELETE",
+      payload: segmentId
+    })
+  }
+}

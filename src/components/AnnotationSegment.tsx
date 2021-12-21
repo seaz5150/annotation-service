@@ -11,7 +11,10 @@ interface AnnotationSegmentInterface {
 
 const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const dispatch = useDispatch();
-    const { createActionAudioPlaySegment, createActionAudioPlayFromTime } = bindActionCreators(actionCreators, dispatch);
+    const { createActionAudioPlaySegment,
+            createActionAudioPlayFromTime,
+            createActionTranscriptSegmentDelete
+          } = bindActionCreators(actionCreators, dispatch);
 
     const segment = useSelector((state: any) => state.recordingTranscript.segments.find((segment: { id: string; }) => segment.id === props.segmentId));
     const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
@@ -88,6 +91,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                 
                                 <button className="strip-button-style segment-delete-button"
                                         onMouseDown={e => handlePress(e)}
+                                        onClick={() => createActionTranscriptSegmentDelete(segment.id)}
                                 >
                                     <i className="bi bi-x"></i>
                                 </button>

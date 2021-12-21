@@ -41,21 +41,30 @@ export default function AudioPlayer() {
   const { createActionTranscriptSegmentUpdate } = bindActionCreators(actionCreators, dispatch);
 
   useEffect(() => {
-    if (transcript.type !== "TRANSCRIPT_SEGMENT_UPDATE") {
-      if (audioReady) {
-        for (var segment in segments) {
-          var segmentObj = segments[segment];
-          wavesurfer.current?.addRegion({
-            id: segmentObj.id,
-            start: segmentObj.start,
-            end: segmentObj.end,
-            color: speakerTags.find((tag: { id: any; }) => tag.id === segmentObj.speaker).color
-             + rgbaToHexAlpha(segmentColorAlpha) // Add alpha to hex code.
-          });
-        }
+    if (audioReady) {
+      switch (transcript.type) {
+        case "TRANSCRIPT_INITIALIZE":
+          addSegments();
+          break;
+         case "TRANSCRIPT_SEGMENT_DELETE":
+          wavesurfer.current?.clearRegions();
+          addSegments();
       }
     }
   }, [transcript, audioReady]);
+
+  const addSegments = () => {
+    for (var segment in segments) {
+      var segmentObj = segments[segment];
+      wavesurfer.current?.addRegion({
+        id: segmentObj.id,
+        start: segmentObj.start,
+        end: segmentObj.end,
+        color: speakerTags.find((tag: { id: any; }) => tag.id === segmentObj.speaker).color
+         + rgbaToHexAlpha(segmentColorAlpha) // Add alpha to hex code.
+      });
+    }
+  };
 
   useEffect(() => {
     if (audioReady) {

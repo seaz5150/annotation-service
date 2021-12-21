@@ -186,6 +186,10 @@ body{
   color: rgb(221, 221, 221);
 }
 
+.segment-delete-button:hover {
+  color: rgb(112, 112, 112) !important;
+}
+
 .segment-play-button:hover{
   color: rgb(255, 255, 255);
 }

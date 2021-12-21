@@ -73,6 +73,12 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                             end: action.payload.segmentEnd} : segment
                 )
             };
+        case "TRANSCRIPT_SEGMENT_DELETE":
+            return {
+                ...state,
+                type: "TRANSCRIPT_SEGMENT_DELETE",
+                segments: state.segments.filter((segment) => segment.id !== action.payload)
+            };
         default:
             return state;
     }
