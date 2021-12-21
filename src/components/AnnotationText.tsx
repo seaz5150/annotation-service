@@ -556,6 +556,7 @@ export default function AnnotationText() {
     const { createActionTranscriptInitialize } = bindActionCreators(actionCreators, dispatch);
 
     const segments = useSelector((state: any) => state.recordingTranscript.segments);
+    segments.sort((a: { start: number; }, b: { start: number; }) => a.start - b.start);
 
     useEffect(() => {
         createActionTranscriptInitialize(recordingJson.transcript);
