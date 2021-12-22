@@ -553,14 +553,29 @@ const recordingJson = {
 
 export default function AnnotationText() {
     const dispatch = useDispatch();
-    const { createActionTranscriptInitialize } = bindActionCreators(actionCreators, dispatch);
+    const { createActionTranscriptInitialize,
+            createActionSegmentReferencesInitialize 
+          } = bindActionCreators(actionCreators, dispatch);
 
     const segments = useSelector((state: any) => state.recordingTranscript.segments);
     segments.sort((a: { start: number; }, b: { start: number; }) => a.start - b.start);
 
+    const segmentRefs = useRef([] as any[]); 
+    segmentRefs.current = [];
+
     useEffect(() => {
         createActionTranscriptInitialize(recordingJson.transcript);
     }, []);
+
+    const addToSegmentRefs = (segmentEl: any, segmentId: any) => {
+        if (segmentEl && !segmentRefs.current.includes(segmentEl)) {
+            segmentRefs.current.push({
+                id: segmentId,
+                ref: segmentEl
+            });
+            createActionSegmentReferencesInitialize(segmentRefs.current);
+        }
+    }
 
     return (
     <div className="segments">
@@ -568,7 +583,7 @@ export default function AnnotationText() {
             <React.Fragment>
                 {(segments.length > 0) ?
                     segments.map((segment: any) => 
-                        <AnnotationSegment segmentId={segment.id} key={segment.id}/>
+                        <AnnotationSegment segmentId={segment.id} key={segment.id} segmentRef={(el: any) => addToSegmentRefs(el, segment.id)}/>
                     )
                     :
                     <div className="card card-body module module-content segment segment-placeholder">

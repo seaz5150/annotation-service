@@ -7,7 +7,8 @@ import React from "react";
 import { UnassignedColor } from "../enums/SegmentColors";
 
 interface AnnotationSegmentInterface {
-    segmentId: string
+    segmentId: string,
+    segmentRef: any
 }
 
 const AnnotationSegment = (props: AnnotationSegmentInterface) => {
@@ -42,9 +43,10 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     return (
         <React.Fragment>
                  {segment &&
-                     <div className="card card-body module module-content p-0 segment" 
-                        ref={(el) => el && el.style.setProperty("background-color", 
-                            segmentColor, "important")}>
+                     <div className="module module-content p-0 segment" 
+                     style={{backgroundColor : segmentColor}}
+                     ref={props.segmentRef}
+                            >
                         <div className="p-0 segment-play-panel">
                             <div className="segment-play-panel-content">
                                 <button className="strip-button-style segment-play-button"

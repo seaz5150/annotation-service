@@ -47,6 +47,8 @@ export default function AudioPlayer() {
 
   var regionCreatedByUser = false;
 
+  const segmentRefs = useSelector((state: any) => state.references.segmentRefs);
+
   useEffect(() => {
     if (audioReady) {
       switch (transcript.type) {
@@ -82,6 +84,16 @@ export default function AudioPlayer() {
       });
     }
   };
+  
+  const scrollToRegion = (region: { id: any; }) => {
+    var enteredSegmentRef = segmentRefs.find((segmentRef: { id: any; }) => segmentRef.id === region.id);
+    enteredSegmentRef && enteredSegmentRef.ref.scrollIntoView({behavior: "smooth", block: "center"});
+  };
+
+  useEffect(() => {
+    wavesurfer.current?.un("region-in", (region) => scrollToRegion(region));
+    wavesurfer.current?.on("region-in", (region) => scrollToRegion(region));
+  }, [segmentRefs]);
 
   useEffect(() => {
     if (audioReady) {
@@ -205,7 +217,7 @@ export default function AudioPlayer() {
   };
 
   return (
-    <div className="card card-body module module-player">
+    <div className="module module-player">
       <div className="module-content">
         <div className="play-area" onMouseDown={e => handlePress(e)}></div>
           <div className="audiocontrols-wrapper">

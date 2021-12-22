@@ -7,7 +7,7 @@ const RecordingDetails = () => {
     }
     
     return (  
-        <div className="card module module-settings">
+        <div className="module module-settings">
             <div className="card-header">
                 Recording details
             </div>

@@ -52,6 +52,15 @@ export const createActionTranscriptSegmentDelete = (segmentId: string) => {
   }
 }
 
+export const createActionSegmentReferencesInitialize = (segmentRefs: any[]) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "SEGMENT_REFERENCES_INITIALIZE",
+      payload: segmentRefs
+    })
+  }
+}
+
 export const createActionTranscriptSegmentCreate = (segmentId: string, segmentStart: number, segmentEnd: number) => {
   return (dispatch: any) => {
     dispatch({
