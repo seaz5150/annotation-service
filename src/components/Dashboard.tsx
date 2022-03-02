@@ -15,9 +15,10 @@ import React, {
 
 type SizeParams = {
     width: number;
+    height: number;
 };
 
-function Dashboard({ size: { width } }: {size: SizeParams}) 
+function Dashboard({ size: { width, height } }: {size: SizeParams}) 
 {
     // const originalModules = ["AudioPlayer", "Settings"];
 
@@ -31,49 +32,56 @@ function Dashboard({ size: { width } }: {size: SizeParams})
 
     const [audioPlayerDimensions, setAudioPlayerDimensions] = useState({width: 12, height: 9});
     const [annotationTextDimensions, setAnnotationTextDimensions] = useState({width: 6, height: 5});
+    const [recordingDetailsDimensions, setRecordingDetailsDimensions] = useState({width: 2.7, height: 11.4});
 
-    const moduleRefs = useRef([] as any[]); 
-    moduleRefs.current = [];
+    // useEffect(() => {
+    //     for (var index in moduleRefs.current) {
+    //         console.log("LOL")
+    //         var moduleRef = moduleRefs.current[index];
 
-    const addToModuleRefs = (moduleEl: any, moduleName: any) => {
-        if (moduleEl && !moduleRefs.current.includes(moduleEl)) {
-            moduleRefs.current.push({
-                moduleName: moduleName,
-                ref: moduleEl
-            });
+    //         switch (moduleRef.moduleName) {
+    //             case "AudioPlayer":
+    //                 // var newWidth = Math.floor(moduleRef.ref.clientWidth / 123);
+    //                 // var newHeight = Math.floor(moduleRef.ref.clientHeight / 17);
+    //                 // setAudioPlayerDimensions({width: newWidth, height: newHeight})
+    //                 break;
+    //             case "AnnotationText":
+    //                 console.log("¨setting anno")
+    //                 //var newWidth = Math.floor((moduleRef.ref.scrollWidth + 10) / 20);
+    //                 var newHeight = Math.floor((moduleRef.ref.clientHeight + 10) / 20);
+    //                 console.log(newHeight)
+    //                 setAnnotationTextDimensions({width: 6, height: newHeight})
+    //                 break;
+    //             default:
+    //                 break;
+    //         }
+    //     }
+    // }, []);
+
+    const updateElementGridSize = (moduleName: string, height: number) => {
+        // (height + margin) / (rowHeight + margin) - margin default is 10
+        var newHeight = (height + 10) / 20;
+        switch (moduleName) {
+            case "AudioPlayer":
+                setAudioPlayerDimensions({width: audioPlayerDimensions.width, height: newHeight})
+                break;
+            case "AnnotationText":
+                setAnnotationTextDimensions({width: annotationTextDimensions.width, height: newHeight})
+                break;
+            case "RecordingDetails":
+                setRecordingDetailsDimensions({width: recordingDetailsDimensions.width, height: newHeight})
+                break;
+            default:
+                break;
         }
-    }
-
-    useEffect(() => {
-        for (var index in moduleRefs.current) {
-            console.log("LOL")
-            var moduleRef = moduleRefs.current[index];
-
-            switch (moduleRef.moduleName) {
-                case "AudioPlayer":
-                    // var newWidth = Math.floor(moduleRef.ref.clientWidth / 123);
-                    // var newHeight = Math.floor(moduleRef.ref.clientHeight / 17);
-                    // setAudioPlayerDimensions({width: newWidth, height: newHeight})
-                    break;
-                case "AnnotationText":
-                    console.log("¨setting anno")
-                    //var newWidth = Math.floor((moduleRef.ref.scrollWidth + 10) / 20);
-                    var newHeight = Math.floor((moduleRef.ref. + 10) / 20);
-                    console.log(moduleRef.ref.clientHeight);
-                    setAnnotationTextDimensions({width: 6, height: newHeight})
-                    break;
-                default:
-                    break;
-            }
-        }
-    }, [moduleRefs.current.length]);
+    };
 
     const layouts = {
     lg: [
         { i: 'AudioPlayer', x: 0, y: 0, w: audioPlayerDimensions.width, h: audioPlayerDimensions.height, isResizable: false},
         { i: 'AnnotationText', x: 3, y: 0, w: annotationTextDimensions.width, h: annotationTextDimensions.height, isResizable: false},
         { i: 'Settings', x: 0, y: 0, w: 2.7, h: 5, isResizable: false},
-        { i: 'RecordingDetails', x: 10, y: 0, w: 2.7, h: 11.4, isResizable: false},
+        { i: 'RecordingDetails', x: 10, y: 0, w: recordingDetailsDimensions.width, h: recordingDetailsDimensions.height, isResizable: false},
     ],
     };
 
@@ -90,16 +98,16 @@ function Dashboard({ size: { width } }: {size: SizeParams})
         // originalModules={originalModules}
     >
         <div key="AudioPlayer">
-            <AudioPlayer moduleRef={(el: any) => addToModuleRefs(el, "AudioPlayer")}/>
+            <AudioPlayer updateElementGridSize={updateElementGridSize} />
         </div>
         <div key="AnnotationText">
-            <AnnotationText moduleRef={(el: any) => addToModuleRefs(el, "AnnotationText")}/>
+            <AnnotationText updateElementGridSize={updateElementGridSize} />
         </div>
         {/* <div key="Settings">
             <Settings />
         </div> */}
         <div key="RecordingDetails">
-            <RecordingDetails moduleRef={(el: any) => addToModuleRefs(el, "RecordingDetails")}/>
+            <RecordingDetails updateElementGridSize={updateElementGridSize} />
         </div>
     </ResponsiveGridLayout>
     );

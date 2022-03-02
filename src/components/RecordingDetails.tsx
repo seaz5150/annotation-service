@@ -1,16 +1,24 @@
+import { useEffect, useRef } from "react";
+import sizeMe from "react-sizeme";
+
 interface RecordingDetailsInterface {
-    moduleRef: any
+    updateElementGridSize: any,
+    size: any
 }
 
-
 const RecordingDetails = (props: RecordingDetailsInterface) => {
+    const { width, height } = props.size;
 
     const handlePress = (e: any) => {
         e.stopPropagation();
     }
+
+    useEffect(() => {
+        props.updateElementGridSize("RecordingDetails", height);
+    }, [height]);
     
     return (  
-        <div className="module module-settings" ref={props.moduleRef}>
+        <div className="module module-settings">
             <div className="card-header">
                 Recording details
             </div>
@@ -52,4 +60,4 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
     );
 }
  
-export default RecordingDetails;
+export default sizeMe({ monitorHeight: true })(RecordingDetails)

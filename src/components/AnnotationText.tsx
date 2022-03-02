@@ -9,6 +9,7 @@ import AnnotationSegment from './AnnotationSegment';
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../state/index";
 import { useDispatch, useSelector } from "react-redux";
+import sizeMe from 'react-sizeme'
 
 const recordingJson = {
     "transcript": {
@@ -552,10 +553,11 @@ const recordingJson = {
 }};
 
 interface AnnotationTextInterface {
-    moduleRef: any
+    updateElementGridSize: any,
+    size: any
 }
 
-export default function AnnotationText(props: AnnotationTextInterface) {
+function AnnotationText(props: AnnotationTextInterface) {
     const dispatch = useDispatch();
     const { createActionTranscriptInitialize,
             createActionSegmentReferencesInitialize 
@@ -566,6 +568,13 @@ export default function AnnotationText(props: AnnotationTextInterface) {
 
     const segmentRefs = useRef([] as any[]); 
     segmentRefs.current = [];
+    const { width, height } = props.size;
+
+    const updateElementGridSize = props.updateElementGridSize;
+
+    useEffect(() => {
+        updateElementGridSize("AnnotationText", height);
+    }, [height]);
 
     useEffect(() => {
         createActionTranscriptInitialize(recordingJson.transcript);
@@ -582,7 +591,7 @@ export default function AnnotationText(props: AnnotationTextInterface) {
     }
 
     return (
-    <div className="segments" ref={props.moduleRef}>
+    <div className="segments">
         {segments &&
             <React.Fragment>
                 {(segments.length > 0) ?
@@ -600,3 +609,5 @@ export default function AnnotationText(props: AnnotationTextInterface) {
     </div>
     );
 }
+
+export default sizeMe({ monitorHeight: true })(AnnotationText)

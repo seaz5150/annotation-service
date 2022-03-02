@@ -16,14 +16,16 @@ import { bindActionCreators } from "redux";
 import { actionCreators } from "../state/index";
 import { v4 as uuidv4 } from "uuid";
 import { UnassignedColor } from "../enums/SegmentColors";
+import sizeMe from "react-sizeme";
 
 const url = "https://audio.jukehost.co.uk/CQlpPUaaYwtJknyv7cgNCQxADk0OVCJr.wav";
 
 interface AudioPlayerInterface {
-  moduleRef: any
+  updateElementGridSize: any,
+  size: any
 }
 
-export default function AudioPlayer(props: AudioPlayerInterface) {
+function AudioPlayer(props: AudioPlayerInterface) {
   const waveformRef = useRef(null);
   const wavesurfer = useRef<WaveSurfer | null>(null);
   const [playing, setPlaying] = useState(false);
@@ -51,7 +53,13 @@ export default function AudioPlayer(props: AudioPlayerInterface) {
 
   var regionCreatedByUser = false;
 
+  const { width, height } = props.size;
+
   const segmentRefs = useSelector((state: any) => state.references.segmentRefs);
+
+  useEffect(() => {
+    props.updateElementGridSize("AudioPlayer", height);
+  }, [height]);
 
   useEffect(() => {
     if (audioReady) {
@@ -222,7 +230,7 @@ export default function AudioPlayer(props: AudioPlayerInterface) {
   };
 
   return (
-    <div className="module module-player" ref={props.moduleRef}>
+    <div className="module module-player">
       <div className="module-content">
         <div className="play-area" onMouseDown={e => handlePress(e)}></div>
           <div className="audiocontrols-wrapper">
@@ -279,3 +287,5 @@ export default function AudioPlayer(props: AudioPlayerInterface) {
     </div>
   );
 }
+
+export default sizeMe({ monitorHeight: true })(AudioPlayer)
