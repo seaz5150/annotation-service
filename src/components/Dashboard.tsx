@@ -31,8 +31,22 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
     // };
 
     const [audioPlayerDimensions, setAudioPlayerDimensions] = useState({width: 12, height: 9});
-    const [annotationTextDimensions, setAnnotationTextDimensions] = useState({width: 6, height: 5});
+    const [audioPlayerPosition, setAudioPlayerPosition] = useState({x: 0, y: 0});
+
+    const [annotationTextDimensions, setAnnotationTextDimensions] = useState({width: 6, height: 2});
+    const [annotationTextPosition, setAnnotationTextPosition] = useState({x: 3, y: 0});
+
     const [recordingDetailsDimensions, setRecordingDetailsDimensions] = useState({width: 2.7, height: 11.4});
+    const [recordingDetailsPosition, setRecordingDetailsPosition] = useState({x: 10, y: 0});
+
+    const layouts = {
+        lg: [
+            { i: 'AudioPlayer', x: audioPlayerPosition.x, y: audioPlayerPosition.y, w: audioPlayerDimensions.width, h: audioPlayerDimensions.height, isResizable: false},
+            { i: 'AnnotationText', x: annotationTextPosition.x, y: annotationTextPosition.y, w: annotationTextDimensions.width, h: annotationTextDimensions.height, isResizable: false},
+            { i: 'Settings', x: 0, y: 0, w: 2.7, h: 5, isResizable: false},
+            { i: 'RecordingDetails', x: recordingDetailsPosition.x, y: recordingDetailsPosition.y, w: recordingDetailsDimensions.width, h: recordingDetailsDimensions.height, isResizable: false},
+        ]
+    };
 
     // useEffect(() => {
     //     for (var index in moduleRefs.current) {
@@ -63,26 +77,37 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
         var newHeight = (height + 10) / 20;
         switch (moduleName) {
             case "AudioPlayer":
-                setAudioPlayerDimensions({width: audioPlayerDimensions.width, height: newHeight})
+                setAudioPlayerDimensions({width: audioPlayerDimensions.width, height: newHeight});
                 break;
             case "AnnotationText":
-                setAnnotationTextDimensions({width: annotationTextDimensions.width, height: newHeight})
+                setAnnotationTextDimensions({width: annotationTextDimensions.width, height: newHeight});
                 break;
             case "RecordingDetails":
-                setRecordingDetailsDimensions({width: recordingDetailsDimensions.width, height: newHeight})
+                setRecordingDetailsDimensions({width: recordingDetailsDimensions.width, height: newHeight});
                 break;
             default:
                 break;
         }
     };
 
-    const layouts = {
-    lg: [
-        { i: 'AudioPlayer', x: 0, y: 0, w: audioPlayerDimensions.width, h: audioPlayerDimensions.height, isResizable: false},
-        { i: 'AnnotationText', x: 3, y: 0, w: annotationTextDimensions.width, h: annotationTextDimensions.height, isResizable: false},
-        { i: 'Settings', x: 0, y: 0, w: 2.7, h: 5, isResizable: false},
-        { i: 'RecordingDetails', x: 10, y: 0, w: recordingDetailsDimensions.width, h: recordingDetailsDimensions.height, isResizable: false},
-    ],
+    const onLayoutChange = (_: any, changedLayouts: any) => {
+        const changedLayoutsLg = changedLayouts.lg;
+        for (let i in changedLayoutsLg) {
+            let currentLayout = changedLayoutsLg[i];
+            switch (currentLayout.i) {
+                case "AudioPlayer":
+                    setAudioPlayerPosition({x: currentLayout.x, y: currentLayout.y});
+                    break;
+                case "AnnotationText":
+                    setAnnotationTextPosition({x: currentLayout.x, y: currentLayout.y});
+                    break;
+                case "RecordingDetails":
+                    setRecordingDetailsPosition({x: currentLayout.x, y: currentLayout.y});
+                    break;
+                default:
+                    break;
+            }
+        }
     };
 
     return (
@@ -93,6 +118,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
         cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
         rowHeight={10}
         width={width}
+        onLayoutChange={onLayoutChange}
         // onRemoveItem={onRemoveModule}
         // onAddItem={onAddModule}
         // originalModules={originalModules}
