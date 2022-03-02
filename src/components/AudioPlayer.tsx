@@ -19,7 +19,11 @@ import { UnassignedColor } from "../enums/SegmentColors";
 
 const url = "https://audio.jukehost.co.uk/CQlpPUaaYwtJknyv7cgNCQxADk0OVCJr.wav";
 
-export default function AudioPlayer() {
+interface AudioPlayerInterface {
+  moduleRef: any
+}
+
+export default function AudioPlayer(props: AudioPlayerInterface) {
   const waveformRef = useRef(null);
   const wavesurfer = useRef<WaveSurfer | null>(null);
   const [playing, setPlaying] = useState(false);
@@ -85,14 +89,14 @@ export default function AudioPlayer() {
     }
   };
   
-  const scrollToRegion = (region: { id: any; }) => {
+  const scrollToSegment = (region: { id: any; }) => {
     var enteredSegmentRef = segmentRefs.find((segmentRef: { id: any; }) => segmentRef.id === region.id);
     enteredSegmentRef && enteredSegmentRef.ref.scrollIntoView({behavior: "smooth", block: "center"});
   };
 
   useEffect(() => {
-    wavesurfer.current?.un("region-in", (region) => scrollToRegion(region));
-    wavesurfer.current?.on("region-in", (region) => scrollToRegion(region));
+    wavesurfer.current?.un("region-in", (region) => scrollToSegment(region));
+    wavesurfer.current?.on("region-in", (region) => scrollToSegment(region));
   }, [segmentRefs]);
 
   useEffect(() => {
@@ -195,6 +199,7 @@ export default function AudioPlayer() {
     playAudio();
   };
 
+  // TODO: Fix sound being stuck on mute when forwarding at the end of audio.
   const startSkip = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, direction: string) => {
     handlePress(e)
     if (intervalRef.current) return;
@@ -217,7 +222,7 @@ export default function AudioPlayer() {
   };
 
   return (
-    <div className="module module-player">
+    <div className="module module-player" ref={props.moduleRef}>
       <div className="module-content">
         <div className="play-area" onMouseDown={e => handlePress(e)}></div>
           <div className="audiocontrols-wrapper">

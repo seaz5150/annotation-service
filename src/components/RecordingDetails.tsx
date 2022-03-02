@@ -1,13 +1,16 @@
-import { MouseEvent } from "react";
+interface RecordingDetailsInterface {
+    moduleRef: any
+}
 
-const RecordingDetails = () => {
+
+const RecordingDetails = (props: RecordingDetailsInterface) => {
 
     const handlePress = (e: any) => {
         e.stopPropagation();
     }
     
     return (  
-        <div className="module module-settings">
+        <div className="module module-settings" ref={props.moduleRef}>
             <div className="card-header">
                 Recording details
             </div>

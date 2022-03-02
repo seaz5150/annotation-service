@@ -549,9 +549,13 @@ const recordingJson = {
   
     ]
   
-  }};
+}};
 
-export default function AnnotationText() {
+interface AnnotationTextInterface {
+    moduleRef: any
+}
+
+export default function AnnotationText(props: AnnotationTextInterface) {
     const dispatch = useDispatch();
     const { createActionTranscriptInitialize,
             createActionSegmentReferencesInitialize 
@@ -578,7 +582,7 @@ export default function AnnotationText() {
     }
 
     return (
-    <div className="segments">
+    <div className="segments" ref={props.moduleRef}>
         {segments &&
             <React.Fragment>
                 {(segments.length > 0) ?
@@ -586,7 +590,7 @@ export default function AnnotationText() {
                         <AnnotationSegment segmentId={segment.id} key={segment.id} segmentRef={(el: any) => addToSegmentRefs(el, segment.id)}/>
                     )
                     :
-                    <div className="card card-body module module-content segment segment-placeholder">
+                    <div className="module module-content segment segment-placeholder">
                         <i className="bi bi-info-circle me-2 info-icon"></i>
                         Create a caption by dragging on the waveform.
                     </div>
