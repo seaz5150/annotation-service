@@ -7,6 +7,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #333 !important;
   min-width: 800px;
+  font-size: 14.4px !important;
 }
 
 code {
@@ -21,14 +22,14 @@ code {
 }
 
 .audiocontrols-button{
-  height: 30px !important;
-  line-height: 10px !important;
+  height: 27px !important;
+  line-height: 8px !important;
   background-color:rgba(80, 80, 80, 0.274) !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .audiocontrols-button-icon{
-  font-size: 1em;
+  font-size: 0.9em;
   color: rgba(255, 255, 255, 0.8);
 }
 
@@ -59,10 +60,11 @@ code {
 .audiocontrols-times{
   margin-bottom: 0;
   display: flex;
+  align-items: center;
 }
 
 .recording-time{
-  font-size: 0.9em;
+  font-size: 0.8em;
   color: rgb(184, 184, 184);
   margin-bottom: 0;
 }
@@ -304,7 +306,6 @@ code {
   background-color: rgb(49, 49, 49) !important;
   padding-top: 0.3em !important;
   padding-bottom: 0.3em !important;
-  top: -2px !important;
 }
 
 .segment-label-dropdown-item{

@@ -352,11 +352,9 @@ const recordingJson = {
   
             "language": "English",
   
-            "segmentTags": {
-  
-                "checked": true
-  
-            },
+            "segmentTags": [
+                "checked"
+            ],
   
             "words": [
   

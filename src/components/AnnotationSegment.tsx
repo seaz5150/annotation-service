@@ -20,15 +20,17 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
           } = bindActionCreators(actionCreators, dispatch);
 
     const segment = useSelector((state: any) => state.recordingTranscript.segments.find((segment: { id: string; }) => segment.id === props.segmentId));
-    const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
+    const availableSpeakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
+    const availableSegmentTags = useSelector((state: any) => state.recordingTranscript.segmentTags);
 
     const segmentColorAlpha = 0.75; // Alpha values 0-1
     const segmentColorAlphaHex = rgbaToHexAlpha(segmentColorAlpha);
 
-    const segmentSpeaker = speakerTags.find((tag: { id: any; }) => tag.id === segment.speaker);
+    const segmentSpeaker = availableSpeakerTags.find((tag: { id: any; }) => tag.id === segment.speaker);
     const segmentColor = (segmentSpeaker ? segmentSpeaker.color : UnassignedColor + segmentColorAlphaHex);
 
     const [speakerId, setSpeakerId] = useState((segment.speaker));
+    const [segmentTags, setSegmentTags] = useState((segment.segmentTags));
 
     useEffect(() => {
         if (speakerId !== segment.speaker) {
@@ -36,8 +38,35 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
         }
     }, [speakerId]);
 
+    useEffect(() => {
+        if (segmentTags !== segment.segmentTags) {
+            createActionTranscriptSegmentUpdate(segment.id, undefined, undefined, undefined, segmentTags);
+        }
+    }, [segmentTags]);
+
     const handlePress = (e: any) => {
         e.stopPropagation();
+    }
+
+    const setSegmentTag = (e: React.ChangeEvent<HTMLInputElement>, segmentTagId: string) => {
+        let newSegmentTags = Array();
+        if (segmentTags !== undefined) {
+            newSegmentTags = segmentTags.map((tag: string) => tag);
+        }
+
+        if (e.target.checked) {
+            if (!newSegmentTags.some((tag: string) => tag === segmentTagId)){
+                newSegmentTags.push(segmentTagId);
+            }
+        }
+        else {
+            const index = newSegmentTags.indexOf(segmentTagId);
+            if (index > -1) {
+                newSegmentTags.splice(index, 1);
+            }
+        }
+
+        setSegmentTags(newSegmentTags);
     }
 
     return (
@@ -72,7 +101,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                         </div>
                         <div className="segment-text-panel">
                             <p className="segment-text"
-                                contentEditable="true"
+                                //contentEditable="true"
                                 onMouseDown={e => handlePress(e)}
                             >
                                 Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus et lorem id felis nonummy placerat. Integer lacinia. Praesent in mauris eu tortor porttitor accumsan.
@@ -84,8 +113,8 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                         onChange={e => setSpeakerId(e.target.value)}
                                 >
                                     <option value=""></option>
-                                    {speakerTags &&
-                                        speakerTags.map((speakerTag: any) =>
+                                    {availableSpeakerTags &&
+                                        availableSpeakerTags.map((speakerTag: any) =>
                                             <option value={speakerTag.id} key={speakerTag.id}>{speakerTag.label ? speakerTag.label : speakerTag.id}</option>                                                   
                                         )
                                     }
@@ -104,10 +133,20 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                         onMouseDown={e => handlePress(e)}
                                     >
                                         <li>
-                                            <a className="dropdown-item segment-label-dropdown-item" href="#">
-                                                Action
-                                                <input className="form-check-input custom-checkbox col-2 ms-auto me-3" type="checkbox" value="" onMouseDown={e => handlePress(e)} />
-                                            </a>
+                                            {availableSegmentTags &&
+                                                availableSegmentTags.map((availableSegmentTag: any) =>
+                                                    <a className="dropdown-item segment-label-dropdown-item me-3" href="#" key={availableSegmentTag.id}>
+                                                        {availableSegmentTag.label}
+                                                        <input className="form-check-input custom-checkbox col-2 ms-auto me-3" 
+                                                               type="checkbox"
+                                                               checked={segmentTags ? Array.from(segmentTags).some((tag: any) => tag === availableSegmentTag.id) : false}
+                                                               onMouseDown={e => handlePress(e)}
+                                                               onChange={e => setSegmentTag(e, availableSegmentTag.id)}
+                                                               key={Math.random()}
+                                                        />
+                                                    </a>                                              
+                                                )
+                                            }
                                         </li>
                                     </ul>
                                 </div>
