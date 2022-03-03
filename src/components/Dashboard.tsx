@@ -129,9 +129,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
         <div key="AnnotationText">
             <AnnotationText updateElementGridSize={updateElementGridSize} />
         </div>
-        {/* <div key="Settings">
+        <div key="Settings">
             <Settings />
-        </div> */}
+        </div>
         <div key="RecordingDetails">
             <RecordingDetails updateElementGridSize={updateElementGridSize} />
         </div>

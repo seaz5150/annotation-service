@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import React from "react";
 import { UnassignedColor } from "../enums/SegmentColors";
+import AnnotationEditor from "./AnnotationEditor";
 
 interface AnnotationSegmentInterface {
     segmentId: string,
@@ -100,12 +101,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                             </div>
                         </div>
                         <div className="segment-text-panel">
-                            <p className="segment-text"
-                                //contentEditable="true"
-                                onMouseDown={e => handlePress(e)}
-                            >
-                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus et lorem id felis nonummy placerat. Integer lacinia. Praesent in mauris eu tortor porttitor accumsan.
-                            </p>
+                            <AnnotationEditor />
                             <div className="segment-tag-bar">
                                 <select className="form-select form-select-sm custom-dropdown speaker-select"
                                         onMouseDown={e => handlePress(e)}
