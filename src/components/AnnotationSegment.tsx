@@ -32,6 +32,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
 
     const [speakerId, setSpeakerId] = useState((segment.speaker));
     const [segmentTags, setSegmentTags] = useState((segment.segmentTags));
+    const [segmentWords, setSegmentWords] = useState((segment.words));
 
     useEffect(() => {
         if (speakerId !== segment.speaker) {
@@ -101,7 +102,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                             </div>
                         </div>
                         <div className="segment-text-panel">
-                            <AnnotationEditor />
+                            <AnnotationEditor words={segmentWords} />
                             <div className="segment-tag-bar">
                                 <select className="form-select form-select-sm custom-dropdown speaker-select"
                                         onMouseDown={e => handlePress(e)}
