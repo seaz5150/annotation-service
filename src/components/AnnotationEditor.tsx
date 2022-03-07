@@ -13,13 +13,14 @@ import { useSelector } from "react-redux";
 
 
 export type TagElement = {
-  type?: any
+  type?: any,
+  children?: any,
+  text?: string,
   tagLabels?: string[]
-  tagId?: string,
-  children?: any
+  tagId?: string
 }
 
-type CustomText = { text: string, tagLabels?: string[], tagId?: string }
+type CustomText = { text: string, tagLabels?: string[], tagId?: string, unpairedTag: boolean }
 
 export type CustomElement = TagElement;
 
@@ -93,14 +94,24 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   const leaf = useCallback(({ attributes, children, leaf }) => {
     let tagLabels = leaf.tagLabels;
     if (tagLabels && tagLabels.length > 0) {
-      const textTag = textTags.find(tag => tag.id === tagLabels[0]);
-      return <mark {...attributes} className="text-tag" style={{backgroundColor: textTag?.color}}>
-              <span>{children}</span>
-              <span contentEditable={false} className="text-tag-label">{textTag?.label}</span>
-              <button onClick={() => deleteTag(leaf.tagId)} contentEditable={false} className="strip-button-style text-tag-delete-button">
-                <i className="bi bi-x"></i>
-              </button>
-              </mark>
+      if (leaf.unpairedTag) {
+        return <mark contentEditable={false} {...attributes} className="text-tag" style={{backgroundColor: "red"}}>
+                <span className="text-tag-label" contentEditable={false}>{children}</span>
+                <button onClick={() => deleteTag(leaf.tagId)} contentEditable={false} className="strip-button-style text-tag-delete-button">
+                  <i className="bi bi-x"></i>
+                </button>
+        </mark>
+      }
+      else {
+        const textTag = textTags.find(tag => tag.id === tagLabels[0]);
+        return <mark {...attributes} className="text-tag" style={{backgroundColor: textTag?.color}}>
+                <span>{children}</span>
+                <span contentEditable={false} className="text-tag-label">{textTag?.label}</span>
+                <button onClick={() => deleteTag(leaf.tagId)} contentEditable={false} className="strip-button-style text-tag-delete-button">
+                  <i className="bi bi-x"></i>
+                </button>
+                </mark>
+      }
     }
     else {
       return <span {...attributes}>{children}</span>;
@@ -114,13 +125,26 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       let child = children[Number(index)];
 
       if (child.tagId !== null && child.tagId === tagId) {
-        Transforms.setNodes(slateEditor, {tagLabels: undefined, tagId: undefined}, {at: [0, Number(index)], match: Text.isText, split: true});
-        break;
+        if (child.unpairedTag) {
+          Transforms.removeNodes(slateEditor, {at: [0, Number(index)], match: Text.isText});
+        }
+        else {
+          Transforms.setNodes(slateEditor, {tagLabels: undefined, tagId: undefined}, {at: [0, Number(index)], match: Text.isText, split: true});
+          break;
+        }
       }
     }
   };
 
-  const tagSelection = (labelName: string) => {
+  const insertUnpairedTag = (tagId: string) => {
+      if (!editorFocused) return;
+      if (!slateEditor.selection) return;
+
+      const textTag = textTags.find(tag => tag.id === tagId);
+      Transforms.insertNodes(slateEditor, {text: "*" + textTag?.label + "*", tagLabels: [tagId], tagId: uuidv4(), unpairedTag: true}, {mode: "lowest"});
+  };
+
+  const tagSelection = (tagId: string) => {
     if (!editorFocused) return;
     let selection = slateEditor.selection;
     if (!selection) return;
@@ -191,7 +215,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
           focus: selectionFocus,
         })
   
-        slateEditor.addMark("tagLabels", [labelName]);
+        slateEditor.addMark("tagLabels", [tagId]);
         slateEditor.addMark("tagId", uuidv4());
       }
     }
@@ -206,7 +230,8 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
           <Editable onMouseDown={pressStopPropagation} renderLeaf={leaf} />
         </Slate>
       }
-      {/* <pre>{JSON.stringify(value, null, 2)}</pre> */}
+      <button onMouseDown={() => insertUnpairedTag("callsign")}>Action</button>
+      <pre>{JSON.stringify(value, null, 2)}</pre>
     </div>
   );
 }

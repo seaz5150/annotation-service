@@ -51,30 +51,6 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
         ]
     };
 
-    // useEffect(() => {
-    //     for (var index in moduleRefs.current) {
-    //         console.log("LOL")
-    //         var moduleRef = moduleRefs.current[index];
-
-    //         switch (moduleRef.moduleName) {
-    //             case "AudioPlayer":
-    //                 // var newWidth = Math.floor(moduleRef.ref.clientWidth / 123);
-    //                 // var newHeight = Math.floor(moduleRef.ref.clientHeight / 17);
-    //                 // setAudioPlayerDimensions({width: newWidth, height: newHeight})
-    //                 break;
-    //             case "AnnotationText":
-    //                 console.log("¨setting anno")
-    //                 //var newWidth = Math.floor((moduleRef.ref.scrollWidth + 10) / 20);
-    //                 var newHeight = Math.floor((moduleRef.ref.clientHeight + 10) / 20);
-    //                 console.log(newHeight)
-    //                 setAnnotationTextDimensions({width: 6, height: newHeight})
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    //     }
-    // }, []);
-
     const updateElementGridSize = (moduleName: string, height: number) => {
         // (height + margin) / (rowHeight + margin) - margin default is 10
         var newHeight = (height + 10) / 20;
