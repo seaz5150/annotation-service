@@ -4,7 +4,7 @@ import "react-grid-layout/css/styles.css"
 import "react-resizable/css/styles.css"
 
 import AudioPlayer from "./AudioPlayer"
-import Settings from "./Settings"
+import TextTags from "./TextTags"
 import AnnotationText from "./AnnotationText"
 import RecordingDetails from "./RecordingDetails"
 
@@ -39,11 +39,14 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
     const [recordingDetailsDimensions, setRecordingDetailsDimensions] = useState({width: 2.7, height: 11.4});
     const [recordingDetailsPosition, setRecordingDetailsPosition] = useState({x: 10, y: 0});
 
+    const [textTagsDimensions, setTextTagsDimensions] = useState({width: 2.7, height: 11.4});
+    const [textTagsPosition, setTextTagsPosition] = useState({x: 0, y: 1});
+
     const layouts = {
         lg: [
             { i: 'AudioPlayer', x: audioPlayerPosition.x, y: audioPlayerPosition.y, w: audioPlayerDimensions.width, h: audioPlayerDimensions.height, isResizable: false},
             { i: 'AnnotationText', x: annotationTextPosition.x, y: annotationTextPosition.y, w: annotationTextDimensions.width, h: annotationTextDimensions.height, isResizable: false},
-            { i: 'Settings', x: 0, y: 0, w: 2.7, h: 5, isResizable: false},
+            { i: 'TextTags', x: textTagsPosition.x, y: textTagsPosition.y, w: textTagsDimensions.width, h: textTagsDimensions.height, isResizable: false},
             { i: 'RecordingDetails', x: recordingDetailsPosition.x, y: recordingDetailsPosition.y, w: recordingDetailsDimensions.width, h: recordingDetailsDimensions.height, isResizable: false},
         ]
     };
@@ -85,6 +88,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
             case "RecordingDetails":
                 setRecordingDetailsDimensions({width: recordingDetailsDimensions.width, height: newHeight});
                 break;
+            case "TextTags":
+                setTextTagsDimensions({width: textTagsDimensions.width, height: newHeight});
+                break;
             default:
                 break;
         }
@@ -103,6 +109,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
                     break;
                 case "RecordingDetails":
                     setRecordingDetailsPosition({x: currentLayout.x, y: currentLayout.y});
+                    break;
+                case "TextTags":
+                    setTextTagsPosition({x: currentLayout.x, y: currentLayout.y});
                     break;
                 default:
                     break;
@@ -129,8 +138,8 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
         <div key="AnnotationText">
             <AnnotationText updateElementGridSize={updateElementGridSize} />
         </div>
-        <div key="Settings">
-            <Settings />
+        <div key="TextTags">
+            <TextTags updateElementGridSize={updateElementGridSize} />
         </div>
         <div key="RecordingDetails">
             <RecordingDetails updateElementGridSize={updateElementGridSize} />

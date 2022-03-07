@@ -1,9 +1,9 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import { pressStopPropagation, recordingJson } from "../CommonUtilities";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { pressStopPropagation } from "../CommonUtilities";
 import { v4 as uuidv4 } from "uuid";
-import { createEditor, BaseEditor, Descendant, Selection, Transforms, Editor, Range, Text, Element, Point } from 'slate'
+import { createEditor, BaseEditor, Descendant, Transforms, Editor, Range, Text } from 'slate'
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
-import Leaf from "slate-react/dist/components/leaf";
+import { useSelector } from "react-redux";
 
 // interface EditorEntity {
 //     id: string,
@@ -32,7 +32,8 @@ declare module 'slate' {
 }
 
 interface AnnotationEditorInterface {
-  words: any
+  words: any,
+  textTags: [{label: string, id: string, color: string}]
 }
 
 const AnnotationEditor = (props: AnnotationEditorInterface) => {
@@ -43,21 +44,30 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
     },
   ]
 
-  const editor = useMemo(() => withReact(createEditor()), []);
+  const slateEditor = useMemo(() => withReact(createEditor()), []);
   const [value, setValue] = useState<Descendant[]>();
-
-  let tagColors: { [name: string]: string } = {};
-  tagColors["command"] = "rgba(245, 40, 145, 0.8)";
-  tagColors["argument"] = "rgba(245, 255, 0, 0.8)";
-  tagColors["third"] = "yellow";
-
+  const textTags = props.textTags;
+  const words = props.words;
+  const editor = useSelector((state: any) => state.editor);
 
   useEffect(() => {
+    initializeText();
+  }, []);
+
+  useEffect(() => {
+    switch (editor.type) {
+      case "EDITOR_ADD_SECTION_TAG":
+          tagSelection(editor.tagId);
+          break;
+    }
+  }, [editor]);
+
+  const initializeText = () => {
     let paragraphChildren = (initialValue[0] as any).children;
     let currentTag;
     let lastTag;
-    for (let index in props.words) {
-      let currentWord = props.words[index];
+    for (let index in words) {
+      let currentWord = words[index];
       currentTag = currentWord.textTags ? currentWord.textTags[0] : null;
 
       if (currentTag !== lastTag) {
@@ -77,14 +87,15 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       lastTag = currentTag;
     }
     setValue(initialValue);
-  }, []);
+  };
 
-  const Leaf = useCallback(({ attributes, children, leaf }) => {
+  const leaf = useCallback(({ attributes, children, leaf }) => {
     let tagLabels = leaf.tagLabels;
     if (tagLabels && tagLabels.length > 0) {
-      return <mark {...attributes} className="text-tag" style={{backgroundColor: tagColors[tagLabels[0]]}}>
+      const textTag = textTags.find(tag => tag.id === tagLabels[0]);
+      return <mark {...attributes} className="text-tag" style={{backgroundColor: textTag?.color}}>
               <span>{children}</span>
-              <span contentEditable={false} className="text-tag-label">{tagLabels[0]}</span>
+              <span contentEditable={false} className="text-tag-label">{textTag?.label}</span>
               <button onClick={() => deleteTag(leaf.tagId)} contentEditable={false} className="strip-button-style text-tag-delete-button">
                 <i className="bi bi-x"></i>
               </button>
@@ -96,20 +107,20 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   }, []);
 
   const deleteTag = (tagId: number) => {
-    const children = (editor.children[0] as any).children as any[];
+    const children = (slateEditor.children[0] as any).children as any[];
 
     for (let index in children) {
       let child = children[Number(index)];
 
       if (child.tagId !== null && child.tagId === tagId) {
-        Transforms.setNodes(editor, {tagLabels: undefined, tagId: undefined}, {at: [0, Number(index)], match: Text.isText, split: true});
+        Transforms.setNodes(slateEditor, {tagLabels: undefined, tagId: undefined}, {at: [0, Number(index)], match: Text.isText, split: true});
         break;
       }
     }
   };
 
   const tagSelection = (labelName: string) => {
-    let selection = editor.selection;
+    let selection = slateEditor.selection;
     if (selection == null) {
       return null;
     }
@@ -122,7 +133,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       selectionFocus = selectionTemp;
     }
 
-    const topLevelBlockNodesInSelection = Editor.nodes(editor, {
+    const topLevelBlockNodesInSelection = Editor.nodes(slateEditor, {
       mode: "lowest",
     });
 
@@ -169,19 +180,19 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
     }
 
     if (!alreadyTagged) {
-      let selectedText = Editor.string(editor, {
+      let selectedText = Editor.string(slateEditor, {
         anchor: selectionAnchor,
         focus: selectionFocus,
       });
 
       if (selectedText.replace(/\s/g, '').length > 0) {
-        Transforms.select(editor, {
+        Transforms.select(slateEditor, {
           anchor: selectionAnchor,
           focus: selectionFocus,
         })
   
-        editor.addMark("tagLabels", [labelName]);
-        editor.addMark("tagId", uuidv4());
+        slateEditor.addMark("tagLabels", [labelName]);
+        slateEditor.addMark("tagId", uuidv4());
       }
     }
   };
@@ -189,13 +200,11 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   return (
     <div>
       {value &&
-        <Slate editor={editor} value={value} onChange={newValue => setValue(newValue)}>
-          <Editable onMouseDown={pressStopPropagation} renderLeaf={Leaf} />
+        <Slate editor={slateEditor} value={value} onChange={newValue => setValue(newValue)}>
+          <Editable onMouseDown={pressStopPropagation} renderLeaf={leaf} />
         </Slate>
       }
-      <button onMouseDown={() => tagSelection("command")}>First</button>
-      <button onMouseDown={() => tagSelection("argument")}>Second</button>
-      <pre>{JSON.stringify(value, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(value, null, 2)}</pre> */}
     </div>
   );
 }

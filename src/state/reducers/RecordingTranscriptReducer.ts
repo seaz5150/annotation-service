@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { SegmentColors } from "../../enums/SegmentColors"
+import { TagColors } from "../../enums/TagColors";
 
 const initialState = {
     speakerTags: null,
@@ -16,9 +17,10 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
         case "TRANSCRIPT_INITIALIZE":
             var segments = action.payload.segments;
             var speakerTags = action.payload.speakerTags;
+            var textTags = action.payload.textTags;
 
-            for (var segment in segments) {
-                var segmentObj = segments[segment];
+            for (let segment in segments) {
+                let segmentObj = segments[segment];
                 // Add unique IDs to the segments before saving them to the store.
                 segmentObj.id = uuidv4();
 
@@ -32,12 +34,12 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             }
 
             // Add unique (if possible) colors to speaker tags.
-            for (var speakerTag in speakerTags) {
-                var speakerTagObj = speakerTags[speakerTag];
+            for (let speakerTag in speakerTags) {
+                let speakerTagObj = speakerTags[speakerTag];
 
                 // https://stackoverflow.com/questions/33026791/how-do-i-get-a-random-value-from-enums-in-javascript
-                var foundUniqueColor = false;
-                var random = Math.floor(Math.random() * Object.keys(SegmentColors).length);
+                let foundUniqueColor = false;
+                let random = Math.floor(Math.random() * Object.keys(SegmentColors).length);
 
                 // Look for a unique color only if all of the colors are not yet taken.
                 if (!(usedColors.length === Object.keys(SegmentColors).length)) {
@@ -49,13 +51,35 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                         }
                     }
                 }
-                var randomColor = SegmentColors[Object.keys(SegmentColors)[random]];
+                let randomColor = SegmentColors[Object.keys(SegmentColors)[random]];
                 speakerTagObj.color = randomColor;
             }
+
+            // Add unique (if possible) colors to text tags.
+            for (let index in textTags) {
+                let textTag = textTags[index];
+
+                let foundUniqueColor = false;
+                let random = Math.floor(Math.random() * Object.keys(TagColors).length);
+
+                // Look for a unique color only if all of the colors are not yet taken.
+                if (!(usedColors.length === Object.keys(TagColors).length)) {
+                    while (!foundUniqueColor) {
+                        random = Math.floor(Math.random() * Object.keys(TagColors).length);
+                        if (!usedColors.includes(random)) {
+                            foundUniqueColor = true;
+                            usedColors.push(random);
+                        }
+                    }
+                }
+                let randomColor = TagColors[Object.keys(TagColors)[random]];
+                textTag.color = randomColor;
+            }
+
             return {
                 speakerTags: speakerTags,
                 segmentTags: action.payload.segmentTags,
-                textTags: action.payload.textTags,
+                textTags: textTags,
                 segments: segments,
                 type: "TRANSCRIPT_INITIALIZE"
             };

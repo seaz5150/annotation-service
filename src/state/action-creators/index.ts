@@ -74,3 +74,12 @@ export const createActionTranscriptSegmentCreate = (segmentId: string, segmentSt
     })
   }
 }
+
+export const createActionEditorSectionTag = (tagId: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "EDITOR_ADD_SECTION_TAG",
+      payload: tagId
+    })
+  }
+}
