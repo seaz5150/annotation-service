@@ -104,13 +104,17 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       }
       else {
         const textTag = textTags.find(tag => tag.id === tagLabels[0]);
-        return <mark {...attributes} className="text-tag" style={{backgroundColor: textTag?.color}}>
-                <span>{children}</span>
-                <span contentEditable={false} className="text-tag-label">{textTag?.label}</span>
-                <button onClick={() => deleteTag(leaf.tagId)} contentEditable={false} className="strip-button-style text-tag-delete-button">
-                  <i className="bi bi-x"></i>
-                </button>
-                </mark>
+        return <span {...attributes} className="text-tag" style={{borderColor: textTag?.color}}>
+                <span className="text-tag-inside" style={{boxShadow: "inset 0px 0px 0px 2px " + textTag?.color}}>
+                  <span className="text-tag-content" style={{backgroundColor: textTag?.color + "33"}}>{children}</span>
+                  <span className="text-tag-info" style={{backgroundColor: textTag?.color}}>
+                    <span contentEditable={false} className="text-tag-label">{textTag?.label}</span>
+                    <button onClick={() => deleteTag(leaf.tagId)} contentEditable={false} className="strip-button-style text-tag-delete-button">
+                      <i className="bi bi-x"></i>
+                    </button>
+                  </span>
+                </span>
+               </span>
       }
     }
     else {
@@ -141,7 +145,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       if (!slateEditor.selection) return;
 
       const textTag = textTags.find(tag => tag.id === tagId);
-      Transforms.insertNodes(slateEditor, {text: "*" + textTag?.label + "*", tagLabels: [tagId], tagId: uuidv4(), unpairedTag: true}, {mode: "lowest"});
+      Transforms.insertNodes(slateEditor, {text: "[" + textTag?.label + "]", tagLabels: [tagId], tagId: uuidv4(), unpairedTag: true}, {mode: "lowest"});
   };
 
   const tagSelection = (tagId: string) => {
@@ -213,10 +217,12 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
         Transforms.select(slateEditor, {
           anchor: selectionAnchor,
           focus: selectionFocus,
-        })
+        });
   
         slateEditor.addMark("tagLabels", [tagId]);
         slateEditor.addMark("tagId", uuidv4());
+
+        Transforms.collapse(slateEditor, {edge: "end"});
       }
     }
   };
@@ -231,7 +237,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
         </Slate>
       }
       <button onMouseDown={() => insertUnpairedTag("callsign")}>Action</button>
-      <pre>{JSON.stringify(value, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(value, null, 2)}</pre> */}
     </div>
   );
 }

@@ -12,7 +12,7 @@ interface AudioPlayerInterface {
 
 const TextTags = (props: AudioPlayerInterface) => {
     const dispatch = useDispatch();
-    const { createActionEditorSectionTag } = bindActionCreators(actionCreators, dispatch);
+    const { createActionEditorAddSectionTag } = bindActionCreators(actionCreators, dispatch);
 
     const { width, height } = props.size;
     const availableTextTags = useSelector((state: any) => state.recordingTranscript.textTags);
@@ -31,7 +31,7 @@ const TextTags = (props: AudioPlayerInterface) => {
                 <div className="tag-container" onMouseDown={pressStopPropagation}>
                     {availableTextTags && 
                         availableTextTags.map((textTag: any) => 
-                            <button key={textTag.id} onMouseDown={() => createActionEditorSectionTag(textTag.id)}
+                            <button key={textTag.id} onMouseDown={() => createActionEditorAddSectionTag(textTag.id)}
                                     className="text-tag-button" 
                                     style={{backgroundColor: textTag.color}}>
                                 {textTag.label}
@@ -39,6 +39,7 @@ const TextTags = (props: AudioPlayerInterface) => {
                         )
                     }
                 </div>
+                <p className="title-small">Transcription tags:</p>
             </div>
         </div>
     );

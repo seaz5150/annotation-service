@@ -75,10 +75,19 @@ export const createActionTranscriptSegmentCreate = (segmentId: string, segmentSt
   }
 }
 
-export const createActionEditorSectionTag = (tagId: string) => {
+export const createActionEditorAddSectionTag = (tagId: string) => {
   return (dispatch: any) => {
     dispatch({
       type: "EDITOR_ADD_SECTION_TAG",
+      payload: tagId
+    })
+  }
+}
+
+export const createActionEditorAddUnpairedTag = (tagId: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "EDITOR_ADD_UNPAIRED_TAG",
       payload: tagId
     })
   }
