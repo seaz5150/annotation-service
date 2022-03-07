@@ -10,7 +10,8 @@ const initialState = {
     segments: [] as any[]
 };
 
-var usedColors = [] as number[];
+var usedSpeakerTagColors = [] as number[];
+var usedTextTagColors = [] as number[];
 
 const RecordingTranscriptReducer = (state = initialState, action: any) => {
     switch (action.type) {
@@ -42,12 +43,12 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 let random = Math.floor(Math.random() * Object.keys(SegmentColors).length);
 
                 // Look for a unique color only if all of the colors are not yet taken.
-                if (!(usedColors.length === Object.keys(SegmentColors).length)) {
+                if (!(usedSpeakerTagColors.length === Object.keys(SegmentColors).length)) {
                     while (!foundUniqueColor) {
                         random = Math.floor(Math.random() * Object.keys(SegmentColors).length);
-                        if (!usedColors.includes(random)) {
+                        if (!usedSpeakerTagColors.includes(random)) {
                             foundUniqueColor = true;
-                            usedColors.push(random);
+                            usedSpeakerTagColors.push(random);
                         }
                     }
                 }
@@ -63,12 +64,12 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 let random = Math.floor(Math.random() * Object.keys(TagColors).length);
 
                 // Look for a unique color only if all of the colors are not yet taken.
-                if (!(usedColors.length === Object.keys(TagColors).length)) {
+                if (!(usedTextTagColors.length === Object.keys(TagColors).length)) {
                     while (!foundUniqueColor) {
                         random = Math.floor(Math.random() * Object.keys(TagColors).length);
-                        if (!usedColors.includes(random)) {
+                        if (!usedTextTagColors.includes(random)) {
                             foundUniqueColor = true;
-                            usedColors.push(random);
+                            usedTextTagColors.push(random);
                         }
                     }
                 }
