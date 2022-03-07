@@ -146,6 +146,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
       const textTag = textTags.find(tag => tag.id === tagId);
       Transforms.insertNodes(slateEditor, {text: "[" + textTag?.label + "]", tagLabels: [tagId], tagId: uuidv4(), unpairedTag: true}, {mode: "lowest"});
+      setTimeout(() => {setEditorFocused(true)}, 100);
   };
 
   const tagSelection = (tagId: string) => {
@@ -225,6 +226,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
         Transforms.collapse(slateEditor, {edge: "end"});
       }
     }
+    setTimeout(() => {setEditorFocused(true)}, 100);
   };
 
   return (
