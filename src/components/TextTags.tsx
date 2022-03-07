@@ -12,14 +12,15 @@ interface AudioPlayerInterface {
 
 const TextTags = (props: AudioPlayerInterface) => {
     const dispatch = useDispatch();
-    const { createActionEditorAddSectionTag } = bindActionCreators(actionCreators, dispatch);
+    const { createActionEditorAddSectionTag, createActionEditorAddUnpairedTag } = bindActionCreators(actionCreators, dispatch);
 
     const { width, height } = props.size;
     const availableTextTags = useSelector((state: any) => state.recordingTranscript.textTags);
+    const availableUnpairedTags = useSelector((state: any) => state.recordingTranscript.unpairedTags);
 
     useEffect(() => {
         props.updateElementGridSize("TextTags", height);
-      }, [height]);
+    }, [height]);
 
     return (  
         <div className="module module-settings">
@@ -41,6 +42,18 @@ const TextTags = (props: AudioPlayerInterface) => {
                     }
                 </div>
                 <p className="title-small">Transcription tags:</p>
+                <div className="tag-container" onMouseDown={pressStopPropagation}>
+                    {availableUnpairedTags && 
+                            availableUnpairedTags.map((unpairedTag: any) => 
+                                <button key={unpairedTag.id} 
+                                        onMouseDown={() => createActionEditorAddUnpairedTag(unpairedTag.id)}
+                                        className="text-tag-button" 
+                                        style={{backgroundColor: unpairedTag.color}}>
+                                    {unpairedTag.label}
+                                </button>
+                            )
+                    }
+                </div>
             </div>
         </div>
     );

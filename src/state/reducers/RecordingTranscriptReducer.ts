@@ -7,6 +7,7 @@ const initialState = {
     speakerTags: null,
     segmentTags: null,
     textTags: null,
+    unpairedTags: null,
     segments: [] as any[]
 };
 
@@ -19,6 +20,17 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             var segments = action.payload.segments;
             var speakerTags = action.payload.speakerTags;
             var textTags = action.payload.textTags;
+
+            action.payload.unpairedTags = [
+                {"label": "Unknown", "id": "unknown"},
+                {"label": "Hesitation", "id": "hesitation"},
+                {"label": "Noise", "id": "noise"},
+                {"label": "Speaker noise", "id": "speakernoise"},
+                {"label": "Double-press PTT", "id": "doublepress"},
+                {"label": "Crosstalk", "id": "crosstalk"}
+            ];
+
+            var unpairedTags = action.payload.unpairedTags;
 
             for (let segment in segments) {
                 let segmentObj = segments[segment];
@@ -56,14 +68,12 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 speakerTagObj.color = randomColor;
             }
 
-            // Add unique (if possible) colors to text tags.
             for (let index in textTags) {
                 let textTag = textTags[index];
 
                 let foundUniqueColor = false;
                 let random = Math.floor(Math.random() * Object.keys(TagColors).length);
 
-                // Look for a unique color only if all of the colors are not yet taken.
                 if (!(usedTextTagColors.length === Object.keys(TagColors).length)) {
                     while (!foundUniqueColor) {
                         random = Math.floor(Math.random() * Object.keys(TagColors).length);
@@ -77,11 +87,31 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 textTag.color = randomColor;
             }
 
+            for (let index in unpairedTags) {
+                let unpairedTag = unpairedTags[index];
+
+                let foundUniqueColor = false;
+                let random = Math.floor(Math.random() * Object.keys(TagColors).length);
+
+                if (!(usedTextTagColors.length === Object.keys(TagColors).length)) {
+                    while (!foundUniqueColor) {
+                        random = Math.floor(Math.random() * Object.keys(TagColors).length);
+                        if (!usedTextTagColors.includes(random)) {
+                            foundUniqueColor = true;
+                            usedTextTagColors.push(random);
+                        }
+                    }
+                }
+                let randomColor = TagColors[Object.keys(TagColors)[random]];
+                unpairedTag.color = randomColor;
+            }
+
             return {
                 speakerTags: speakerTags,
                 segmentTags: action.payload.segmentTags,
                 textTags: textTags,
                 segments: segments,
+                unpairedTags: unpairedTags,
                 type: "TRANSCRIPT_INITIALIZE"
             };
         case "TRANSCRIPT_SEGMENT_UPDATE":

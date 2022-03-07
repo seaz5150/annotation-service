@@ -34,7 +34,8 @@ declare module 'slate' {
 
 interface AnnotationEditorInterface {
   words: any,
-  textTags: [{label: string, id: string, color: string}]
+  textTags: [{label: string, id: string, color: string}],
+  unpairedTags: [{label: string, id: string, color: string}]
 }
 
 const AnnotationEditor = (props: AnnotationEditorInterface) => {
@@ -48,6 +49,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   const slateEditor = useMemo(() => withReact(createEditor()), []);
   const [value, setValue] = useState<Descendant[]>();
   const textTags = props.textTags;
+  const unpairedTags = props.unpairedTags;
   const words = props.words;
   const editor = useSelector((state: any) => state.editor);
   const [editorFocused, setEditorFocused] = useState(false);
@@ -58,9 +60,12 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
   useEffect(() => {
     switch (editor.type) {
-      case "EDITOR_ADD_SECTION_TAG":
+        case "EDITOR_ADD_SECTION_TAG":
           tagSelection(editor.tagId);
           break;
+        case "EDITOR_ADD_UNPAIRED_TAG":
+            insertUnpairedTag(editor.tagId);
+            break;
     }
   }, [editor]);
 
@@ -95,7 +100,8 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
     let tagLabels = leaf.tagLabels;
     if (tagLabels && tagLabels.length > 0) {
       if (leaf.unpairedTag) {
-        return <mark contentEditable={false} {...attributes} className="text-tag" style={{backgroundColor: "red"}}>
+        const unpairedTag = unpairedTags.find(tag => tag.id === tagLabels[0]);
+        return <mark contentEditable={false} {...attributes} className="unpaired-tag" style={{backgroundColor: unpairedTag?.color}}>
                 <span className="text-tag-label" contentEditable={false}>{children}</span>
                 <button onClick={() => deleteTag(leaf.tagId)} contentEditable={false} className="strip-button-style text-tag-delete-button">
                   <i className="bi bi-x"></i>
@@ -144,8 +150,8 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       if (!editorFocused) return;
       if (!slateEditor.selection) return;
 
-      const textTag = textTags.find(tag => tag.id === tagId);
-      Transforms.insertNodes(slateEditor, {text: "[" + textTag?.label + "]", tagLabels: [tagId], tagId: uuidv4(), unpairedTag: true}, {mode: "lowest"});
+      const unpairedTag = unpairedTags?.find(tag => tag.id === tagId);
+      Transforms.insertNodes(slateEditor, {text: "[" + unpairedTag?.label + "]", tagLabels: [tagId], tagId: uuidv4(), unpairedTag: true}, {mode: "lowest"});
       setTimeout(() => {setEditorFocused(true)}, 100);
   };
 
@@ -238,7 +244,6 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
           <Editable onMouseDown={pressStopPropagation} renderLeaf={leaf} />
         </Slate>
       }
-      <button onMouseDown={() => insertUnpairedTag("callsign")}>Action</button>
       {/* <pre>{JSON.stringify(value, null, 2)}</pre> */}
     </div>
   );

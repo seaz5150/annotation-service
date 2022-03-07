@@ -24,6 +24,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const availableSpeakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
     const availableSegmentTags = useSelector((state: any) => state.recordingTranscript.segmentTags);
     const availableTextTags = useSelector((state: any) => state.recordingTranscript.textTags);
+    const availableUnpairedTags = useSelector((state: any) => state.recordingTranscript.unpairedTags);
 
     const segmentColorAlpha = 0.75; // Alpha values 0-1
     const segmentColorAlphaHex = rgbaToHexAlpha(segmentColorAlpha);
@@ -103,7 +104,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                             </div>
                         </div>
                         <div className="segment-text-panel">
-                            <AnnotationEditor words={segmentWords} textTags={availableTextTags} />
+                            <AnnotationEditor words={segmentWords} textTags={availableTextTags} unpairedTags={availableUnpairedTags} />
                             <div className="segment-tag-bar">
                                 <select className="form-select form-select-sm custom-dropdown speaker-select"
                                         onMouseDown={e => handlePress(e)}
