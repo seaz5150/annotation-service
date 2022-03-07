@@ -1,12 +1,12 @@
 export const TagColors : { [key: string]: any } = {
-    Color1: "#ff8c00",
-    Color2: "#bad80a",
-    Color3: "#00b294",
-    Color4: "#fff100",
-    Color5: "#009e49",
-    Color6: "#ec008c",
-    Color7: "#bd00ff",
-    Color8: "#0078ff",
-    Color9: "#ff4d35",
-    Color10: "#fe0000"
+    Color1: "#ff8c0066",
+    Color2: "#bad80a66",
+    Color3: "#00b29466",
+    Color4: "#fff10066",
+    Color5: "#009e4966",
+    Color6: "#ec008c66",
+    Color7: "#bd00ff66",
+    Color8: "#0078ff66",
+    Color9: "#ff4d3566",
+    Color10: "#fe000066"
 }
