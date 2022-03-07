@@ -404,3 +404,7 @@ code {
   flex-wrap: wrap;
   padding: 3px;
 }
+
+.annotation-editor-wrapper {
+  width: calc(100% - 15px);
+}

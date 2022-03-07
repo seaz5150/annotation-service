@@ -30,7 +30,7 @@ const TextTags = (props: AudioPlayerInterface) => {
                 <div className="tag-container">
                     {availableTextTags && 
                         availableTextTags.map((textTag: any) => 
-                            <button onMouseDown={() => createActionEditorSectionTag(textTag.id)}
+                            <button key={textTag.id} onMouseDown={() => createActionEditorSectionTag(textTag.id)}
                                     className="text-tag-button" 
                                     style={{backgroundColor: textTag.color}}>
                                 {textTag.label}

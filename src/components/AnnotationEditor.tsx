@@ -49,6 +49,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   const textTags = props.textTags;
   const words = props.words;
   const editor = useSelector((state: any) => state.editor);
+  const [editorFocused, setEditorFocused] = useState(false);
 
   useEffect(() => {
     initializeText();
@@ -120,10 +121,9 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   };
 
   const tagSelection = (labelName: string) => {
+    if (!editorFocused) return;
     let selection = slateEditor.selection;
-    if (selection == null) {
-      return null;
-    }
+    if (!selection) return;
 
     let selectionAnchor = JSON.parse(JSON.stringify(selection.anchor));
     let selectionFocus = JSON.parse(JSON.stringify(selection.focus));
@@ -198,7 +198,9 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   };
 
   return (
-    <div>
+    <div className="annotation-editor-wrapper" 
+         onFocus={() => setEditorFocused(true)}
+         onBlur={() => setEditorFocused(false)}>
       {value &&
         <Slate editor={slateEditor} value={value} onChange={newValue => setValue(newValue)}>
           <Editable onMouseDown={pressStopPropagation} renderLeaf={leaf} />

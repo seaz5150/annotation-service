@@ -1,5 +1,6 @@
 const initialState = {
-    tagId: null
+    tagId: null,
+    segmentId: null
 };
 
 const EditorReducer = (state = initialState, action: any) => {
