@@ -12,6 +12,7 @@ import React, {
     useEffect,
     useRef, useState,
   } from "react";
+import Changes from './Changes';
 
 type SizeParams = {
     width: number;
@@ -40,7 +41,10 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
     const [recordingDetailsPosition, setRecordingDetailsPosition] = useState({x: 10, y: 0});
 
     const [textTagsDimensions, setTextTagsDimensions] = useState({width: 2.7, height: 11.4});
-    const [textTagsPosition, setTextTagsPosition] = useState({x: 0, y: 1});
+    const [textTagsPosition, setTextTagsPosition] = useState({x: 0, y: 2});
+    
+    const [changesDimensions, setChangesDimensions] = useState({width: 2.7, height: 11.4});
+    const [changesPosition, setChangesPosition] = useState({x: 0, y: 1});
 
     const layouts = {
         lg: [
@@ -48,6 +52,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
             { i: 'AnnotationText', x: annotationTextPosition.x, y: annotationTextPosition.y, w: annotationTextDimensions.width, h: annotationTextDimensions.height, isResizable: false},
             { i: 'TextTags', x: textTagsPosition.x, y: textTagsPosition.y, w: textTagsDimensions.width, h: textTagsDimensions.height, isResizable: false},
             { i: 'RecordingDetails', x: recordingDetailsPosition.x, y: recordingDetailsPosition.y, w: recordingDetailsDimensions.width, h: recordingDetailsDimensions.height, isResizable: false},
+            { i: 'Changes', x: changesPosition.x, y: changesPosition.y, w: changesDimensions.width, h: changesDimensions.height, isResizable: false},
         ]
     };
 
@@ -66,6 +71,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
                 break;
             case "TextTags":
                 setTextTagsDimensions({width: textTagsDimensions.width, height: newHeight});
+                break;
+            case "Changes":
+                setChangesDimensions({width: changesDimensions.width, height: newHeight});
                 break;
             default:
                 break;
@@ -88,6 +96,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
                     break;
                 case "TextTags":
                     setTextTagsPosition({x: currentLayout.x, y: currentLayout.y});
+                    break;
+                case "Changes":
+                    setChangesPosition({x: currentLayout.x, y: currentLayout.y});
                     break;
                 default:
                     break;
@@ -119,6 +130,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
         </div>
         <div key="RecordingDetails">
             <RecordingDetails updateElementGridSize={updateElementGridSize} />
+        </div>
+        <div key="Changes">
+            <Changes updateElementGridSize={updateElementGridSize} />
         </div>
     </ResponsiveGridLayout>
     );

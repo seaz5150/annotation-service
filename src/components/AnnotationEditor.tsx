@@ -3,6 +3,7 @@ import { pressStopPropagation } from "../CommonUtilities";
 import { v4 as uuidv4 } from "uuid";
 import { createEditor, BaseEditor, Descendant, Transforms, Editor, Range, Text } from 'slate'
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
+import { withHistory } from 'slate-history'
 import { useSelector } from "react-redux";
 
 // interface EditorEntity {
@@ -46,7 +47,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
     },
   ]
 
-  const slateEditor = useMemo(() => withReact(createEditor()), []);
+  const slateEditor = useMemo(() => withReact(withHistory(createEditor())), []);
   const [value, setValue] = useState<Descendant[]>();
   const textTags = props.textTags;
   const unpairedTags = props.unpairedTags;
@@ -114,8 +115,6 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
                 <span className="text-tag-inside" style={{boxShadow: "inset 0px 0px 0px 2px " + textTag?.color}}>
                   <span className="text-tag-content" style={{backgroundColor: textTag?.color.substring(0, textTag?.color.length - 2) + "26"}}>{children}</span>
                   <span className="text-tag-info" style={{backgroundColor: textTag?.color}}>
-
-
                     <button onClick={() => deleteTag(leaf.tagId)} contentEditable={false} className="strip-button-style text-tag-delete-button">
                       <i className="bi bi-x"></i>
                     </button>
