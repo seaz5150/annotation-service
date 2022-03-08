@@ -490,3 +490,29 @@ code {
 .export-button-icon {
 
 }
+
+.job-control-button {
+  text-transform: unset;
+  font-size: 0.75em !important;
+}
+
+.job-control-refuse-button {
+  background-color: #dc3545 !important;
+}
+
+.job-control-refuse-button:hover, .job-control-refuse-button:focus {
+  background-color: #bb2d3b !important;
+}
+
+.job-control-done-button {
+  background-color: #198754 !important;
+}
+
+.job-control-done-button:hover, .job-control-done-button:focus {
+  background-color: #157347 !important;
+}
+
+.job-control-skip-button {
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+}

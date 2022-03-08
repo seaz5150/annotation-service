@@ -6,7 +6,7 @@ interface ChangesInterface {
     size: any
 }
 
-const RecordingDetails = (props: ChangesInterface) => {
+const Changes = (props: ChangesInterface) => {
     const { width, height } = props.size;
 
     useEffect(() => {
@@ -46,4 +46,4 @@ const RecordingDetails = (props: ChangesInterface) => {
     );
 }
  
-export default sizeMe({ monitorHeight: true })(RecordingDetails)
+export default sizeMe({ monitorHeight: true })(Changes)

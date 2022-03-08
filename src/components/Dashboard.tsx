@@ -13,6 +13,7 @@ import React, {
     useRef, useState,
   } from "react";
 import Changes from './Changes';
+import JobControl from './JobControl';
 
 type SizeParams = {
     width: number;
@@ -46,6 +47,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
     const [changesDimensions, setChangesDimensions] = useState({width: 2.7, height: 11.4});
     const [changesPosition, setChangesPosition] = useState({x: 0, y: 1});
 
+    const [jobControlDimensions, setJobControlDimensions] = useState({width: 2.7, height: 11.4});
+    const [jobControlPosition, setJobControlPosition] = useState({x: 0, y: 1});
+
     const layouts = {
         lg: [
             { i: 'AudioPlayer', x: audioPlayerPosition.x, y: audioPlayerPosition.y, w: audioPlayerDimensions.width, h: audioPlayerDimensions.height, isResizable: false},
@@ -53,6 +57,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
             { i: 'TextTags', x: textTagsPosition.x, y: textTagsPosition.y, w: textTagsDimensions.width, h: textTagsDimensions.height, isResizable: false},
             { i: 'RecordingDetails', x: recordingDetailsPosition.x, y: recordingDetailsPosition.y, w: recordingDetailsDimensions.width, h: recordingDetailsDimensions.height, isResizable: false},
             { i: 'Changes', x: changesPosition.x, y: changesPosition.y, w: changesDimensions.width, h: changesDimensions.height, isResizable: false},
+            { i: 'JobControl', x: jobControlPosition.x, y: jobControlPosition.y, w: jobControlDimensions.width, h: jobControlDimensions.height, isResizable: false},
         ]
     };
 
@@ -74,6 +79,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
                 break;
             case "Changes":
                 setChangesDimensions({width: changesDimensions.width, height: newHeight});
+                break;
+            case "JobControl":
+                setJobControlDimensions({width: jobControlDimensions.width, height: newHeight});
                 break;
             default:
                 break;
@@ -99,6 +107,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
                     break;
                 case "Changes":
                     setChangesPosition({x: currentLayout.x, y: currentLayout.y});
+                    break;
+                case "JobControl":
+                    setJobControlPosition({x: currentLayout.x, y: currentLayout.y});
                     break;
                 default:
                     break;
@@ -133,6 +144,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
         </div>
         <div key="Changes">
             <Changes updateElementGridSize={updateElementGridSize} />
+        </div>
+        <div key="JobControl">
+            <JobControl updateElementGridSize={updateElementGridSize} />
         </div>
     </ResponsiveGridLayout>
     );
