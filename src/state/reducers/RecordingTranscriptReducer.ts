@@ -11,9 +11,6 @@ const initialState = {
     segments: [] as any[]
 };
 
-var usedSpeakerTagColors = [] as number[];
-var usedTextTagColors = [] as number[];
-
 const RecordingTranscriptReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case "TRANSCRIPT_INITIALIZE":
@@ -45,65 +42,44 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     })
                 }
             }
+            
+            let colorCounter = 0;
+            for (let i in speakerTags) {
+                let speakerTag = speakerTags[i];
+                speakerTag.color = SegmentColors[Object.keys(SegmentColors)[colorCounter]];
 
-            // Add unique (if possible) colors to speaker tags.
-            for (let speakerTag in speakerTags) {
-                let speakerTagObj = speakerTags[speakerTag];
-
-                // https://stackoverflow.com/questions/33026791/how-do-i-get-a-random-value-from-enums-in-javascript
-                let foundUniqueColor = false;
-                let random = Math.floor(Math.random() * Object.keys(SegmentColors).length);
-
-                // Look for a unique color only if all of the colors are not yet taken.
-                if (!(usedSpeakerTagColors.length === Object.keys(SegmentColors).length)) {
-                    while (!foundUniqueColor) {
-                        random = Math.floor(Math.random() * Object.keys(SegmentColors).length);
-                        if (!usedSpeakerTagColors.includes(random)) {
-                            foundUniqueColor = true;
-                            usedSpeakerTagColors.push(random);
-                        }
-                    }
+                if (colorCounter >= speakerTags.length - 1) {
+                    colorCounter = 0;
                 }
-                let randomColor = SegmentColors[Object.keys(SegmentColors)[random]];
-                speakerTagObj.color = randomColor;
+                else {
+                    colorCounter++;
+                }
+            }
+            
+            colorCounter = 0;
+            for (let i in textTags) {
+                let textTag = textTags[i];
+                textTag.color = TagColors[Object.keys(TagColors)[colorCounter]];
+
+                if (colorCounter >= speakerTags.length - 1) {
+                    colorCounter = 0;
+                }
+                else {
+                    colorCounter++;
+                }
             }
 
-            for (let index in textTags) {
-                let textTag = textTags[index];
+            colorCounter = speakerTags.length - 1;
+            for (let i in unpairedTags) {
+                let unpairedTag = unpairedTags[i];
+                unpairedTag.color = TagColors[Object.keys(TagColors)[colorCounter]];
 
-                let foundUniqueColor = false;
-                let random = Math.floor(Math.random() * Object.keys(TagColors).length);
-
-                if (!(usedTextTagColors.length === Object.keys(TagColors).length)) {
-                    while (!foundUniqueColor) {
-                        random = Math.floor(Math.random() * Object.keys(TagColors).length);
-                        if (!usedTextTagColors.includes(random)) {
-                            foundUniqueColor = true;
-                            usedTextTagColors.push(random);
-                        }
-                    }
+                if (colorCounter >= unpairedTag.length - 1) {
+                    colorCounter = 0;
                 }
-                let randomColor = TagColors[Object.keys(TagColors)[random]];
-                textTag.color = randomColor;
-            }
-
-            for (let index in unpairedTags) {
-                let unpairedTag = unpairedTags[index];
-
-                let foundUniqueColor = false;
-                let random = Math.floor(Math.random() * Object.keys(TagColors).length);
-
-                if (!(usedTextTagColors.length === Object.keys(TagColors).length)) {
-                    while (!foundUniqueColor) {
-                        random = Math.floor(Math.random() * Object.keys(TagColors).length);
-                        if (!usedTextTagColors.includes(random)) {
-                            foundUniqueColor = true;
-                            usedTextTagColors.push(random);
-                        }
-                    }
+                else {
+                    colorCounter++;
                 }
-                let randomColor = TagColors[Object.keys(TagColors)[random]];
-                unpairedTag.color = randomColor;
             }
 
             return {
