@@ -401,6 +401,13 @@ code {
   border-top-right-radius: 0.4em;
   display: flex;
   align-items: center;
+  transition: .25s ease;
+  overflow: hidden;
+  width: 0;
+}
+
+.text-tag:hover .text-tag-info {
+  width: 20px;
 }
 
 .text-tag-delete-button {
@@ -423,6 +430,22 @@ code {
   user-select: none;
   padding: 0.5em;
   margin: 3px;
+  background-color: rgb(59 59 59) !important;
+  font-size: 10px !important;
+}
+
+.tag-button-color {
+  height: 10px;
+  width: 10px;
+  display: inline-block;
+}
+
+.text-tag-button-color {
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+.unpaired-tag-button-color {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
 }
 
 .tag-container {

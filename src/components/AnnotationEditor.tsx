@@ -114,7 +114,8 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
                 <span className="text-tag-inside" style={{boxShadow: "inset 0px 0px 0px 2px " + textTag?.color}}>
                   <span className="text-tag-content" style={{backgroundColor: textTag?.color.substring(0, textTag?.color.length - 2) + "26"}}>{children}</span>
                   <span className="text-tag-info" style={{backgroundColor: textTag?.color}}>
-                    <span contentEditable={false} className="text-tag-label">{textTag?.label}</span>
+
+
                     <button onClick={() => deleteTag(leaf.tagId)} contentEditable={false} className="strip-button-style text-tag-delete-button">
                       <i className="bi bi-x"></i>
                     </button>

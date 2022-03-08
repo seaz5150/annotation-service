@@ -34,9 +34,11 @@ const TextTags = (props: AudioPlayerInterface) => {
                         availableTextTags.map((textTag: any) => 
                             <button key={textTag.id} 
                                     onMouseDown={() => createActionEditorAddSectionTag(textTag.id)}
-                                    className="text-tag-button" 
-                                    style={{backgroundColor: textTag.color}}>
-                                {textTag.label}
+                                    className="text-tag-button btn-secondary custom-dropdown">
+                                <div className="d-flex align-items-center">
+                                    <span className="tag-button-color text-tag-button-color me-1" style={{backgroundColor: textTag.color}}></span>
+                                    {textTag.label}
+                                </div>
                             </button>
                         )
                     }
@@ -47,9 +49,11 @@ const TextTags = (props: AudioPlayerInterface) => {
                             availableUnpairedTags.map((unpairedTag: any) => 
                                 <button key={unpairedTag.id} 
                                         onMouseDown={() => createActionEditorAddUnpairedTag(unpairedTag.id)}
-                                        className="text-tag-button" 
-                                        style={{backgroundColor: unpairedTag.color}}>
-                                    {unpairedTag.label}
+                                        className="text-tag-button btn-secondary custom-dropdown">
+                                    <div className="d-flex align-items-center">
+                                        <span className="tag-button-color unpaired-tag-button-color me-1" style={{backgroundColor: unpairedTag.color}}></span>
+                                        {unpairedTag.label}
+                                    </div>
                                 </button>
                             )
                     }

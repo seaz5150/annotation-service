@@ -25,18 +25,18 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
             <div className="module-content card-body mt-1 pb-2">
                 <div className="row">
                     <p className="title-small col-3">Name:</p>
-                    <p className="text-small col-9">YSSY Tower 2021-06-02 22:13:43</p>
+                    <p className="text-small col-9 d-flex justify-content-end">YSSY Tower 2021-06-02 22:13:43</p>
                 </div>
                 <p className="title-small col-12 mb-1">Description:</p>
                 <textarea className="form-control form-control-sm custom-textarea" onMouseDown={e => handlePress(e)} readOnly defaultValue="Integer lacinia. Maecenas aliquet accumsan leo. Aliquam ante. Aenean fermentum risus id tortor. Donec ipsum massa, ullamcorper in, auctor et, scelerisque sed, est. Nunc tincidunt ante vitae massa. Vivamus ac leo pretium faucibus."/>
                 <p className="title-small col-12 mb-1 mt-2">Display attached resources:</p>
-                <div className="row align-items-center">
-                    <p className="title-small col-10 ms-2">Traffic map</p>
-                    <input className="form-check-input custom-checkbox col-2 ms-auto me-3" type="checkbox" value="" onMouseDown={e => handlePress(e)} />
+                <div className="row">
+                    <p className="title-small col-10 ms-2 fw-normal">Traffic map</p>
+                    <input className="form-check-input custom-checkbox col-2 ms-3" type="checkbox" value="" onMouseDown={e => handlePress(e)} />
                 </div>
                 <div className="row mt-3 align-items-center">
                     <p className="title-small col-7">Manuals and others:</p>
-                    <div className="dropdown col-5">
+                    <div className="dropdown col-5 d-flex justify-content-end">
                         <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"
                                 onMouseDown={e => handlePress(e)}
                                 type="button" id="dropdownMenuButton1"

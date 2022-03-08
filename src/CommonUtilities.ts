@@ -360,11 +360,11 @@ export const recordingJson = {
       
                 "language": "English",
       
-                "segmentTags": {
+                "segmentTags": [
       
-                    "checked": true
+                    "checked"
       
-                },
+            ],
       
                 "words": [
       
