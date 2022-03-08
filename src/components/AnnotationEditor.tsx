@@ -112,7 +112,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       else {
         const textTag = textTags.find(tag => tag.id === tagLabels[0]);
         return <span {...attributes} className="text-tag" style={{borderColor: textTag?.color}}>
-                <span className="text-tag-inside" style={{boxShadow: "inset 0px 0px 0px 2px " + textTag?.color}}>
+                <span className="text-tag-inside" style={{boxShadow: "inset 0px 0px 0px 1px " + textTag?.color}}>
                   <span className="text-tag-content" style={{backgroundColor: textTag?.color.substring(0, textTag?.color.length - 2) + "26"}}>{children}</span>
                   <span className="text-tag-info" style={{backgroundColor: textTag?.color}}>
                     <button onClick={() => deleteTag(leaf.tagId)} contentEditable={false} className="strip-button-style text-tag-delete-button">

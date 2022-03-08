@@ -381,9 +381,8 @@ code {
 
 .text-tag-content {
   padding-left: 0.3em;
-  padding-right: 0.2em;
-  border-bottom-left-radius: 0.4em;
-  border-top-left-radius: 0.4em;
+  padding-right: 0.3em;
+  border-radius: 0.4em;
 }
 
 .text-tag-label {
@@ -410,8 +409,14 @@ code {
   width: 20px;
 }
 
+.text-tag:hover .text-tag-content {
+  border-radius: unset;
+  border-bottom-left-radius: 0.4em;
+  border-top-left-radius: 0.4em;
+}
+
 .text-tag-delete-button {
-  padding-left: 0.2em;
+  padding-left: 0.15em;
   padding-right: 0.1em;
   user-select: none;
 }
