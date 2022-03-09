@@ -3,8 +3,10 @@ import { pressStopPropagation } from "../CommonUtilities";
 import { v4 as uuidv4 } from "uuid";
 import { createEditor, BaseEditor, Descendant, Transforms, Editor, Range, Text } from 'slate'
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
-import { withHistory } from 'slate-history'
-import { useSelector } from "react-redux";
+import { History, HistoryEditor, withHistory } from 'slate-history'
+import { useDispatch, useSelector } from "react-redux";
+import { bindActionCreators } from "redux";
+import { actionCreators } from "../state";
 
 // interface EditorEntity {
 //     id: string,
@@ -36,37 +38,73 @@ declare module 'slate' {
 interface AnnotationEditorInterface {
   words: any,
   textTags: [{label: string, id: string, color: string}],
-  unpairedTags: [{label: string, id: string, color: string}]
+  unpairedTags: [{label: string, id: string, color: string}],
+  segmentId: string
 }
 
 const AnnotationEditor = (props: AnnotationEditorInterface) => {
+  const dispatch = useDispatch();
+  const { createActionHistoryAddAction } = bindActionCreators(actionCreators, dispatch);
+        
   let initialValue: Descendant[] = [
     {
       type: 'paragraph',
-      children: [{text: ""}],
+      children: [],
     },
   ]
 
   const slateEditor = useMemo(() => withReact(withHistory(createEditor())), []);
   const [value, setValue] = useState<Descendant[]>();
+
   const textTags = props.textTags;
   const unpairedTags = props.unpairedTags;
   const words = props.words;
+
   const editor = useSelector((state: any) => state.editor);
+  const history = useSelector((state: any) => state.history);
+
   const [editorFocused, setEditorFocused] = useState(false);
+  const [historyPrevious, setHistoryPrevious] = useState<History | null>(null);
+
+  useEffect(() => {
+    if (historyPrevious === null) {
+      setHistoryPrevious(JSON.parse(JSON.stringify(slateEditor.history)));
+    }
+    else {
+      if ((slateEditor.history.undos.length + slateEditor.history.redos.length) > (historyPrevious.undos.length + historyPrevious.redos.length)) {
+        setHistoryPrevious(JSON.parse(JSON.stringify(slateEditor.history)));
+        createActionHistoryAddAction("AnnotationEditor", props.segmentId);
+      }
+    }
+  }, [slateEditor.history.undos.length]);
 
   useEffect(() => {
     initializeText();
   }, []);
 
   useEffect(() => {
+    switch (history.type) {
+      case "HISTORY_REDO_ACTION":
+        if (history.actionHistory[history.currentActionIndex]?.segmentId === props.segmentId) {
+          slateEditor.redo();
+        }
+        break;
+      case "HISTORY_UNDO_ACTION":
+        if (history.actionHistory[history.currentActionIndex + 1]?.segmentId === props.segmentId) {
+          slateEditor.undo();
+        }
+        break;
+    }
+  }, [history]);
+
+  useEffect(() => {
     switch (editor.type) {
-        case "EDITOR_ADD_SECTION_TAG":
-          tagSelection(editor.tagId);
-          break;
-        case "EDITOR_ADD_UNPAIRED_TAG":
-            insertUnpairedTag(editor.tagId);
-            break;
+      case "EDITOR_ADD_SECTION_TAG":
+        tagSelection(editor.tagId);
+        break;
+      case "EDITOR_ADD_UNPAIRED_TAG":
+        insertUnpairedTag(editor.tagId);
+        break;
     }
   }, [editor]);
 
@@ -74,15 +112,20 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
     let paragraphChildren = (initialValue[0] as any).children;
     let currentTag;
     let lastTag;
+
+    if (words.length === 0) {
+      paragraphChildren.push({text: ""});
+    }
+
     for (let index in words) {
       let currentWord = words[index];
       currentTag = currentWord.textTags ? currentWord.textTags[0] : null;
 
       if (currentTag !== lastTag) {
-        if (paragraphChildren.length !== 1) {
+        if (paragraphChildren.length !== 0) {
           paragraphChildren.push({text: " "});
         }
-        paragraphChildren.push({text: currentWord.label, tagLabels: currentTag ? [currentTag] : undefined, tagId: currentTag ? uuidv4() : undefined});
+        paragraphChildren.push({text: currentWord.label, tagLabels: currentTag ? [currentTag] : undefined, tagId: uuidv4()});
       }
       else {
         paragraphChildren[paragraphChildren.length - 1].text = paragraphChildren[paragraphChildren.length - 1].text + " " + currentWord.label;
@@ -221,10 +264,10 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       });
 
       if (selectedText.replace(/\s/g, '').length > 0) {
-        Transforms.select(slateEditor, {
+        HistoryEditor.withoutMerging(slateEditor, () => Transforms.select(slateEditor, {
           anchor: selectionAnchor,
           focus: selectionFocus,
-        });
+        }));
   
         slateEditor.addMark("tagLabels", [tagId]);
         slateEditor.addMark("tagId", uuidv4());

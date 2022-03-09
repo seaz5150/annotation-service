@@ -328,22 +328,6 @@ export const recordingJson = {
       
                         "language": "Czech"
       
-                    },
-      
-                    {
-      
-                        "label": "večer",
-      
-                        "language": "Czech"
-      
-                    },
-      
-                    {
-      
-                        "label": "ahoj",
-      
-                        "language": "Czech"
-      
                     }
       
                 ]

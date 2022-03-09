@@ -1,5 +1,8 @@
 import { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
 import sizeMe from "react-sizeme";
+import { bindActionCreators } from "redux";
+import { actionCreators } from "../state";
 
 interface ChangesInterface {
     updateElementGridSize: any,
@@ -7,6 +10,9 @@ interface ChangesInterface {
 }
 
 const Changes = (props: ChangesInterface) => {
+    const dispatch = useDispatch();
+    const { createActionHistoryUndoAction, createActionHistoryRedoAction } = bindActionCreators(actionCreators, dispatch);
+
     const { width, height } = props.size;
 
     useEffect(() => {
@@ -21,10 +27,12 @@ const Changes = (props: ChangesInterface) => {
             <div className="module-content card-body mt-1 pb-2">
                 <div className="d-flex justify-content-between">
                     <div>
-                        <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button">
+                        <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
+                                onClick={() => createActionHistoryUndoAction()}>
                             <i className="bi bi-arrow-counterclockwise undo-redo-button-icon"></i>
                         </button>
-                        <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button">
+                        <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
+                                onClick={() => createActionHistoryRedoAction()}>
                             <i className="bi bi-arrow-clockwise undo-redo-button-icon"></i>
                         </button>
                     </div>

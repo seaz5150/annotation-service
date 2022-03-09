@@ -25,7 +25,7 @@ const SpeakerLabels = (props: SpeakerLabelsInterface) => {
             <div className="module-content card-body mt-2 pb-2">
                 <div className="speaker-label-container">
                     {availableSpeakerTags && availableSpeakerTags.map((tag: any, index: number) => 
-                        <div className="d-flex" onMouseDown={pressStopPropagation}>
+                        <div key={tag.id} className="d-flex" onMouseDown={pressStopPropagation}>
                             <div className="d-flex align-items-center">
                             <span className="tag-button-color speaker-label-color me-2" style={{backgroundColor: tag.color}}></span>
                                 <span className="speaker-label-letter me-3">{alphabet[index]}</span>

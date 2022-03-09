@@ -104,7 +104,11 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                             </div>
                         </div>
                         <div className="segment-text-panel">
-                            <AnnotationEditor words={segmentWords} textTags={availableTextTags} unpairedTags={availableUnpairedTags} />
+                            <AnnotationEditor segmentId={segment.id}
+                                              words={segmentWords}
+                                              textTags={availableTextTags}
+                                              unpairedTags={availableUnpairedTags} 
+                            />
                             <div className="segment-tag-bar">
                                 <select className="form-select form-select-sm custom-dropdown speaker-select"
                                         onMouseDown={e => handlePress(e)}
