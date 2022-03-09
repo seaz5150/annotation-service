@@ -118,14 +118,15 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                         )
                                     }
                                 </select>
-                                <div className="dropdown">
+                                <div className="dropdown d-flex align-items-center">
+                                    <span className="segment-label-counter pe-2"></span>
                                     <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"
                                             onMouseDown={e => handlePress(e)}
                                             type="button" id="dropdownMenuButton1"
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false"
                                     >
-                                        Segment labels
+                                        {availableSegmentTags && "Segment labels (" + (segmentTags ? segmentTags.length : "0") + "/" + availableSegmentTags.length + ")"}
                                     </button>
                                     <ul className="dropdown-menu dropdown-menu-end segment-label-dropdown-menu"
                                         aria-labelledby="dropdownMenuButton1" 

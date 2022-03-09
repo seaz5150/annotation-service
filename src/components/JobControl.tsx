@@ -20,7 +20,7 @@ const JobControl = (props: JobControlInterface) => {
             </div>
             <div className="module-content card-body mt-1 pb-2">
                 <div className="row">
-                    <div className="col">
+                    <div className="col" style={{maxWidth: "200px"}}>
                         <button className="text-tag-button custom-dropdown job-control-button job-control-refuse-button float-end">
                             <i className="bi bi-x-lg me-1"></i>
                             Close as REFUSED
@@ -30,7 +30,7 @@ const JobControl = (props: JobControlInterface) => {
                             Previous job
                         </button>
                     </div>
-                    <div className="col">
+                    <div className="col" style={{maxWidth: "200px"}}>
                         <button className="text-tag-button custom-dropdown job-control-button job-control-done-button float-start">
                             <i className="bi bi-check-lg me-1"></i>
                             Close as DONE
