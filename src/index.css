@@ -444,6 +444,14 @@ code {
   font-size: 10px !important;
 }
 
+.text-tag-button:disabled {
+  opacity: 0.5;
+}
+
+.custom-dropdown:disabled:hover, .custom-dropdown:disabled:focus{
+  background-color: rgb(59 59 59) !important;
+}
+
 .tag-button-color {
   height: 10px;
   width: 10px;

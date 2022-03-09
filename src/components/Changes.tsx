@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import sizeMe from "react-sizeme";
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../state";
@@ -12,6 +12,7 @@ interface ChangesInterface {
 const Changes = (props: ChangesInterface) => {
     const dispatch = useDispatch();
     const { createActionHistoryUndoAction, createActionHistoryRedoAction } = bindActionCreators(actionCreators, dispatch);
+    const history = useSelector((state: any) => state.history);
 
     const { width, height } = props.size;
 
@@ -28,10 +29,12 @@ const Changes = (props: ChangesInterface) => {
                 <div className="d-flex justify-content-between">
                     <div>
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
+                                disabled={history.currentActionIndex === -1}
                                 onClick={() => createActionHistoryUndoAction()}>
                             <i className="bi bi-arrow-counterclockwise undo-redo-button-icon"></i>
                         </button>
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
+                                disabled={history.currentActionIndex === history.actionHistory.length - 1}
                                 onClick={() => createActionHistoryRedoAction()}>
                             <i className="bi bi-arrow-clockwise undo-redo-button-icon"></i>
                         </button>
