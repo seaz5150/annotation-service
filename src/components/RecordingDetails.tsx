@@ -1,5 +1,9 @@
-import { useEffect, useRef } from "react";
+import { bindActionCreators } from "@reduxjs/toolkit";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import sizeMe from "react-sizeme";
+import { pressStopPropagation } from "../CommonUtilities";
+import { actionCreators } from "../state";
 
 interface RecordingDetailsInterface {
     updateElementGridSize: any,
@@ -7,6 +11,9 @@ interface RecordingDetailsInterface {
 }
 
 const RecordingDetails = (props: RecordingDetailsInterface) => {
+    const dispatch = useDispatch();
+    const { createActionDashboardCloseModule } = bindActionCreators(actionCreators, dispatch);
+    const [isCollapsed, setIsCollapsed] = useState(false);
     const { width, height } = props.size;
 
     const handlePress = (e: any) => {
@@ -19,10 +26,22 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
     
     return (  
         <div className="module module-settings">
-            <div className="card-header">
+            <div className="card-header d-flex justify-content-between">
                 Recording details
+                <span className="d-flex align-content-center">
+                    <button className="strip-button-style module-header-button pe-2"
+                            onMouseDown={pressStopPropagation}
+                            onClick={() => setIsCollapsed(!isCollapsed)}>
+                        <i style={{fontSize: "1.2em"}} className="bi bi-dash-lg"></i>
+                    </button>
+                    <button className="strip-button-style module-header-button"
+                            onMouseDown={pressStopPropagation}
+                            onClick={() => createActionDashboardCloseModule("TextTags")}>
+                        <i className="bi bi-x-lg"></i>
+                    </button>
+                </span>
             </div>
-            <div className="module-content card-body mt-1 pb-2">
+            <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "mt-1 pb-2")}>
                 <div className="row">
                     <p className="title-small col-3">Name:</p>
                     <p className="text-small col-9 d-flex justify-content-end">YSSY Tower 2021-06-02 22:13:43</p>

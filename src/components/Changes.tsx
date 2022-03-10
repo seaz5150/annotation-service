@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import sizeMe from "react-sizeme";
 import { bindActionCreators } from "redux";
@@ -12,8 +12,9 @@ interface ChangesInterface {
 
 const Changes = (props: ChangesInterface) => {
     const dispatch = useDispatch();
-    const { createActionHistoryUndoAction, createActionHistoryRedoAction } = bindActionCreators(actionCreators, dispatch);
+    const { createActionHistoryUndoAction, createActionHistoryRedoAction, createActionDashboardCloseModule } = bindActionCreators(actionCreators, dispatch);
     const history = useSelector((state: any) => state.history);
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     const { width, height } = props.size;
 
@@ -23,10 +24,22 @@ const Changes = (props: ChangesInterface) => {
     
     return (  
         <div className="module module-settings">
-            <div className="card-header">
+            <div className="card-header d-flex justify-content-between">
                 Changes
+                <span className="d-flex align-content-center">
+                    <button className="strip-button-style module-header-button pe-2"
+                            onMouseDown={pressStopPropagation}
+                            onClick={() => setIsCollapsed(!isCollapsed)}>
+                        <i style={{fontSize: "1.2em"}} className="bi bi-dash-lg"></i>
+                    </button>
+                    <button className="strip-button-style module-header-button"
+                            onMouseDown={pressStopPropagation}
+                            onClick={() => createActionDashboardCloseModule("Changes")}>
+                        <i className="bi bi-x-lg"></i>
+                    </button>
+                </span>
             </div>
-            <div className="module-content card-body mt-1 pb-2">
+            <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "mt-1 pb-2")}>
                 <div className="d-flex justify-content-between">
                     <div>
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"

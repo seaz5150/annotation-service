@@ -52,11 +52,6 @@ code {
   display: flex;
 }
 
-.audiocontrols-center{
-
-}
-
-
 .audiocontrols-times{
   margin-bottom: 0;
   display: flex;
@@ -81,8 +76,23 @@ code {
   border-radius: 0.25rem;
 }
 
-.wavesurfer-region{
+.module-header-button {
+  font-size: 0.8em !important;
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    transition-property: all;
+    transition-duration: 0.3s;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-delay: 0s;
+}
 
+.module-header-button:hover, .module-header-button:active {
+  color: white !important;
+}
+
+.module-content-collapsed {
+  overflow: hidden;
+  height: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 *:focus:not(:focus-visible) {
@@ -149,6 +159,11 @@ code {
   color: rgb(224, 224, 224);
   font-size: 1.8em;
   padding: 0 !important;
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    transition-property: all;
+    transition-duration: 0.3s;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-delay: 0s;
 }
 
 .segment-delete-button{
@@ -203,6 +218,11 @@ code {
 .segment-time-start, .segment-time-end{
   margin-bottom: 0;
   font-weight: 400;
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    transition-property: all;
+    transition-duration: 0.3s;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition-delay: 0s;
 }
 
 .segment-text{
@@ -544,7 +564,7 @@ code {
   background-color: rgba(46, 46, 46, 0.274) !important;
   color: rgb(201, 201, 201) !important;
   width: 100%;
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
 
 .speaker-label-container  > :first-child  > :last-child {
@@ -563,5 +583,10 @@ code {
 
 .speaker-label-color {
   clip-path: circle(50% at 50% 50%);
+}
+
+.add-label-button {
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
 }
 

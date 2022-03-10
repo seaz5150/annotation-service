@@ -146,3 +146,21 @@ export const createActionHistoryRedoAction = () => {
     })
   }
 }
+
+export const createActionDashboardOpenModule = (moduleName: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "DASHBOARD_OPEN_MODULE",
+      payload: moduleName
+    })
+  }
+}
+
+export const createActionDashboardCloseModule = (moduleName: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "DASHBOARD_CLOSE_MODULE",
+      payload: moduleName
+    })
+  }
+}
