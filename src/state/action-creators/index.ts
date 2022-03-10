@@ -75,6 +75,30 @@ export const createActionTranscriptSegmentCreate = (segmentId: string, segmentSt
   }
 }
 
+export const createActionTranscriptSpeakerCreate = (speakerId: string, speakerLabel: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_SPEAKER_CREATE",
+      payload: {
+        speakerId: speakerId,
+        speakerLabel: speakerLabel
+      }
+    })
+  }
+}
+
+export const createActionTranscriptSpeakerUpdate = (speakerId: string, speakerLabel: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_SPEAKER_UPDATE",
+      payload: {
+        speakerId: speakerId,
+        speakerLabel: speakerLabel
+      }
+    })
+  }
+}
+
 export const createActionEditorAddSectionTag = (tagId: string) => {
   return (dispatch: any) => {
     dispatch({

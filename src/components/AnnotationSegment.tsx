@@ -130,7 +130,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false"
                                     >
-                                        {availableSegmentTags && "Segment labels (" + (segmentTags ? segmentTags.length : "0") + "/" + availableSegmentTags.length + ")"}
+                                        {availableSegmentTags && "Segment labels " + (segmentTags ? segmentTags.length : "0") + "/" + availableSegmentTags.length}
                                     </button>
                                     <ul className="dropdown-menu dropdown-menu-end segment-label-dropdown-menu"
                                         aria-labelledby="dropdownMenuButton1" 

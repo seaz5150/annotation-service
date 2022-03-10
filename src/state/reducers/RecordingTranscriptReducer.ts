@@ -4,7 +4,7 @@ import { SegmentColors } from "../../enums/SegmentColors"
 import { TagColors } from "../../enums/TagColors";
 
 const initialState = {
-    speakerTags: null,
+    speakerTags: [] as any[],
     segmentTags: null,
     textTags: null,
     unpairedTags: null,
@@ -122,6 +122,24 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     speaker: "",
                     words: []
                 }]
+            };
+        case "TRANSCRIPT_SPEAKER_CREATE":
+            return {
+                ...state,
+                type: "TRANSCRIPT_SPEAKER_CREATE",
+                speakerTags: [ ...state.speakerTags, {id: action.payload.speakerId, label: action.payload.speakerLabel, color: SegmentColors[Object.keys(SegmentColors)[state.speakerTags.length]]}]
+            };
+        case "TRANSCRIPT_SPEAKER_UPDATE":
+            return {
+                ...state,
+                type: "TRANSCRIPT_SPEAKER_UPDATE",
+                speakerTags: state.speakerTags.map(
+                    tag => tag.id === action.payload.speakerId ?
+                        {...tag, 
+                            label: action.payload.speakerLabel
+                        }
+                    : tag
+                )
             };
         default:
             return state;
