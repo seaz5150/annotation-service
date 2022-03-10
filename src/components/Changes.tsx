@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import sizeMe from "react-sizeme";
 import { bindActionCreators } from "redux";
+import { pressStopPropagation } from "../CommonUtilities";
 import { actionCreators } from "../state";
 
 interface ChangesInterface {
@@ -30,22 +31,26 @@ const Changes = (props: ChangesInterface) => {
                     <div>
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
                                 disabled={history.currentActionIndex === -1}
+                                onMouseDown={pressStopPropagation}
                                 onClick={() => createActionHistoryUndoAction()}>
                             <i className="bi bi-arrow-counterclockwise undo-redo-button-icon"></i>
                         </button>
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
                                 disabled={history.currentActionIndex === history.actionHistory.length - 1}
+                                onMouseDown={pressStopPropagation}
                                 onClick={() => createActionHistoryRedoAction()}>
                             <i className="bi bi-arrow-clockwise undo-redo-button-icon"></i>
                         </button>
                     </div>
-                    <button className="text-tag-button btn-secondary custom-dropdown save-button justify-self-end">
+                    <button className="text-tag-button btn-secondary custom-dropdown save-button justify-self-end"
+                            onMouseDown={pressStopPropagation}>
                         <div className="d-flex align-items-center justify-content-center">
                             <i className="fas fa-download me-2 export-button-icon"></i>
                             Export
                         </div>
                     </button>
-                    <button className="text-tag-button btn-secondary custom-dropdown save-button justify-self-end">
+                    <button className="text-tag-button btn-secondary custom-dropdown save-button justify-self-end"
+                            onMouseDown={pressStopPropagation}>
                         <div className="d-flex align-items-center justify-content-center">
                             <i className="fas fa-save me-2 save-button-icon"></i>
                             Save

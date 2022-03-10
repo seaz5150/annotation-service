@@ -35,7 +35,7 @@ const SpeakerLabels = (props: SpeakerLabelsInterface) => {
                     )}
                 </div>
                 <div className="d-flex justify-content-end pt-2">
-                    <button className="text-tag-button btn-secondary custom-dropdown save-button m-0">
+                    <button className="text-tag-button btn-secondary custom-dropdown save-button m-0" onMouseDown={pressStopPropagation}>
                             <div className="d-flex align-items-center justify-content-center">
                                 <i className="bi bi-plus-lg me-2 export-button-icon"></i>
                                 Add label

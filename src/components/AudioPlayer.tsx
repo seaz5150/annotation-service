@@ -1,15 +1,11 @@
 import React, {
-  useCallback,
   useEffect,
   useRef,
-  useState,
-  useMemo
+  useState
 } from "react";
 import WaveSurfer from "wavesurfer.js";
 import TimelinePlugin from "wavesurfer.js/src/plugin/timeline";
 import RegionsPlugin from "wavesurfer.js/src/plugin/regions";
-import { PluginDefinition, PluginParams } from "wavesurfer.js/types/plugin";
-import moment from "moment";
 import { getFormattedTime, rgbaToHexAlpha } from "../CommonUtilities";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
