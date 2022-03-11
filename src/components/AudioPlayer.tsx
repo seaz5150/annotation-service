@@ -128,7 +128,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
     waveColor: "#969393",
     progressColor: "rgba(42, 171, 210, 0.3)",
     cursorColor: "#2aabd2",
-    height: 90,
+    height: 70,
     plugins: [
       RegionsPlugin.create({
         dragSelection: true,

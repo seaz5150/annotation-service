@@ -33,8 +33,8 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
     //     setItems([...modules, moduleId]);
     // };
 
-    const [audioPlayerDimensions, setAudioPlayerDimensions] = useState({width: 12, height: 9});
-    const [audioPlayerPosition, setAudioPlayerPosition] = useState({x: 0, y: 0});
+    const [audioPlayerDimensions, setAudioPlayerDimensions] = useState({width: 12, height: 7.4});
+    const [audioPlayerPosition, setAudioPlayerPosition] = useState({x: 3, y: 0});
 
     const [annotationTextDimensions, setAnnotationTextDimensions] = useState({width: 6, height: 2});
     const [annotationTextPosition, setAnnotationTextPosition] = useState({x: 3, y: 0});
