@@ -122,6 +122,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
     normalize: true,
     partialRender: true,
     responsive: true,
+    hideScrollbar: true,
     // vertical: true,
     barWidth: 1,
     pixelRatio: 1,
