@@ -42,7 +42,10 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const segmentColorAlpha = 0.4; // Alpha values 0-1
 
   const dispatch = useDispatch();
-  const { createActionTranscriptSegmentUpdate, createActionTranscriptSegmentCreate } = bindActionCreators(actionCreators, dispatch);
+  const { createActionTranscriptSegmentUpdate, 
+          createActionTranscriptSegmentCreate, 
+          createActionTranscriptSegmentsOverwrite, 
+          createActionHistoryDeleteSegmentActions } = bindActionCreators(actionCreators, dispatch);
 
   const windingUnit = 0.1;
   const windingSpeed = 10;
@@ -64,10 +67,15 @@ function AudioPlayer(props: AudioPlayerInterface) {
           addSegments();
           break;
          case "TRANSCRIPT_SEGMENT_DELETE":
+          createActionHistoryDeleteSegmentActions(transcript.segmentId);
           wavesurfer.current?.clearRegions();
           addSegments();
           break;
         case "TRANSCRIPT_SEGMENT_UPDATE":
+          wavesurfer.current?.clearRegions();
+          addSegments();
+          break;
+        case "TRANSCRIPT_SEGMENTS_OVERWRITE":
           wavesurfer.current?.clearRegions();
           addSegments();
           break;

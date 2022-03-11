@@ -32,6 +32,25 @@ const HistoryReducer = (state = initialState, action: any) => {
                 currentActionIndex: state.currentActionIndex + 1,
                 actionHistory: state.actionHistory
             };
+        case "HISTORY_DELETE_SEGMENT_ACTIONS":
+            var newCurrentActionIndex = state.currentActionIndex;
+            var newActionHistory = state.actionHistory.filter(a => a.segmentId !== action.payload);
+
+            console.log(newActionHistory)
+
+            while (newActionHistory[newCurrentActionIndex] === undefined) {
+                if (newCurrentActionIndex === -1) {
+                    break;
+                }
+                newCurrentActionIndex--;
+            }
+
+            console.log(newCurrentActionIndex)
+            return {
+                type: "HISTORY_DELETE_SEGMENT_ACTIONS",
+                currentActionIndex: newCurrentActionIndex,
+                actionHistory: newActionHistory
+            };
         default:
             return state;
     }

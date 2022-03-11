@@ -75,6 +75,15 @@ export const createActionTranscriptSegmentCreate = (segmentId: string, segmentSt
   }
 }
 
+export const createActionTranscriptSegmentsOverwrite = (segments: any[]) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_SEGMENTS_OVERWRITE",
+      payload: segments
+    })
+  }
+}
+
 export const createActionTranscriptSpeakerCreate = (speakerId: string, speakerLabel: string) => {
   return (dispatch: any) => {
     dispatch({
@@ -143,6 +152,15 @@ export const createActionHistoryRedoAction = () => {
     dispatch({
       type: "HISTORY_REDO_ACTION",
       payload: null
+    })
+  }
+}
+
+export const createActionHistoryDeleteSegmentActions = (segmentId: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "HISTORY_DELETE_SEGMENT_ACTIONS",
+      payload: segmentId
     })
   }
 }

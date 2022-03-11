@@ -1,5 +1,7 @@
-import { useSelector } from "react-redux";
+import { bindActionCreators } from "@reduxjs/toolkit";
+import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
+import { actionCreators } from "..";
 import { SegmentColors } from "../../enums/SegmentColors"
 import { TagColors } from "../../enums/TagColors";
 
@@ -8,7 +10,8 @@ const initialState = {
     segmentTags: null,
     textTags: null,
     unpairedTags: null,
-    segments: [] as any[]
+    segments: [] as any[],
+    segmentId: ""
 };
 
 const RecordingTranscriptReducer = (state = initialState, action: any) => {
@@ -105,11 +108,12 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     : segment
                 )
             };
-        case "TRANSCRIPT_SEGMENT_DELETE":
+        case "TRANSCRIPT_SEGMENT_DELETE":        
             return {
                 ...state,
                 type: "TRANSCRIPT_SEGMENT_DELETE",
-                segments: state.segments.filter((segment) => segment.id !== action.payload)
+                segments: state.segments.filter((segment) => segment.id !== action.payload),
+                segmentId: action.payload
             };
         case "TRANSCRIPT_SEGMENT_CREATE":
             return {
@@ -122,6 +126,12 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     speaker: "",
                     words: []
                 }]
+            };
+        case "TRANSCRIPT_SEGMENTS_OVERWRITE":
+            return {
+                ...state,
+                type: "TRANSCRIPT_SEGMENTS_OVERWRITE",
+                segments: action.payload
             };
         case "TRANSCRIPT_SPEAKER_CREATE":
             return {
