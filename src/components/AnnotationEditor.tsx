@@ -62,6 +62,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
   const editor = useSelector((state: any) => state.editor);
   const history = useSelector((state: any) => state.history);
+  const transcript = useSelector((state: any) => state.recordingTranscript);
 
   const [editorFocused, setEditorFocused] = useState(false);
   const [historyPrevious, setHistoryPrevious] = useState<History | null>(null);
@@ -81,6 +82,16 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   useEffect(() => {
     initializeText();
   }, []);
+
+  useEffect(() => {
+    switch (transcript.type) {
+      case "TRANSCRIPT_SEGMENT_DELETE":
+        if (history.actionHistory[history.currentActionIndex]?.segmentId === props.segmentId) {
+          slateEditor.redo();
+        }
+        break;
+    }
+  }, [transcript]);
 
   useEffect(() => {
     switch (history.type) {
