@@ -206,13 +206,13 @@ function AudioPlayer(props: AudioPlayerInterface) {
         wavesurfer.current?.on("region-update-end", (region) => {
           if (regionCreatedByUser === true) {
             regionCreatedByUser = false;
-            createActionTranscriptSegmentCreate(region.id, region.start, region.end);
             createActionTranscriptPlayerAddAction("CREATE", {id: region.id, start: region.start, end: region.end});
+            createActionTranscriptSegmentCreate(region.id, region.start, region.end);
             createActionHistoryAddAction("AudioPlayer", region.id);
           }
           else {
-            createActionTranscriptSegmentUpdate(region.id, region.start, region.end, undefined);
             createActionTranscriptPlayerAddAction("UPDATE", {id: region.id, start: region.start, end: region.end});
+            createActionTranscriptSegmentUpdate(region.id, region.start, region.end, undefined);
             createActionHistoryAddAction("AudioPlayer", region.id);
           }
         });

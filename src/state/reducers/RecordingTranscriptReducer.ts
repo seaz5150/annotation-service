@@ -175,6 +175,11 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 case "CREATE":
                     newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.segmentAfter.id);
                     break;
+                case "UPDATE":
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    segmentToRevert.start = currentHistoryAction.segmentBefore.start;
+                    segmentToRevert.end = currentHistoryAction.segmentBefore.end;
+                    break;
             }
 
             return {
@@ -195,6 +200,11 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                                         end: currentHistoryAction.segmentAfter.end,
                                         words: [], 
                                         speaker: ""});
+                    break;
+                case "UPDATE":
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    segmentToRevert.start = currentHistoryAction.segmentAfter.start;
+                    segmentToRevert.end = currentHistoryAction.segmentAfter.end;
                     break;
             }
 
