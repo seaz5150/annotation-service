@@ -156,7 +156,7 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             };
         case "TRANSCRIPT_PLAYER_ADD_ACTION":
             var segmentBefore: any;
-            if (action.payload.actionType === "UPDATE") {
+            if (action.payload.actionType === "UPDATE" || action.payload.actionType === "REMOVE") {
                 segmentBefore = state.segments.find(segment => segment.id === action.payload.segmentAfter.id);
             }
 
@@ -175,10 +175,16 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 case "CREATE":
                     newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.segmentAfter.id);
                     break;
+                case "REMOVE":
+                    console.log("joj")
+                    newSegments.push(currentHistoryAction.segmentBefore);
+                    break;
                 case "UPDATE":
                     var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
                     segmentToRevert.start = currentHistoryAction.segmentBefore.start;
                     segmentToRevert.end = currentHistoryAction.segmentBefore.end;
+                    segmentToRevert.segmentTags = currentHistoryAction.segmentBefore.segmentTags;
+                    segmentToRevert.speaker = currentHistoryAction.segmentBefore.speaker;
                     break;
             }
 
@@ -201,10 +207,15 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                                         words: [], 
                                         speaker: ""});
                     break;
+                case "REMOVE":
+                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.segmentAfter.id);
+                    break;
                 case "UPDATE":
                     var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
-                    segmentToRevert.start = currentHistoryAction.segmentAfter.start;
-                    segmentToRevert.end = currentHistoryAction.segmentAfter.end;
+                    segmentToRevert.start = currentHistoryAction.segmentAfter.start ? currentHistoryAction.segmentAfter.start : segmentToRevert.start;
+                    segmentToRevert.end = currentHistoryAction.segmentAfter.end ? currentHistoryAction.segmentAfter.end : segmentToRevert.end;
+                    segmentToRevert.segmentTags = currentHistoryAction.segmentAfter.segmentTags ? currentHistoryAction.segmentAfter.segmentTags : segmentToRevert.segmentTags;
+                    segmentToRevert.speaker = currentHistoryAction.segmentAfter.speaker ? currentHistoryAction.segmentAfter.speaker : segmentToRevert.speaker;
                     break;
             }
 

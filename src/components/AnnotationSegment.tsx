@@ -1,4 +1,4 @@
-import { getFormattedTime, rgbaToHexAlpha } from "../CommonUtilities";
+import { getFormattedTime, pressStopPropagation, rgbaToHexAlpha } from "../CommonUtilities";
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../state/index";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +17,12 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const { createActionAudioPlaySegment,
             createActionAudioPlayFromTime,
             createActionTranscriptSegmentDelete,
-            createActionTranscriptSegmentUpdate
+            createActionTranscriptSegmentUpdate,
+            createActionTranscriptPlayerAddAction,
+            createActionHistoryAddAction,
+            createActionTranscriptPlayerRedoAction,
+            createActionTranscriptPlayerUndoAction,
+            createActionEditorRequestHistorySave
           } = bindActionCreators(actionCreators, dispatch);
 
     const segment = useSelector((state: any) => state.recordingTranscript.segments.find((segment: { id: string; }) => segment.id === props.segmentId));
@@ -36,20 +41,29 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const [segmentTags, setSegmentTags] = useState((segment.segmentTags));
     const [segmentWords, setSegmentWords] = useState((segment.words));
 
+    const history = useSelector((state: any) => state.history);
+
     useEffect(() => {
         if (speakerId !== segment.speaker) {
+            createActionHistoryAddAction("AnnotationSegment", segment.id);
+            createActionTranscriptPlayerAddAction("UPDATE", {id: segment.id, speaker: speakerId});
             createActionTranscriptSegmentUpdate(segment.id, undefined, undefined, speakerId);
         }
     }, [speakerId]);
 
     useEffect(() => {
         if (segmentTags !== segment.segmentTags) {
+            createActionHistoryAddAction("AnnotationSegment", segment.id);
+            createActionTranscriptPlayerAddAction("UPDATE", {id: segment.id, segmentTags: segmentTags});
             createActionTranscriptSegmentUpdate(segment.id, undefined, undefined, undefined, segmentTags);
         }
     }, [segmentTags]);
 
-    const handlePress = (e: any) => {
-        e.stopPropagation();
+    const deleteSegmentTag = () => {
+        createActionHistoryAddAction("AnnotationSegment", segment.id);
+        createActionTranscriptPlayerAddAction("REMOVE", {id: segment.id});
+        createActionEditorRequestHistorySave(segment.id);
+        setTimeout(() => {createActionTranscriptSegmentDelete(segment.id)}, 10);
     }
 
     const setSegmentTag = (e: React.ChangeEvent<HTMLInputElement>, segmentTagId: string) => {
@@ -83,21 +97,21 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                         <div className="p-0 segment-play-panel">
                             <div className="segment-play-panel-content">
                                 <button className="strip-button-style segment-play-button"
-                                        onMouseDown={e => handlePress(e)}
+                                        onMouseDown={e => pressStopPropagation(e)}
                                         onClick={() => createActionAudioPlaySegment(segment.id)}
                                 >
                                     <i className="bi bi-play-fill"></i>
                                 </button>
                                 <div className="segment-times ps-1"
-                                        onMouseDown={e => handlePress(e)}
+                                        onMouseDown={e => pressStopPropagation(e)}
                                 >
                                     <button className="strip-button-style segment-time-start"
-                                        onMouseDown={e => handlePress(e)}
+                                        onMouseDown={e => pressStopPropagation(e)}
                                         onClick={() => createActionAudioPlayFromTime(Number(segment.start))}
                                     >{getFormattedTime(Number(segment.start))}</button>
                                 
                                     <button className="strip-button-style segment-time-end"
-                                        onMouseDown={e => handlePress(e)}
+                                        onMouseDown={e => pressStopPropagation(e)}
                                         onClick={() => createActionAudioPlayFromTime(Number(segment.end))}
                                     >{getFormattedTime(Number(segment.end))}</button>
                                 </div>
@@ -111,8 +125,8 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                             />
                             <div className="segment-tag-bar">
                                 <select className="form-select form-select-sm custom-dropdown speaker-select"
-                                        onMouseDown={e => handlePress(e)}
-                                        value={speakerId}
+                                        onMouseDown={e => pressStopPropagation(e)}
+                                        value={segment.speaker}
                                         onChange={e => setSpeakerId(e.target.value)}
                                 >
                                     <option value=""></option>
@@ -125,16 +139,16 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                 <div className="dropdown d-flex align-items-center">
                                     <span className="segment-label-counter pe-2"></span>
                                     <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"
-                                            onMouseDown={e => handlePress(e)}
+                                            onMouseDown={e => pressStopPropagation(e)}
                                             type="button" id="dropdownMenuButton1"
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false"
                                     >
-                                        {availableSegmentTags && "Segment labels " + (segmentTags ? segmentTags.length : "0") + "/" + availableSegmentTags.length}
+                                        {availableSegmentTags && "Segment labels " + (segment.segmentTags ? segment.segmentTags.length : "0") + "/" + availableSegmentTags.length}
                                     </button>
                                     <ul className="dropdown-menu dropdown-menu-end segment-label-dropdown-menu"
                                         aria-labelledby="dropdownMenuButton1" 
-                                        onMouseDown={e => handlePress(e)}
+                                        onMouseDown={e => pressStopPropagation(e)}
                                     >
                                         <li>
                                             {availableSegmentTags &&
@@ -143,8 +157,8 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                                         {availableSegmentTag.label}
                                                         <input className="form-check-input custom-checkbox col-2 ms-auto me-3" 
                                                                type="checkbox"
-                                                               checked={segmentTags ? Array.from(segmentTags).some((tag: any) => tag === availableSegmentTag.id) : false}
-                                                               onMouseDown={e => handlePress(e)}
+                                                               checked={segment.segmentTags ? Array.from(segment.segmentTags).some((tag: any) => tag === availableSegmentTag.id) : false}
+                                                               onMouseDown={e => pressStopPropagation(e)}
                                                                onChange={e => setSegmentTag(e, availableSegmentTag.id)}
                                                                key={Math.random()}
                                                         />
@@ -156,8 +170,8 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                 </div>
                 
                                 <button className="strip-button-style segment-delete-button"
-                                        onMouseDown={e => handlePress(e)}
-                                        onClick={() => createActionTranscriptSegmentDelete(segment.id)}
+                                        onMouseDown={e => pressStopPropagation(e)}
+                                        onClick={() => deleteSegmentTag()}
                                 >
                                     <i className="bi bi-x"></i>
                                 </button>

@@ -74,6 +74,9 @@ function AudioPlayer(props: AudioPlayerInterface) {
         if (historyItem.componentName === "AudioPlayer") {
           createActionTranscriptPlayerRedoAction();
         }
+        if (historyItem.componentName === "AnnotationSegment") {
+          createActionTranscriptPlayerRedoAction();
+        }
         break;
       case "HISTORY_UNDO_ACTION":
         var historyItem = history.actionHistory[history.currentActionIndex + 1];
@@ -81,6 +84,9 @@ function AudioPlayer(props: AudioPlayerInterface) {
           // We could be undoing the creation of a segment, so save the editor history first.
           createActionEditorRequestHistorySave(historyItem.segmentId);
           setTimeout(() => {createActionTranscriptPlayerUndoAction()}, 10);
+        }
+        if (historyItem.componentName === "AnnotationSegment") {
+          createActionTranscriptPlayerUndoAction();
         }
         break;
     }
