@@ -5,13 +5,21 @@ import { actionCreators } from "..";
 import { SegmentColors } from "../../enums/SegmentColors"
 import { TagColors } from "../../enums/TagColors";
 
+type PlayerAction = {
+    type: string,
+    segmentBefore?: any,
+    segmentAfter?: any
+};
+
 const initialState = {
     speakerTags: [] as any[],
     segmentTags: null,
     textTags: null,
     unpairedTags: null,
     segments: [] as any[],
-    segmentId: ""
+    segmentId: "",
+    playerActionHistory: [] as PlayerAction[],
+    playerActionHistoryIndex: -1
 };
 
 const RecordingTranscriptReducer = (state = initialState, action: any) => {
@@ -86,6 +94,7 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             }
 
             return {
+                ...state,
                 speakerTags: speakerTags,
                 segmentTags: action.payload.segmentTags,
                 textTags: textTags,
@@ -144,6 +153,56 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                         }
                     : tag
                 )
+            };
+        case "TRANSCRIPT_PLAYER_ADD_ACTION":
+            var segmentBefore: any;
+            if (action.payload.actionType === "UPDATE") {
+                segmentBefore = state.segments.find(segment => segment.id === action.payload.segmentAfter.id);
+            }
+
+            return {
+                ...state,
+                type: "TRANSCRIPT_PLAYER_ADD_ACTION",
+                playerActionHistory: [...state.playerActionHistory, {type: action.payload.actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter}],
+                playerActionHistoryIndex: state.playerActionHistoryIndex + 1
+            };
+        case "TRANSCRIPT_PLAYER_UNDO_ACTION":
+            if (state.playerActionHistoryIndex === -1) return state;
+            var currentHistoryAction = state.playerActionHistory[state.playerActionHistoryIndex];
+
+            var newSegments = JSON.parse(JSON.stringify(state.segments));
+            switch (currentHistoryAction.type) {
+                case "CREATE":
+                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.segmentAfter.id);
+                    break;
+            }
+
+            return {
+                ...state,
+                type: "TRANSCRIPT_PLAYER_UNDO_ACTION",
+                playerActionHistoryIndex: state.playerActionHistoryIndex - 1,
+                segments: newSegments
+            };
+        case "TRANSCRIPT_PLAYER_REDO_ACTION":
+            if (state.playerActionHistoryIndex === state.playerActionHistory.length - 1) return state;
+            var currentHistoryAction = state.playerActionHistory[state.playerActionHistoryIndex + 1];
+
+            var newSegments = JSON.parse(JSON.stringify(state.segments));
+            switch (currentHistoryAction.type) {
+                case "CREATE":
+                    newSegments.push({id: currentHistoryAction.segmentAfter.id, 
+                                        start: currentHistoryAction.segmentAfter.start, 
+                                        end: currentHistoryAction.segmentAfter.end,
+                                        words: [], 
+                                        speaker: ""});
+                    break;
+            }
+
+            return {
+                ...state,
+                type: "TRANSCRIPT_PLAYER_UNDO_ACTION",
+                playerActionHistoryIndex: state.playerActionHistoryIndex + 1,
+                segments: newSegments
             };
         default:
             return state;

@@ -12,6 +12,7 @@ const HistoryReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case "HISTORY_ADD_ACTION":
             return {
+                ...state,
                 actionHistory: [...state.actionHistory, {componentName: action.payload.componentName, segmentId: action.payload.segmentId}],
                 currentActionIndex: state.currentActionIndex + 1,
                 type: "HISTORY_ADD_ACTION"
@@ -20,6 +21,7 @@ const HistoryReducer = (state = initialState, action: any) => {
             if (state.currentActionIndex === -1) return state;
 
             return {
+                ...state,
                 type: "HISTORY_UNDO_ACTION",
                 currentActionIndex: state.currentActionIndex - 1,
                 actionHistory: state.actionHistory
@@ -28,28 +30,10 @@ const HistoryReducer = (state = initialState, action: any) => {
             if (state.currentActionIndex === state.actionHistory.length - 1) return state;
 
             return {
+                ...state,
                 type: "HISTORY_REDO_ACTION",
                 currentActionIndex: state.currentActionIndex + 1,
                 actionHistory: state.actionHistory
-            };
-        case "HISTORY_DELETE_SEGMENT_ACTIONS":
-            var newCurrentActionIndex = state.currentActionIndex;
-            var newActionHistory = state.actionHistory.filter(a => a.segmentId !== action.payload);
-
-            console.log(newActionHistory)
-
-            while (newActionHistory[newCurrentActionIndex] === undefined) {
-                if (newCurrentActionIndex === -1) {
-                    break;
-                }
-                newCurrentActionIndex--;
-            }
-
-            console.log(newCurrentActionIndex)
-            return {
-                type: "HISTORY_DELETE_SEGMENT_ACTIONS",
-                currentActionIndex: newCurrentActionIndex,
-                actionHistory: newActionHistory
             };
         default:
             return state;

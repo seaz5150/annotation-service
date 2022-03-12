@@ -99,6 +99,36 @@ export const createActionTranscriptSpeakerUpdate = (speakerId: string, speakerLa
   }
 }
 
+export const createActionTranscriptPlayerAddAction = (actionType: string, segmentAfter: any) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_PLAYER_ADD_ACTION",
+      payload: {
+        actionType: actionType,
+        segmentAfter: segmentAfter
+      }
+    })
+  }
+}
+
+export const createActionTranscriptPlayerUndoAction = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_PLAYER_UNDO_ACTION",
+      payload: null
+    })
+  }
+}
+
+export const createActionTranscriptPlayerRedoAction = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_PLAYER_REDO_ACTION",
+      payload: null
+    })
+  }
+}
+
 export const createActionEditorAddSectionTag = (tagId: string) => {
   return (dispatch: any) => {
     dispatch({
@@ -113,6 +143,27 @@ export const createActionEditorAddUnpairedTag = (tagId: string) => {
     dispatch({
       type: "EDITOR_ADD_UNPAIRED_TAG",
       payload: tagId
+    })
+  }
+}
+
+export const createActionEditorRequestHistorySave = (segmentId: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "EDITOR_REQUEST_HISTORY_SAVE",
+      payload: segmentId
+    })
+  }
+}
+
+export const createActionEditorSaveHistory = (segmentId: string, history: any) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "EDITOR_SAVE_HISTORY",
+      payload: {
+        segmentId: segmentId,
+        history: history
+      }
     })
   }
 }
@@ -143,15 +194,6 @@ export const createActionHistoryRedoAction = () => {
     dispatch({
       type: "HISTORY_REDO_ACTION",
       payload: null
-    })
-  }
-}
-
-export const createActionHistoryDeleteSegmentActions = (segmentId: string) => {
-  return (dispatch: any) => {
-    dispatch({
-      type: "HISTORY_DELETE_SEGMENT_ACTIONS",
-      payload: segmentId
     })
   }
 }

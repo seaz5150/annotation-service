@@ -35,8 +35,6 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const [currentZoom, setCurrentZoom] = useState();
   const [currentTime, setCurrentTime] = useState<number | undefined>(undefined);
   const [durationTime, setDurationTime] = useState<number | undefined>(undefined);
-  const [actionHistory, setActionHistory] = useState([] as Action[]);
-  const [currentActionIndex, setCurrentActionIndex] = useState(-1);
 
   const intervalRef = useRef<any>(null);
 
@@ -54,8 +52,11 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const dispatch = useDispatch();
   const { createActionTranscriptSegmentUpdate, 
           createActionTranscriptSegmentCreate,
-          createActionHistoryDeleteSegmentActions,
-          createActionHistoryAddAction } = bindActionCreators(actionCreators, dispatch);
+          createActionHistoryAddAction,
+          createActionTranscriptPlayerAddAction,
+          createActionTranscriptPlayerUndoAction,
+          createActionTranscriptPlayerRedoAction,
+          createActionEditorRequestHistorySave } = bindActionCreators(actionCreators, dispatch);
 
   const windingUnit = 0.1;
   const windingSpeed = 10;
@@ -66,29 +67,20 @@ function AudioPlayer(props: AudioPlayerInterface) {
 
   const segmentRefs = useSelector((state: any) => state.references.segmentRefs);
 
-  const pushAction = (type: string, segmentBefore?: any, segmentAfter?: any) => {
-    createActionHistoryAddAction("AudioPlayer");
-    switch (type) {
-      case "CREATE":
-        actionHistory.push({type: type, segmentAfter: segmentAfter});
-        break;
-      case "UPDATE":
-        actionHistory.push({type: type, segmentBefore: segmentBefore, segmentAfter: segmentAfter});
-        break;
-    }
-    setCurrentActionIndex(currentActionIndex + 1);
-  };
-
   useEffect(() => {
     switch (history.type) {
       case "HISTORY_REDO_ACTION":
         var historyItem = history.actionHistory[history.currentActionIndex];
-        if (historyItem.moduleName === "AudioPlayer") {
+        if (historyItem.componentName === "AudioPlayer") {
+          createActionTranscriptPlayerRedoAction();
         }
         break;
       case "HISTORY_UNDO_ACTION":
         var historyItem = history.actionHistory[history.currentActionIndex + 1];
-        if (historyItem.moduleName === "AudioPlayer") {
+        if (historyItem.componentName === "AudioPlayer") {
+          // We could be undoing the creation of a segment, so save the editor history first.
+          createActionEditorRequestHistorySave(historyItem.segmentId);
+          setTimeout(() => {createActionTranscriptPlayerUndoAction()}, 10);
         }
         break;
     }
@@ -105,11 +97,18 @@ function AudioPlayer(props: AudioPlayerInterface) {
           addSegments();
           break;
          case "TRANSCRIPT_SEGMENT_DELETE":
-          createActionHistoryDeleteSegmentActions(transcript.segmentId);
           wavesurfer.current?.clearRegions();
           addSegments();
           break;
         case "TRANSCRIPT_SEGMENT_UPDATE":
+          wavesurfer.current?.clearRegions();
+          addSegments();
+          break;
+        case "TRANSCRIPT_PLAYER_UNDO_ACTION":
+          wavesurfer.current?.clearRegions();
+          addSegments();
+          break;
+        case "TRANSCRIPT_PLAYER_REDO_ACTION":
           wavesurfer.current?.clearRegions();
           addSegments();
           break;
@@ -188,25 +187,6 @@ function AudioPlayer(props: AudioPlayerInterface) {
   });
 
   useEffect(() => {
-
-    wavesurfer.current?.once("region-update-end", (region) => processRegionUpdate(region));
-  }, [segments]);
-
-  const processRegionUpdate = (region: any) => {
-    if (regionCreatedByUser === true) {
-      regionCreatedByUser = false;
-      createActionTranscriptSegmentCreate(region.id, region.start, region.end);
-      pushAction("CREATE", undefined, {id: region.id, start: region.start, end: region.end});
-    }
-    else {
-      let segmentBeforeUpdate = segments.find((segment: { id: any; }) => segment.id === region.id);
-      console.log(segmentBeforeUpdate)
-      pushAction("UPDATE", {id: region.id, start: segmentBeforeUpdate.start, end: segmentBeforeUpdate.end}, {id: region.id, start: region.start, end: region.end});
-      createActionTranscriptSegmentUpdate(region.id, region.start, region.end, undefined);
-    }
-  };
-
-  useEffect(() => {
     setPlaying(false);
 
     const options = formWaveSurferOptions(waveformRef.current);
@@ -222,6 +202,20 @@ function AudioPlayer(props: AudioPlayerInterface) {
         setVolume(volume);
 
         setDurationTime(wavesurfer.current?.getDuration());
+
+        wavesurfer.current?.on("region-update-end", (region) => {
+          if (regionCreatedByUser === true) {
+            regionCreatedByUser = false;
+            createActionTranscriptSegmentCreate(region.id, region.start, region.end);
+            createActionTranscriptPlayerAddAction("CREATE", {id: region.id, start: region.start, end: region.end});
+            createActionHistoryAddAction("AudioPlayer", region.id);
+          }
+          else {
+            createActionTranscriptSegmentUpdate(region.id, region.start, region.end, undefined);
+            createActionTranscriptPlayerAddAction("UPDATE", {id: region.id, start: region.start, end: region.end});
+            createActionHistoryAddAction("AudioPlayer", region.id);
+          }
+        });
 
         wavesurfer.current?.on("region-created", (region) => {
           const newRegionIdPrefix = "wavesurfer_";

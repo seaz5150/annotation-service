@@ -44,7 +44,8 @@ interface AnnotationEditorInterface {
 
 const AnnotationEditor = (props: AnnotationEditorInterface) => {
   const dispatch = useDispatch();
-  const { createActionHistoryAddAction } = bindActionCreators(actionCreators, dispatch);
+  const { createActionHistoryAddAction,
+          createActionEditorSaveHistory } = bindActionCreators(actionCreators, dispatch);
         
   let initialValue: Descendant[] = [
     {
@@ -80,19 +81,30 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
   useEffect(() => {
     initializeText();
+    if (editor.editorHistories) {
+      let foundHistory;
+      if (foundHistory = editor.editorHistories.find((item: { id: string; }) => item.id === props.segmentId)) {
+        HistoryEditor.withoutSaving(slateEditor, () => Transforms.select(slateEditor, {
+          anchor: {path: [0,0], offset: 0},
+          focus: {path: [0,0], offset: 0},
+        }));
+        setHistoryPrevious(JSON.parse(JSON.stringify(foundHistory.history)));
+        slateEditor.history = foundHistory.history;
+      }
+    }
   }, []);
 
   useEffect(() => {
     switch (history.type) {
       case "HISTORY_REDO_ACTION":
         var historyItem = history.actionHistory[history.currentActionIndex];
-        if (historyItem.moduleName === "AnnotationEditor" && historyItem.segmentId === props.segmentId) {
+        if (historyItem.componentName === "AnnotationEditor" && historyItem.segmentId === props.segmentId) {
           slateEditor.redo();
         }
         break;
       case "HISTORY_UNDO_ACTION":
         var historyItem = history.actionHistory[history.currentActionIndex + 1];
-        if (historyItem.moduleName === "AnnotationEditor" && historyItem.segmentId === props.segmentId) {
+        if (historyItem.componentName === "AnnotationEditor" && historyItem.segmentId === props.segmentId) {
           slateEditor.undo();
         }
         break;
@@ -107,6 +119,11 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       case "EDITOR_ADD_UNPAIRED_TAG":
         insertUnpairedTag(editor.tagId);
         break;
+      case "EDITOR_REQUEST_HISTORY_SAVE":
+        if (editor.segmentId === props.segmentId) {
+          createActionEditorSaveHistory(props.segmentId, slateEditor.history);
+        }
+        break;
     }
   }, [editor]);
 
@@ -115,7 +132,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
     let currentTag;
     let lastTag;
 
-    if (words.length === 0) {
+    if (words && words.length === 0) {
       paragraphChildren.push({text: ""});
     }
 
