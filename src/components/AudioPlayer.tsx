@@ -16,6 +16,12 @@ import sizeMe from "react-sizeme";
 
 const url = "https://audio.jukehost.co.uk/CQlpPUaaYwtJknyv7cgNCQxADk0OVCJr.wav";
 
+type Action = {
+  type: string,
+  segmentBefore?: any,
+  segmentAfter?: any
+};
+
 interface AudioPlayerInterface {
   updateElementGridSize: any,
   size: any
@@ -29,6 +35,9 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const [currentZoom, setCurrentZoom] = useState();
   const [currentTime, setCurrentTime] = useState<number | undefined>(undefined);
   const [durationTime, setDurationTime] = useState<number | undefined>(undefined);
+  const [actionHistory, setActionHistory] = useState([] as Action[]);
+  const [currentActionIndex, setCurrentActionIndex] = useState(-1);
+
   const intervalRef = useRef<any>(null);
 
   const [audioReady, setAudioReady] = useState(false);
@@ -38,14 +47,15 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const transcript = useSelector((state: any) => state.recordingTranscript);
   const segments = transcript.segments;
   const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
+  const history = useSelector((state: any) => state.history);
 
   const segmentColorAlpha = 0.4; // Alpha values 0-1
 
   const dispatch = useDispatch();
   const { createActionTranscriptSegmentUpdate, 
-          createActionTranscriptSegmentCreate, 
-          createActionTranscriptSegmentsOverwrite, 
-          createActionHistoryDeleteSegmentActions } = bindActionCreators(actionCreators, dispatch);
+          createActionTranscriptSegmentCreate,
+          createActionHistoryDeleteSegmentActions,
+          createActionHistoryAddAction } = bindActionCreators(actionCreators, dispatch);
 
   const windingUnit = 0.1;
   const windingSpeed = 10;
@@ -55,6 +65,34 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const { width, height } = props.size;
 
   const segmentRefs = useSelector((state: any) => state.references.segmentRefs);
+
+  const pushAction = (type: string, segmentBefore?: any, segmentAfter?: any) => {
+    createActionHistoryAddAction("AudioPlayer");
+    switch (type) {
+      case "CREATE":
+        actionHistory.push({type: type, segmentAfter: segmentAfter});
+        break;
+      case "UPDATE":
+        actionHistory.push({type: type, segmentBefore: segmentBefore, segmentAfter: segmentAfter});
+        break;
+    }
+    setCurrentActionIndex(currentActionIndex + 1);
+  };
+
+  useEffect(() => {
+    switch (history.type) {
+      case "HISTORY_REDO_ACTION":
+        var historyItem = history.actionHistory[history.currentActionIndex];
+        if (historyItem.moduleName === "AudioPlayer") {
+        }
+        break;
+      case "HISTORY_UNDO_ACTION":
+        var historyItem = history.actionHistory[history.currentActionIndex + 1];
+        if (historyItem.moduleName === "AudioPlayer") {
+        }
+        break;
+    }
+  }, [history]);
 
   useEffect(() => {
     props.updateElementGridSize("AudioPlayer", height);
@@ -72,10 +110,6 @@ function AudioPlayer(props: AudioPlayerInterface) {
           addSegments();
           break;
         case "TRANSCRIPT_SEGMENT_UPDATE":
-          wavesurfer.current?.clearRegions();
-          addSegments();
-          break;
-        case "TRANSCRIPT_SEGMENTS_OVERWRITE":
           wavesurfer.current?.clearRegions();
           addSegments();
           break;
@@ -154,6 +188,25 @@ function AudioPlayer(props: AudioPlayerInterface) {
   });
 
   useEffect(() => {
+
+    wavesurfer.current?.once("region-update-end", (region) => processRegionUpdate(region));
+  }, [segments]);
+
+  const processRegionUpdate = (region: any) => {
+    if (regionCreatedByUser === true) {
+      regionCreatedByUser = false;
+      createActionTranscriptSegmentCreate(region.id, region.start, region.end);
+      pushAction("CREATE", undefined, {id: region.id, start: region.start, end: region.end});
+    }
+    else {
+      let segmentBeforeUpdate = segments.find((segment: { id: any; }) => segment.id === region.id);
+      console.log(segmentBeforeUpdate)
+      pushAction("UPDATE", {id: region.id, start: segmentBeforeUpdate.start, end: segmentBeforeUpdate.end}, {id: region.id, start: region.start, end: region.end});
+      createActionTranscriptSegmentUpdate(region.id, region.start, region.end, undefined);
+    }
+  };
+
+  useEffect(() => {
     setPlaying(false);
 
     const options = formWaveSurferOptions(waveformRef.current);
@@ -170,19 +223,9 @@ function AudioPlayer(props: AudioPlayerInterface) {
 
         setDurationTime(wavesurfer.current?.getDuration());
 
-        wavesurfer.current?.on("region-update-end", (region) => {
-          if (regionCreatedByUser === true) {
-            regionCreatedByUser = false;
-            createActionTranscriptSegmentCreate(region.id, region.start, region.end);
-          }
-          else {
-            createActionTranscriptSegmentUpdate(region.id, region.start, region.end, undefined);
-          }
-        });
-
         wavesurfer.current?.on("region-created", (region) => {
-          const newRegionIdBeginning = "wavesurfer_";
-          if ((region.id).substr(0, newRegionIdBeginning.length) === newRegionIdBeginning) {
+          const newRegionIdPrefix = "wavesurfer_";
+          if ((region.id).substr(0, newRegionIdPrefix.length) === newRegionIdPrefix) {
             region.color = "#dadada" + rgbaToHexAlpha(segmentColorAlpha);
             region.id = uuidv4();
             regionCreatedByUser = true;

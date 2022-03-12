@@ -127,12 +127,6 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     words: []
                 }]
             };
-        case "TRANSCRIPT_SEGMENTS_OVERWRITE":
-            return {
-                ...state,
-                type: "TRANSCRIPT_SEGMENTS_OVERWRITE",
-                segments: action.payload
-            };
         case "TRANSCRIPT_SPEAKER_CREATE":
             return {
                 ...state,

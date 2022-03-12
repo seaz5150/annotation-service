@@ -75,15 +75,6 @@ export const createActionTranscriptSegmentCreate = (segmentId: string, segmentSt
   }
 }
 
-export const createActionTranscriptSegmentsOverwrite = (segments: any[]) => {
-  return (dispatch: any) => {
-    dispatch({
-      type: "TRANSCRIPT_SEGMENTS_OVERWRITE",
-      payload: segments
-    })
-  }
-}
-
 export const createActionTranscriptSpeakerCreate = (speakerId: string, speakerLabel: string) => {
   return (dispatch: any) => {
     dispatch({

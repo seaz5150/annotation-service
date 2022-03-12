@@ -62,7 +62,6 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
   const editor = useSelector((state: any) => state.editor);
   const history = useSelector((state: any) => state.history);
-  const transcript = useSelector((state: any) => state.recordingTranscript);
 
   const [editorFocused, setEditorFocused] = useState(false);
   const [historyPrevious, setHistoryPrevious] = useState<History | null>(null);
@@ -84,24 +83,16 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   }, []);
 
   useEffect(() => {
-    switch (transcript.type) {
-      case "TRANSCRIPT_SEGMENT_DELETE":
-        if (history.actionHistory[history.currentActionIndex]?.segmentId === props.segmentId) {
-          slateEditor.redo();
-        }
-        break;
-    }
-  }, [transcript]);
-
-  useEffect(() => {
     switch (history.type) {
       case "HISTORY_REDO_ACTION":
-        if (history.actionHistory[history.currentActionIndex]?.segmentId === props.segmentId) {
+        var historyItem = history.actionHistory[history.currentActionIndex];
+        if (historyItem.moduleName === "AnnotationEditor" && historyItem.segmentId === props.segmentId) {
           slateEditor.redo();
         }
         break;
       case "HISTORY_UNDO_ACTION":
-        if (history.actionHistory[history.currentActionIndex + 1]?.segmentId === props.segmentId) {
+        var historyItem = history.actionHistory[history.currentActionIndex + 1];
+        if (historyItem.moduleName === "AnnotationEditor" && historyItem.segmentId === props.segmentId) {
           slateEditor.undo();
         }
         break;
