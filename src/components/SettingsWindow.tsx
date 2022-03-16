@@ -23,7 +23,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
             <div className="card-header d-flex justify-content-between">
                 Settings
             </div>
-            <div className="row mt-1 ms-4 me-4">
+            <div className="row mt-2 ms-4 me-4">
                 <div className="settings-column col">
                     <p className="title-small pb-1">Shortcuts</p>
                 </div>
