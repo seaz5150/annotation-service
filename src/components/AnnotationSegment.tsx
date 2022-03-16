@@ -22,7 +22,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
             createActionHistoryAddAction,
             createActionTranscriptPlayerRedoAction,
             createActionTranscriptPlayerUndoAction,
-            createActionEditorRequestHistorySave
+            createActionEditorRequestDataSave
           } = bindActionCreators(actionCreators, dispatch);
 
     const segment = useSelector((state: any) => state.recordingTranscript.segments.find((segment: { id: string; }) => segment.id === props.segmentId));
@@ -62,7 +62,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const deleteSegmentTag = () => {
         createActionHistoryAddAction("AnnotationSegment", segment.id);
         createActionTranscriptPlayerAddAction("REMOVE", {id: segment.id});
-        createActionEditorRequestHistorySave(segment.id);
+        createActionEditorRequestDataSave(segment.id);
         setTimeout(() => {createActionTranscriptSegmentDelete(segment.id)}, 10);
     }
 

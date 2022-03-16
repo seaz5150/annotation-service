@@ -45,7 +45,7 @@ interface AnnotationEditorInterface {
 const AnnotationEditor = (props: AnnotationEditorInterface) => {
   const dispatch = useDispatch();
   const { createActionHistoryAddAction,
-          createActionEditorSaveHistory } = bindActionCreators(actionCreators, dispatch);
+          createActionEditorSaveData } = bindActionCreators(actionCreators, dispatch);
         
   let initialValue: Descendant[] = [
     {
@@ -81,15 +81,16 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
   useEffect(() => {
     initializeText();
-    if (editor.editorHistories) {
-      let foundHistory;
-      if (foundHistory = editor.editorHistories.find((item: { id: string; }) => item.id === props.segmentId)) {
+    if (editor.editorData) {
+      let foundData;
+      if (foundData = editor.editorData.find((item: { id: string; }) => item.id === props.segmentId)) {
         HistoryEditor.withoutSaving(slateEditor, () => Transforms.select(slateEditor, {
           anchor: {path: [0,0], offset: 0},
           focus: {path: [0,0], offset: 0},
         }));
-        setHistoryPrevious(JSON.parse(JSON.stringify(foundHistory.history)));
-        slateEditor.history = foundHistory.history;
+        setValue(foundData.value);
+        setHistoryPrevious(JSON.parse(JSON.stringify(foundData.history)));
+        slateEditor.history = foundData.history;
       }
     }
   }, []);
@@ -119,9 +120,9 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       case "EDITOR_ADD_UNPAIRED_TAG":
         insertUnpairedTag(editor.tagId);
         break;
-      case "EDITOR_REQUEST_HISTORY_SAVE":
+      case "EDITOR_REQUEST_DATA_SAVE":
         if (editor.segmentId === props.segmentId) {
-          createActionEditorSaveHistory(props.segmentId, slateEditor.history);
+          createActionEditorSaveData(props.segmentId, slateEditor.history, value);
         }
         break;
     }

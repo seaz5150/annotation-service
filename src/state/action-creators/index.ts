@@ -147,22 +147,23 @@ export const createActionEditorAddUnpairedTag = (tagId: string) => {
   }
 }
 
-export const createActionEditorRequestHistorySave = (segmentId: string) => {
+export const createActionEditorRequestDataSave = (segmentId: string) => {
   return (dispatch: any) => {
     dispatch({
-      type: "EDITOR_REQUEST_HISTORY_SAVE",
+      type: "EDITOR_REQUEST_DATA_SAVE",
       payload: segmentId
     })
   }
 }
 
-export const createActionEditorSaveHistory = (segmentId: string, history: any) => {
+export const createActionEditorSaveData = (segmentId: string, history: any, value: any) => {
   return (dispatch: any) => {
     dispatch({
-      type: "EDITOR_SAVE_HISTORY",
+      type: "EDITOR_SAVE_DATA",
       payload: {
         segmentId: segmentId,
-        history: history
+        history: history,
+        value: value
       }
     })
   }

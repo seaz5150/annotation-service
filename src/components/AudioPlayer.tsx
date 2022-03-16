@@ -56,7 +56,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
           createActionTranscriptPlayerAddAction,
           createActionTranscriptPlayerUndoAction,
           createActionTranscriptPlayerRedoAction,
-          createActionEditorRequestHistorySave } = bindActionCreators(actionCreators, dispatch);
+          createActionEditorRequestDataSave } = bindActionCreators(actionCreators, dispatch);
 
   const windingUnit = 0.1;
   const windingSpeed = 10;
@@ -82,7 +82,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
         var historyItem = history.actionHistory[history.currentActionIndex + 1];
         if (historyItem.componentName === "AudioPlayer") {
           // We could be undoing the creation of a segment, so save the editor history first.
-          createActionEditorRequestHistorySave(historyItem.segmentId);
+          createActionEditorRequestDataSave(historyItem.segmentId);
           setTimeout(() => {createActionTranscriptPlayerUndoAction()}, 10);
         }
         if (historyItem.componentName === "AnnotationSegment") {

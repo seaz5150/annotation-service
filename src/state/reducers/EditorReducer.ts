@@ -1,7 +1,7 @@
 const initialState = {
     tagId: null,
     segmentId: null,
-    editorHistories: [] as any[]
+    editorData: [] as any[]
 };
 
 const EditorReducer = (state = initialState, action: any) => {
@@ -18,26 +18,27 @@ const EditorReducer = (state = initialState, action: any) => {
                 tagId: action.payload,
                 type: "EDITOR_ADD_UNPAIRED_TAG"
             };
-        case "EDITOR_REQUEST_HISTORY_SAVE":
+        case "EDITOR_REQUEST_DATA_SAVE":
             return {
                 ...state,
                 segmentId: action.payload,
-                type: "EDITOR_REQUEST_HISTORY_SAVE"
+                type: "EDITOR_REQUEST_DATA_SAVE"
             };
-        case "EDITOR_SAVE_HISTORY":   
+        case "EDITOR_SAVE_DATA":   
             if (action.payload.history.undos.length === 0 && action.payload.history.redos.length === 0) {
                 return state;
             }
 
             var itemToUpdate;
-            if (itemToUpdate = state.editorHistories.find((item: { id: any; }) => item.id === action.payload.segmentId)) {
+            if (itemToUpdate = state.editorData.find((item: { id: any; }) => item.id === action.payload.segmentId)) {
                 itemToUpdate.history = action.payload.history;
+                itemToUpdate.value = action.payload.value;
             }
 
             return {
                 ...state,
-                editorHistories: itemToUpdate ? state.editorHistories : [...state.editorHistories, {id: action.payload.segmentId, history: action.payload.history}],
-                type: "EDITOR_SAVE_HISTORY"
+                editorData: itemToUpdate ? state.editorData : [...state.editorData, {id: action.payload.segmentId, history: action.payload.history, value: action.payload.value}],
+                type: "EDITOR_SAVE_DATA"
             };
         default:
             return state;

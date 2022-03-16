@@ -176,15 +176,19 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.segmentAfter.id);
                     break;
                 case "REMOVE":
-                    console.log("joj")
                     newSegments.push(currentHistoryAction.segmentBefore);
                     break;
                 case "UPDATE":
                     var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
-                    segmentToRevert.start = currentHistoryAction.segmentBefore.start;
-                    segmentToRevert.end = currentHistoryAction.segmentBefore.end;
-                    segmentToRevert.segmentTags = currentHistoryAction.segmentBefore.segmentTags;
-                    segmentToRevert.speaker = currentHistoryAction.segmentBefore.speaker;
+                    if (segmentToRevert) {
+                        segmentToRevert.start = currentHistoryAction.segmentBefore.start;
+                        segmentToRevert.end = currentHistoryAction.segmentBefore.end;
+                        segmentToRevert.segmentTags = currentHistoryAction.segmentBefore.segmentTags;
+                        segmentToRevert.speaker = currentHistoryAction.segmentBefore.speaker;
+                    }
+                    else {
+                        console.log("ERROR: Segment to undo update of was not found.")
+                    }
                     break;
             }
 
@@ -212,10 +216,15 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     break;
                 case "UPDATE":
                     var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
-                    segmentToRevert.start = currentHistoryAction.segmentAfter.start ? currentHistoryAction.segmentAfter.start : segmentToRevert.start;
-                    segmentToRevert.end = currentHistoryAction.segmentAfter.end ? currentHistoryAction.segmentAfter.end : segmentToRevert.end;
-                    segmentToRevert.segmentTags = currentHistoryAction.segmentAfter.segmentTags ? currentHistoryAction.segmentAfter.segmentTags : segmentToRevert.segmentTags;
-                    segmentToRevert.speaker = currentHistoryAction.segmentAfter.speaker ? currentHistoryAction.segmentAfter.speaker : segmentToRevert.speaker;
+                    if (segmentToRevert) {
+                        segmentToRevert.start = currentHistoryAction.segmentAfter.start ? currentHistoryAction.segmentAfter.start : segmentToRevert.start;
+                        segmentToRevert.end = currentHistoryAction.segmentAfter.end ? currentHistoryAction.segmentAfter.end : segmentToRevert.end;
+                        segmentToRevert.segmentTags = currentHistoryAction.segmentAfter.segmentTags ? currentHistoryAction.segmentAfter.segmentTags : segmentToRevert.segmentTags;
+                        segmentToRevert.speaker = currentHistoryAction.segmentAfter.speaker ? currentHistoryAction.segmentAfter.speaker : segmentToRevert.speaker;
+                    }
+                    else {
+                        console.log("ERROR: Segment to undo update of was not found.")
+                    }
                     break;
             }
 
