@@ -216,3 +216,21 @@ export const createActionDashboardCloseModule = (moduleName: string) => {
     })
   }
 }
+
+export const createActionDashboardInitializeModuleList = (modules: string[]) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "DASHBOARD_INITIALIZE_MODULE_LIST",
+      payload: modules
+    })
+  }
+}
+
+export const createActionDashboardInitializeOpenModuleList = (modules: string[]) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "DASHBOARD_INITIALIZE_OPEN_MODULES_LIST",
+      payload: modules
+    })
+  }
+}

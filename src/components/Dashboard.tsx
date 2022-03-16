@@ -15,6 +15,7 @@ import React, {
 import Changes from './Changes';
 import JobControl from './JobControl';
 import SpeakerLabels from './SpeakerLabels';
+import { useSelector } from 'react-redux';
 
 type SizeParams = {
     width: number;
@@ -23,15 +24,40 @@ type SizeParams = {
 
 function Dashboard({ size: { width, height } }: {size: SizeParams}) 
 {
-    // const originalModules = ["AudioPlayer", "Settings"];
+    const dashboard = useSelector((state: any) => state.dashboard);
 
-    // const onRemoveItem = (moduleId) => {
-    //     setItems(modules.filter((i) => i !== moduleId));
-    // };
+    const originalModules = ["AudioPlayer", "AnnotationText", "TextTags", "RecordingDetails", "Changes", "JobControl", "SpeakerLabels"];
+    const [modules, setModules] = useState(originalModules);
 
-    // const onAddItem = (moduleId) => {
-    //     setItems([...modules, moduleId]);
-    // };
+    const closeModule = (moduleName: string) => {
+        setModules(modules.filter((m: string) => m !== moduleName));
+    };
+
+    const openModule = (moduleName: string) => {
+        setModules([...modules, moduleName]);
+    };
+
+    useEffect(() => {
+        switch (dashboard.type) {
+          case "DASHBOARD_CLOSE_MODULE":
+            closeModule(dashboard.moduleName);
+            break;
+          case "DASHBOARD_OPEN_MODULE":
+            openModule(dashboard.moduleName);
+            break;
+        }
+      }, [modules]);
+
+    useEffect(() => {
+        switch (dashboard.type) {
+        case "DASHBOARD_CLOSE_MODULE":
+            closeModule(dashboard.moduleName);
+            break;
+        case "DASHBOARD_OPEN_MODULE":
+            openModule(dashboard.moduleName);
+            break;
+        }
+    }, [dashboard]);
 
     const [audioPlayerDimensions, setAudioPlayerDimensions] = useState({width: 12, height: 7.4});
     const [audioPlayerPosition, setAudioPlayerPosition] = useState({x: 3, y: 0});
@@ -141,27 +167,41 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
         // onAddItem={onAddModule}
         // originalModules={originalModules}
     >
-        <div key="AudioPlayer">
-            <AudioPlayer updateElementGridSize={updateElementGridSize} />
-        </div>
-        <div key="AnnotationText">
-            <AnnotationText updateElementGridSize={updateElementGridSize} />
-        </div>
-        <div key="TextTags">
-            <TextTags updateElementGridSize={updateElementGridSize} />
-        </div>
-        <div key="RecordingDetails">
-            <RecordingDetails updateElementGridSize={updateElementGridSize} />
-        </div>
-        <div key="Changes">
-            <Changes updateElementGridSize={updateElementGridSize} />
-        </div>
-        <div key="JobControl">
-            <JobControl updateElementGridSize={updateElementGridSize} />
-        </div>
-        <div key="SpeakerLabels">
-            <SpeakerLabels updateElementGridSize={updateElementGridSize} />
-        </div>
+        {modules.some(m => m === "AudioPlayer") &&
+            <div key="AudioPlayer">
+                <AudioPlayer updateElementGridSize={updateElementGridSize} />
+            </div>
+        }
+        {modules.some(m => m === "AnnotationText") &&
+            <div key="AnnotationText">
+                <AnnotationText updateElementGridSize={updateElementGridSize} />
+            </div>
+        }
+        {modules.some(m => m === "TextTags") &&
+            <div key="TextTags">
+                <TextTags updateElementGridSize={updateElementGridSize} />
+            </div>
+        }
+        {modules.some(m => m === "RecordingDetails") &&
+            <div key="RecordingDetails">
+                <RecordingDetails updateElementGridSize={updateElementGridSize} />
+            </div>
+        }
+        {modules.some(m => m === "Changes") &&
+            <div key="Changes">
+                <Changes updateElementGridSize={updateElementGridSize} />
+            </div>
+        }
+        {modules.some(m => m === "JobControl") &&
+            <div key="JobControl">
+                <JobControl updateElementGridSize={updateElementGridSize} />
+            </div>
+        }
+        {modules.some(m => m === "SpeakerLabels") &&
+            <div key="SpeakerLabels">
+                <SpeakerLabels updateElementGridSize={updateElementGridSize} />
+            </div>
+        }
     </ResponsiveGridLayout>
     );
 }
