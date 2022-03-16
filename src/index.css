@@ -593,11 +593,20 @@ code {
 /* SETTINGS MENU */
 .settings-button {
   position: fixed;
-  bottom: 0.25em;
-  right: 0.5em;
-  font-size: 2.5em;
+  bottom: 0.5em;
+  right: 1em;
   color: rgba(0, 0, 0, 0.5);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  display: flex;
+  align-items: center;
+}
+
+.settings-button-gear-icon {
+  font-size: 35px;
+}
+
+.settings-button-caret-icon {
+  font-size: 25px;
 }
 
 .settings-button:hover, .settings-button:active {
@@ -616,9 +625,14 @@ code {
   right: 10em;
   left: 10em;
   backdrop-filter: blur(5px);
+  min-width: 510px;
 }
 
 .settings-window-expand {
-  height: 30vh;
+  height: 300px;
   border: 1px solid rgba(0,0,0,.125);
+}
+
+.settings-column {
+
 }
