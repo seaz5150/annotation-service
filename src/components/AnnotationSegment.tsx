@@ -20,8 +20,6 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
             createActionTranscriptSegmentUpdate,
             createActionTranscriptPlayerAddAction,
             createActionHistoryAddAction,
-            createActionTranscriptPlayerRedoAction,
-            createActionTranscriptPlayerUndoAction,
             createActionEditorRequestDataSave
           } = bindActionCreators(actionCreators, dispatch);
 
