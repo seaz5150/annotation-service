@@ -12,7 +12,7 @@ interface JobControlInterface {
 
 const JobControl = (props: JobControlInterface) => {
     const dispatch = useDispatch();
-    const { createActionDashboardCloseModule } = bindActionCreators(actionCreators, dispatch);
+    const { createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const { width, height } = props.size;
 
@@ -32,7 +32,7 @@ const JobControl = (props: JobControlInterface) => {
                     </button>
                     <button className="strip-button-style module-header-button"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => createActionDashboardCloseModule("JobControl")}>
+                            onClick={() => createActionDashboardToggleModule("JobControl", false)}>
                         <i className="bi bi-x-lg"></i>
                     </button>
                 </span>

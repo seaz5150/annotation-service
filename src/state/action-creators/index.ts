@@ -199,38 +199,41 @@ export const createActionHistoryRedoAction = () => {
   }
 }
 
-export const createActionDashboardOpenModule = (moduleName: string) => {
+export const createActionDashboardToggleModule = (moduleName: string, value: boolean) => {
   return (dispatch: any) => {
     dispatch({
-      type: "DASHBOARD_OPEN_MODULE",
-      payload: moduleName
+      type: "DASHBOARD_TOGGLE_MODULE",
+      payload: {
+        moduleName: moduleName,
+        value: value
+      }
     })
   }
 }
 
-export const createActionDashboardCloseModule = (moduleName: string) => {
+export const createActionDashboardInitializeModules = (modules: string[]) => {
   return (dispatch: any) => {
     dispatch({
-      type: "DASHBOARD_CLOSE_MODULE",
-      payload: moduleName
-    })
-  }
-}
-
-export const createActionDashboardInitializeModuleList = (modules: string[]) => {
-  return (dispatch: any) => {
-    dispatch({
-      type: "DASHBOARD_INITIALIZE_MODULE_LIST",
+      type: "DASHBOARD_INITIALIZE_MODULES",
       payload: modules
     })
   }
 }
 
-export const createActionDashboardInitializeOpenModuleList = (modules: string[]) => {
+export const createActionDashboardInitializeOpenModules = (modules: string[]) => {
   return (dispatch: any) => {
     dispatch({
-      type: "DASHBOARD_INITIALIZE_OPEN_MODULES_LIST",
+      type: "DASHBOARD_INITIALIZE_OPEN_MODULES",
       payload: modules
+    })
+  }
+}
+
+export const createActionDashboardResetLayout = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "DASHBOARD_RESET_LAYOUT",
+      payload: null
     })
   }
 }

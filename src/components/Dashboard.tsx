@@ -15,19 +15,24 @@ import React, {
 import Changes from './Changes';
 import JobControl from './JobControl';
 import SpeakerLabels from './SpeakerLabels';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { bindActionCreators } from '@reduxjs/toolkit';
+import { actionCreators } from '../state';
 
 type SizeParams = {
     width: number;
     height: number;
 };
 
-function Dashboard({ size: { width, height } }: {size: SizeParams}) 
-{
+function Dashboard({ size: { width, height } }: {size: SizeParams}) {
     const dashboard = useSelector((state: any) => state.dashboard);
 
-    const originalModules = ["AudioPlayer", "AnnotationText", "TextTags", "RecordingDetails", "Changes", "JobControl", "SpeakerLabels"];
-    const [modules, setModules] = useState(originalModules);
+    const dispatch = useDispatch();
+    const { createActionDashboardInitializeOpenModules, 
+            createActionDashboardInitializeModules } = bindActionCreators(actionCreators, dispatch);
+
+    const defaultModules = ["AudioPlayer", "AnnotationText", "TextTags", "RecordingDetails", "Changes", "JobControl", "SpeakerLabels"];
+    const [modules, setModules] = useState(defaultModules);
 
     const closeModule = (moduleName: string) => {
         setModules(modules.filter((m: string) => m !== moduleName));
@@ -36,49 +41,65 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
     const openModule = (moduleName: string) => {
         setModules([...modules, moduleName]);
     };
+    
+    useEffect(() => {
+        createActionDashboardInitializeModules(defaultModules);
+    }, []);
+
+    useEffect(() => {
+        createActionDashboardInitializeOpenModules(modules);
+    }, [modules]);
 
     useEffect(() => {
         switch (dashboard.type) {
-          case "DASHBOARD_CLOSE_MODULE":
-            closeModule(dashboard.moduleName);
+        case "DASHBOARD_TOGGLE_MODULE":
+            if (dashboard.value) {
+                openModule(dashboard.moduleName);
+            }
+            else {
+                closeModule(dashboard.moduleName);
+            }
             break;
-          case "DASHBOARD_OPEN_MODULE":
-            openModule(dashboard.moduleName);
-            break;
-        }
-      }, [modules]);
-
-    useEffect(() => {
-        switch (dashboard.type) {
-        case "DASHBOARD_CLOSE_MODULE":
-            closeModule(dashboard.moduleName);
-            break;
-        case "DASHBOARD_OPEN_MODULE":
-            openModule(dashboard.moduleName);
+        case "DASHBOARD_RESET_LAYOUT":
+            setModules(defaultModules);
+            setAudioPlayerPosition(defaultAudioPlayerPosition);
+            setAnnotationTextPosition(defaultAnnotationTextPosition);
+            setRecordingDetailsPosition(defaultRecordingDetailsPosition);
+            setTextTagsPosition(defaultTextTagsPosition);
+            setChangesPosition(defaultChangesPosition);
+            setJobControlPosition(defaultJobControlPosition);
+            setSpeakerLabelsPosition(defaultSpeakerLabelsPosition);
             break;
         }
     }, [dashboard]);
 
     const [audioPlayerDimensions, setAudioPlayerDimensions] = useState({width: 12, height: 7.4});
-    const [audioPlayerPosition, setAudioPlayerPosition] = useState({x: 3, y: 0});
+    const defaultAudioPlayerPosition = {x: 3, y: 0};
+    const [audioPlayerPosition, setAudioPlayerPosition] = useState(defaultAudioPlayerPosition);
 
     const [annotationTextDimensions, setAnnotationTextDimensions] = useState({width: 6, height: 2});
-    const [annotationTextPosition, setAnnotationTextPosition] = useState({x: 3, y: 0});
+    const defaultAnnotationTextPosition = {x: 3, y: 0};
+    const [annotationTextPosition, setAnnotationTextPosition] = useState(defaultAnnotationTextPosition);
 
     const [recordingDetailsDimensions, setRecordingDetailsDimensions] = useState({width: 2.7, height: 11.4});
-    const [recordingDetailsPosition, setRecordingDetailsPosition] = useState({x: 10, y: 0});
+    const defaultRecordingDetailsPosition = {x: 10, y: 0};
+    const [recordingDetailsPosition, setRecordingDetailsPosition] = useState(defaultRecordingDetailsPosition);
 
     const [textTagsDimensions, setTextTagsDimensions] = useState({width: 2.7, height: 11.4});
-    const [textTagsPosition, setTextTagsPosition] = useState({x: 0, y: 2});
+    const defaultTextTagsPosition = {x: 0, y: 2};
+    const [textTagsPosition, setTextTagsPosition] = useState(defaultTextTagsPosition);
     
     const [changesDimensions, setChangesDimensions] = useState({width: 2.7, height: 11.4});
-    const [changesPosition, setChangesPosition] = useState({x: 0, y: 1});
+    const defaultChangesPosition = {x: 0, y: 1};
+    const [changesPosition, setChangesPosition] = useState(defaultChangesPosition);
 
     const [jobControlDimensions, setJobControlDimensions] = useState({width: 2.7, height: 11.4});
-    const [jobControlPosition, setJobControlPosition] = useState({x: 0, y: 1});
+    const defaultJobControlPosition = {x: 0, y: 1};
+    const [jobControlPosition, setJobControlPosition] = useState(defaultJobControlPosition);
     
     const [speakerLabelsDimensions, setSpeakerLabelsDimensions] = useState({width: 2.7, height: 11.4});
-    const [speakerLabelsPosition, setSpeakerLabelsPosition] = useState({x: 10, y: 1});
+    const defaultSpeakerLabelsPosition = {x: 10, y: 1};
+    const [speakerLabelsPosition, setSpeakerLabelsPosition] = useState(defaultSpeakerLabelsPosition);
 
     const layouts = {
         lg: [
@@ -155,54 +176,49 @@ function Dashboard({ size: { width, height } }: {size: SizeParams})
     };
 
     return (
-    <ResponsiveGridLayout
-        className="layout"
-        layouts={layouts}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
-        rowHeight={10}
-        width={width}
-        onLayoutChange={onLayoutChange}
-        // onRemoveItem={onRemoveModule}
-        // onAddItem={onAddModule}
-        // originalModules={originalModules}
-    >
-        {modules.some(m => m === "AudioPlayer") &&
-            <div key="AudioPlayer">
-                <AudioPlayer updateElementGridSize={updateElementGridSize} />
-            </div>
-        }
-        {modules.some(m => m === "AnnotationText") &&
-            <div key="AnnotationText">
-                <AnnotationText updateElementGridSize={updateElementGridSize} />
-            </div>
-        }
-        {modules.some(m => m === "TextTags") &&
-            <div key="TextTags">
-                <TextTags updateElementGridSize={updateElementGridSize} />
-            </div>
-        }
-        {modules.some(m => m === "RecordingDetails") &&
-            <div key="RecordingDetails">
-                <RecordingDetails updateElementGridSize={updateElementGridSize} />
-            </div>
-        }
-        {modules.some(m => m === "Changes") &&
-            <div key="Changes">
-                <Changes updateElementGridSize={updateElementGridSize} />
-            </div>
-        }
-        {modules.some(m => m === "JobControl") &&
-            <div key="JobControl">
-                <JobControl updateElementGridSize={updateElementGridSize} />
-            </div>
-        }
-        {modules.some(m => m === "SpeakerLabels") &&
-            <div key="SpeakerLabels">
-                <SpeakerLabels updateElementGridSize={updateElementGridSize} />
-            </div>
-        }
-    </ResponsiveGridLayout>
+        <ResponsiveGridLayout className="layout"
+                              layouts={layouts}
+                              breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+                              cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+                              rowHeight={10}
+                              width={width}
+                              onLayoutChange={onLayoutChange}>
+            {modules.some(m => m === "AudioPlayer") &&
+                <div key="AudioPlayer">
+                    <AudioPlayer updateElementGridSize={updateElementGridSize} />
+                </div>
+            }
+            {modules.some(m => m === "AnnotationText") &&
+                <div key="AnnotationText">
+                    <AnnotationText updateElementGridSize={updateElementGridSize} />
+                </div>
+            }
+            {modules.some(m => m === "TextTags") &&
+                <div key="TextTags">
+                    <TextTags updateElementGridSize={updateElementGridSize} />
+                </div>
+            }
+            {modules.some(m => m === "RecordingDetails") &&
+                <div key="RecordingDetails">
+                    <RecordingDetails updateElementGridSize={updateElementGridSize} />
+                </div>
+            }
+            {modules.some(m => m === "Changes") &&
+                <div key="Changes">
+                    <Changes updateElementGridSize={updateElementGridSize} />
+                </div>
+            }
+            {modules.some(m => m === "JobControl") &&
+                <div key="JobControl">
+                    <JobControl updateElementGridSize={updateElementGridSize} />
+                </div>
+            }
+            {modules.some(m => m === "SpeakerLabels") &&
+                <div key="SpeakerLabels">
+                    <SpeakerLabels updateElementGridSize={updateElementGridSize} />
+                </div>
+            }
+        </ResponsiveGridLayout>
     );
 }
 

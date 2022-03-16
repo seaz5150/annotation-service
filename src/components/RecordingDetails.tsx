@@ -12,7 +12,7 @@ interface RecordingDetailsInterface {
 
 const RecordingDetails = (props: RecordingDetailsInterface) => {
     const dispatch = useDispatch();
-    const { createActionDashboardCloseModule } = bindActionCreators(actionCreators, dispatch);
+    const { createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const { width, height } = props.size;
 
@@ -36,7 +36,7 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
                     </button>
                     <button className="strip-button-style module-header-button"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => createActionDashboardCloseModule("TextTags")}>
+                            onClick={() => createActionDashboardToggleModule("RecordingDetails", false)}>
                         <i className="bi bi-x-lg"></i>
                     </button>
                 </span>

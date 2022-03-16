@@ -16,7 +16,7 @@ const SpeakerLabels = (props: SpeakerLabelsInterface) => {
     const dispatch = useDispatch();
     const { createActionTranscriptSpeakerCreate, 
             createActionTranscriptSpeakerUpdate, 
-            createActionDashboardCloseModule } = bindActionCreators(actionCreators, dispatch);
+            createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -44,7 +44,7 @@ const SpeakerLabels = (props: SpeakerLabelsInterface) => {
                     </button>
                     <button className="strip-button-style module-header-button"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => createActionDashboardCloseModule("SpeakerLabels")}>
+                            onClick={() => createActionDashboardToggleModule("SpeakerLabels", false)}>
                         <i className="bi bi-x-lg"></i>
                     </button>
                 </span>

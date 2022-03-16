@@ -12,7 +12,7 @@ interface ChangesInterface {
 
 const Changes = (props: ChangesInterface) => {
     const dispatch = useDispatch();
-    const { createActionHistoryUndoAction, createActionHistoryRedoAction, createActionDashboardCloseModule } = bindActionCreators(actionCreators, dispatch);
+    const { createActionHistoryUndoAction, createActionHistoryRedoAction, createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
     const history = useSelector((state: any) => state.history);
     const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -34,7 +34,7 @@ const Changes = (props: ChangesInterface) => {
                     </button>
                     <button className="strip-button-style module-header-button"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => createActionDashboardCloseModule("Changes")}>
+                            onClick={() => createActionDashboardToggleModule("Changes", false)}>
                         <i className="bi bi-x-lg"></i>
                     </button>
                 </span>

@@ -158,7 +158,6 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                                                checked={segment.segmentTags ? Array.from(segment.segmentTags).some((tag: any) => tag === availableSegmentTag.id) : false}
                                                                onMouseDown={e => pressStopPropagation(e)}
                                                                onChange={e => setSegmentTag(e, availableSegmentTag.id)}
-                                                               key={Math.random()}
                                                         />
                                                     </a>                                              
                                                 )

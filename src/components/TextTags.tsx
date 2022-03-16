@@ -12,7 +12,9 @@ interface AudioPlayerInterface {
 
 const TextTags = (props: AudioPlayerInterface) => {
     const dispatch = useDispatch();
-    const { createActionEditorAddSectionTag, createActionEditorAddUnpairedTag, createActionDashboardCloseModule } = bindActionCreators(actionCreators, dispatch);
+    const { createActionEditorAddSectionTag, 
+            createActionEditorAddUnpairedTag, 
+            createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     const { width, height } = props.size;
@@ -35,7 +37,7 @@ const TextTags = (props: AudioPlayerInterface) => {
                 </button>
                 <button className="strip-button-style module-header-button"
                         onMouseDown={pressStopPropagation}
-                        onClick={() => createActionDashboardCloseModule("TextTags")}>
+                        onClick={() => createActionDashboardToggleModule("TextTags", false)}>
                     <i className="bi bi-x-lg"></i>
                 </button>
             </span>
