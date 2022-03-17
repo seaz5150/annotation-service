@@ -34,15 +34,16 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
 
     const defaultModules = ["AudioPlayer", "AnnotationText", "TextTags", "RecordingDetails", "Changes", "JobControl", "SpeakerLabels"];
     const [modules, setModules] = useState(defaultModules);
+    const [layoutBackups, setLayoutBackups] = useState([] as any[]);
 
     const defaultLayouts = {
         lg: [
             { i: 'AudioPlayer', x: 3, y: 0, w: 12, h: 7.4, isResizable: false},
             { i: 'AnnotationText', x: 3, y: 0, w: 6, h: 2, isResizable: false},
-            { i: 'TextTags', x: 0, y: 2, w: 2.7, h: 11.4, isResizable: false},
+            { i: 'TextTags', x: 0, y: 3, w: 2.7, h: 11.4, isResizable: false},
             { i: 'RecordingDetails', x: 10, y: 0, w: 2.7, h: 11.4, isResizable: false},
             { i: 'Changes', x: 0, y: 1, w: 2.7, h: 11.4, isResizable: false},
-            { i: 'JobControl', x: 0, y: 1, w: 2.7, h: 11.4, isResizable: false},
+            { i: 'JobControl', x: 0, y: 2, w: 2.7, h: 11.4, isResizable: false},
             { i: 'SpeakerLabels', x: 10, y: 1, w: 2.7, h: 11.4, isResizable: false},
         ]
     };
@@ -51,9 +52,20 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
 
     const closeModule = (moduleName: string) => {
         setModules(modules.filter((m: string) => m !== moduleName));
+        let layoutsJSON = JSON.parse(JSON.stringify(layouts));
+        console.log(layoutsJSON);
+        let backupLayout = layoutsJSON.lg.find((m: { i: string; }) => m.i === moduleName);
+        setLayoutBackups([...layoutBackups, backupLayout]);
     };
 
     const openModule = (moduleName: string) => {
+        let recoveredLayout = layoutBackups.find(m => m.i === moduleName);
+        if (recoveredLayout) {
+            let updatedLayouts = JSON.parse(JSON.stringify(layouts));
+            updatedLayouts.lg.push(recoveredLayout);
+            setLayouts(updatedLayouts);
+            setLayoutBackups(layoutBackups.filter(m => m.i !== moduleName));
+        }
         setModules([...modules, moduleName]);
     };
     
@@ -81,8 +93,17 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             let resetLayouts = JSON.parse(JSON.stringify(defaultLayouts));
             for (let index in resetLayouts.lg) {
                 let currentLayout = resetLayouts.lg[index];
-                currentLayout.w = layouts.lg[index as unknown as number].w;
-                currentLayout.h = layouts.lg[index as unknown as number].h;
+
+                let layoutDimensionsSource = layouts.lg.find(m => m.i === currentLayout.i);
+                if (layoutDimensionsSource) {
+                    currentLayout.w = layoutDimensionsSource.w;
+                    currentLayout.h = layoutDimensionsSource.h;
+                }
+                else {
+                    layoutDimensionsSource = layoutBackups.find(m => m.i === currentLayout.i)
+                    currentLayout.w = layoutDimensionsSource?.w;
+                    currentLayout.h = layoutDimensionsSource?.h;
+                }
             }
 
             setLayouts(resetLayouts);

@@ -20,8 +20,13 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
             createActionTranscriptSegmentUpdate,
             createActionTranscriptPlayerAddAction,
             createActionHistoryAddAction,
-            createActionEditorRequestDataSave
+            createActionEditorRequestDataSave,
+            createActionTranscriptMergeSegments
           } = bindActionCreators(actionCreators, dispatch);
+
+    
+    const segments = useSelector((state: any) => state.recordingTranscript.segments);
+    segments.sort((a: { start: number; }, b: { start: number; }) => a.start - b.start);
 
     const segment = useSelector((state: any) => state.recordingTranscript.segments.find((segment: { id: string; }) => segment.id === props.segmentId));
     const availableSpeakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
@@ -38,8 +43,6 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const [speakerId, setSpeakerId] = useState((segment.speaker));
     const [segmentTags, setSegmentTags] = useState((segment.segmentTags));
     const [segmentWords, setSegmentWords] = useState((segment.words));
-
-    const history = useSelector((state: any) => state.history);
 
     useEffect(() => {
         if (speakerId !== segment.speaker) {
@@ -85,13 +88,24 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
         setSegmentTags(newSegmentTags);
     }
 
+    const mergeNextSegment = () => {
+
+        createActionTranscriptMergeSegments(segment.id)
+    }
+
     return (
         <React.Fragment>
                  {segment &&
                      <div className="module module-content p-0 segment" 
-                     style={{backgroundColor : segmentColor}}
-                     ref={props.segmentRef}
-                            >
+                          style={{backgroundColor : segmentColor}}
+                          ref={props.segmentRef}>
+                        {(segments.indexOf(segment) !== segments.length - 1) &&
+                            <button className="merge-segments-button text-tag-button btn-secondary custom-dropdown"
+                                    onMouseDown={pressStopPropagation}
+                                    onClick={mergeNextSegment}>
+                            <i className="fas fa-arrows-alt-v"></i>
+                            </button>
+                        }
                         <div className="p-0 segment-play-panel">
                             <div className="segment-play-panel-content">
                                 <button className="strip-button-style segment-play-button"
@@ -115,7 +129,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="segment-text-panel">
+                        <div className="segment-text-panel ms-2">
                             <AnnotationEditor segmentId={segment.id}
                                               words={segmentWords}
                                               textTags={availableTextTags}
@@ -165,7 +179,6 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                         </li>
                                     </ul>
                                 </div>
-                
                                 <button className="strip-button-style segment-delete-button"
                                         onMouseDown={e => pressStopPropagation(e)}
                                         onClick={() => deleteSegmentTag()}

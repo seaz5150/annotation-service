@@ -80,6 +80,15 @@ export const createActionTranscriptInitializeLength = (length: number) => {
   }
 }
 
+export const createActionTranscriptMergeSegments = (segmentId: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_MERGE_SEGMENTS",
+      payload: segmentId
+    })
+  }
+}
+
 export const createActionSegmentReferencesInitialize = (segmentRefs: any[]) => {
   return (dispatch: any) => {
     dispatch({

@@ -275,6 +275,15 @@ code {
   font-size: 0.85em;
 }
 
+.merge-segments-button {
+  position: absolute;
+  bottom: -13px;
+  left: 80px;
+  z-index: 99999;
+  padding: 3px !important;
+  opacity: 0.8;
+}
+
 .custom-dropdown{
   color: rgb(224, 224, 224) !important;
   background-color: rgb(36, 36, 36) !important;
@@ -665,4 +674,5 @@ code {
   padding-bottom: 0;
   padding-right: 0.25em;
   padding-left: 0.25em;
+  text-transform: unset;
 }

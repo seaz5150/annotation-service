@@ -76,8 +76,9 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                             Time shift (s):
                             <span>
                                 <input className="misc-input me-1" type="number" step="0.01" value={shiftAmount} onChange={(e) => setShiftAmount(Number(e.target.value))}></input>
-                                <button className="text-tag-button btn-secondary job-control-done-button shift-button" onClick={() => createActionTranscriptSegmentsShift(shiftAmount)}>
-                                    <i className="bi bi-check-lg"></i>
+                                <button className="text-tag-button btn-secondary custom-dropdown shift-button" onClick={() => createActionTranscriptSegmentsShift(shiftAmount)}>
+                                    <i className="bi bi-arrow-right-short me-1"></i>
+                                    Shift
                                 </button>
                             </span>
                         </span>

@@ -265,6 +265,22 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 type: "TRANSCRIPT_INITIALIZE_LENGTH",
                 audioLength: action.payload
             };
+        case "TRANSCRIPT_MERGE_SEGMENTS":
+            var newSegments = JSON.parse(JSON.stringify(state.segments));
+            newSegments.sort((a: { start: number; }, b: { start: number; }) => a.start - b.start);
+
+            var mergeTargetSegment = newSegments.find((s: any) => s.id === action.payload);
+            var mergeTargetSegmentIndex = newSegments.findIndex((s: { id: any; }) => s.id === action.payload);
+            var mergeSourceSegment = newSegments[mergeTargetSegmentIndex + 1];
+
+            mergeTargetSegment.end = mergeSourceSegment.end;
+            newSegments = newSegments.filter((s: { id: any; }) => s.id !== mergeSourceSegment.id);
+
+            return {
+                ...state,
+                type: "TRANSCRIPT_MERGE_SEGMENTS",
+                segments: newSegments
+            };
         default:
             return state;
     }
