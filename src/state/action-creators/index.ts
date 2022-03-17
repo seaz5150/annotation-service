@@ -62,6 +62,24 @@ export const createActionTranscriptSegmentDelete = (segmentId: string) => {
   }
 }
 
+export const createActionTranscriptSegmentsShift = (shiftAmount: number) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_SEGMENTS_SHIFT",
+      payload: shiftAmount
+    })
+  }
+}
+
+export const createActionTranscriptInitializeLength = (length: number) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_INITIALIZE_LENGTH",
+      payload: length
+    })
+  }
+}
+
 export const createActionSegmentReferencesInitialize = (segmentRefs: any[]) => {
   return (dispatch: any) => {
     dispatch({

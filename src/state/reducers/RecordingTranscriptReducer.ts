@@ -19,7 +19,8 @@ const initialState = {
     segments: [] as any[],
     segmentId: "",
     playerActionHistory: [] as PlayerAction[],
-    playerActionHistoryIndex: -1
+    playerActionHistoryIndex: -1,
+    audioLength: 0
 };
 
 const RecordingTranscriptReducer = (state = initialState, action: any) => {
@@ -233,6 +234,36 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 type: "TRANSCRIPT_PLAYER_UNDO_ACTION",
                 playerActionHistoryIndex: state.playerActionHistoryIndex + 1,
                 segments: newSegments
+            };
+        case "TRANSCRIPT_SEGMENTS_SHIFT":
+            var newSegments = JSON.parse(JSON.stringify(state.segments));
+            for (let i in newSegments) {
+                let currentSegment = newSegments[i];
+                let newStart = Number(currentSegment.start) + action.payload;
+                let newEnd = Number(currentSegment.end) + action.payload;
+                if (newStart < 0) {
+                    return state;
+                }
+                if (newEnd > state.audioLength) {
+                    return state;
+                }
+
+                currentSegment.start = newStart;
+                currentSegment.end = newEnd;
+            }
+
+            console.log(newSegments);
+
+            return {
+                ...state,
+                type: "TRANSCRIPT_SEGMENTS_SHIFT",
+                segments: newSegments
+            };
+        case "TRANSCRIPT_INITIALIZE_LENGTH":
+            return {
+                ...state,
+                type: "TRANSCRIPT_INITIALIZE_LENGTH",
+                audioLength: action.payload
             };
         default:
             return state;

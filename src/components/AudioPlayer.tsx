@@ -56,7 +56,8 @@ function AudioPlayer(props: AudioPlayerInterface) {
           createActionTranscriptPlayerAddAction,
           createActionTranscriptPlayerUndoAction,
           createActionTranscriptPlayerRedoAction,
-          createActionEditorRequestDataSave } = bindActionCreators(actionCreators, dispatch);
+          createActionEditorRequestDataSave,
+          createActionTranscriptInitializeLength } = bindActionCreators(actionCreators, dispatch);
 
   const windingUnit = 0.1;
   const windingSpeed = 10;
@@ -101,26 +102,31 @@ function AudioPlayer(props: AudioPlayerInterface) {
       switch (transcript.type) {
         case "TRANSCRIPT_INITIALIZE":
           addSegments();
+          createActionTranscriptInitializeLength(wavesurfer.current?.getDuration() || 0);
           break;
          case "TRANSCRIPT_SEGMENT_DELETE":
-          wavesurfer.current?.clearRegions();
-          addSegments();
+          refreshSegments();
           break;
         case "TRANSCRIPT_SEGMENT_UPDATE":
-          wavesurfer.current?.clearRegions();
-          addSegments();
+          refreshSegments();
           break;
         case "TRANSCRIPT_PLAYER_UNDO_ACTION":
-          wavesurfer.current?.clearRegions();
-          addSegments();
+          refreshSegments();
           break;
         case "TRANSCRIPT_PLAYER_REDO_ACTION":
-          wavesurfer.current?.clearRegions();
-          addSegments();
+          refreshSegments();
+          break;
+        case "TRANSCRIPT_SEGMENTS_SHIFT":
+          refreshSegments();
           break;
       }
     }
   }, [transcript, audioReady]);
+
+  const refreshSegments = () => {
+    wavesurfer.current?.clearRegions();
+    addSegments();
+  };
 
   const addSegments = () => {
     for (var segment in segments) {

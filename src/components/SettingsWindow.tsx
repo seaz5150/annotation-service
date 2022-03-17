@@ -1,5 +1,5 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
-import { Key, ReactChild, ReactFragment, ReactPortal, useEffect } from "react";
+import { Key, ReactChild, ReactFragment, ReactPortal, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { pressStopPropagation } from "../CommonUtilities";
 import { actionCreators } from "../state";
@@ -13,9 +13,12 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
     const dispatch = useDispatch();
     const { createActionDashboardToggleModule, 
             createActionDashboardResetLayout, 
-            createActionAudioPlaySetPreplay } = bindActionCreators(actionCreators, dispatch);
+            createActionAudioPlaySetPreplay,
+            createActionTranscriptSegmentsShift } = bindActionCreators(actionCreators, dispatch);
 
     const audioPlay = useSelector((state: any) => state.audioPlay);
+    
+    const [shiftAmount, setShiftAmount] = useState(0);
 
     const toggleModule = (e: React.ChangeEvent<HTMLInputElement>, moduleName: string) => {
         createActionDashboardToggleModule(moduleName, e.target.checked);
@@ -72,8 +75,8 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                         <span className="title-small fw-normal d-flex justify-content-between">
                             Time shift (s):
                             <span>
-                                <input className="misc-input me-1" type="number" step="0.01"></input>
-                                <button className="text-tag-button btn-secondary job-control-done-button shift-button">
+                                <input className="misc-input me-1" type="number" step="0.01" value={shiftAmount} onChange={(e) => setShiftAmount(Number(e.target.value))}></input>
+                                <button className="text-tag-button btn-secondary job-control-done-button shift-button" onClick={() => createActionTranscriptSegmentsShift(shiftAmount)}>
                                     <i className="bi bi-check-lg"></i>
                                 </button>
                             </span>
