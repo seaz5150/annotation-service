@@ -1,4 +1,4 @@
-import { Responsive as ResponsiveGridLayout } from 'react-grid-layout';
+import { Layouts, Responsive as ResponsiveGridLayout } from 'react-grid-layout';
 import { withSize } from 'react-sizeme';
 import "react-grid-layout/css/styles.css"
 import "react-resizable/css/styles.css"
@@ -18,6 +18,7 @@ import SpeakerLabels from './SpeakerLabels';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from '@reduxjs/toolkit';
 import { actionCreators } from '../state';
+import { getFromLS, saveToLS } from '../CommonUtilities';
 
 type SizeParams = {
     width: number;
@@ -33,6 +34,20 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
 
     const defaultModules = ["AudioPlayer", "AnnotationText", "TextTags", "RecordingDetails", "Changes", "JobControl", "SpeakerLabels"];
     const [modules, setModules] = useState(defaultModules);
+
+    const defaultLayouts = {
+        lg: [
+            { i: 'AudioPlayer', x: 3, y: 0, w: 12, h: 7.4, isResizable: false},
+            { i: 'AnnotationText', x: 3, y: 0, w: 6, h: 2, isResizable: false},
+            { i: 'TextTags', x: 0, y: 2, w: 2.7, h: 11.4, isResizable: false},
+            { i: 'RecordingDetails', x: 10, y: 0, w: 2.7, h: 11.4, isResizable: false},
+            { i: 'Changes', x: 0, y: 1, w: 2.7, h: 11.4, isResizable: false},
+            { i: 'JobControl', x: 0, y: 1, w: 2.7, h: 11.4, isResizable: false},
+            { i: 'SpeakerLabels', x: 10, y: 1, w: 2.7, h: 11.4, isResizable: false},
+        ]
+    };
+
+    const [layouts, setLayouts] = useState(getFromLS("layouts") as Layouts || defaultLayouts);
 
     const closeModule = (moduleName: string) => {
         setModules(modules.filter((m: string) => m !== moduleName));
@@ -62,117 +77,33 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             break;
         case "DASHBOARD_RESET_LAYOUT":
             setModules(defaultModules);
-            setAudioPlayerPosition(defaultAudioPlayerPosition);
-            setAnnotationTextPosition(defaultAnnotationTextPosition);
-            setRecordingDetailsPosition(defaultRecordingDetailsPosition);
-            setTextTagsPosition(defaultTextTagsPosition);
-            setChangesPosition(defaultChangesPosition);
-            setJobControlPosition(defaultJobControlPosition);
-            setSpeakerLabelsPosition(defaultSpeakerLabelsPosition);
+
+            let resetLayouts = JSON.parse(JSON.stringify(defaultLayouts));
+            for (let index in resetLayouts.lg) {
+                let currentLayout = resetLayouts.lg[index];
+                currentLayout.w = layouts.lg[index as unknown as number].w;
+                currentLayout.h = layouts.lg[index as unknown as number].h;
+            }
+
+            setLayouts(resetLayouts);
             break;
         }
     }, [dashboard]);
 
-    const [audioPlayerDimensions, setAudioPlayerDimensions] = useState({width: 12, height: 7.4});
-    const defaultAudioPlayerPosition = {x: 3, y: 0};
-    const [audioPlayerPosition, setAudioPlayerPosition] = useState(defaultAudioPlayerPosition);
-
-    const [annotationTextDimensions, setAnnotationTextDimensions] = useState({width: 6, height: 2});
-    const defaultAnnotationTextPosition = {x: 3, y: 0};
-    const [annotationTextPosition, setAnnotationTextPosition] = useState(defaultAnnotationTextPosition);
-
-    const [recordingDetailsDimensions, setRecordingDetailsDimensions] = useState({width: 2.7, height: 11.4});
-    const defaultRecordingDetailsPosition = {x: 10, y: 0};
-    const [recordingDetailsPosition, setRecordingDetailsPosition] = useState(defaultRecordingDetailsPosition);
-
-    const [textTagsDimensions, setTextTagsDimensions] = useState({width: 2.7, height: 11.4});
-    const defaultTextTagsPosition = {x: 0, y: 2};
-    const [textTagsPosition, setTextTagsPosition] = useState(defaultTextTagsPosition);
-    
-    const [changesDimensions, setChangesDimensions] = useState({width: 2.7, height: 11.4});
-    const defaultChangesPosition = {x: 0, y: 1};
-    const [changesPosition, setChangesPosition] = useState(defaultChangesPosition);
-
-    const [jobControlDimensions, setJobControlDimensions] = useState({width: 2.7, height: 11.4});
-    const defaultJobControlPosition = {x: 0, y: 1};
-    const [jobControlPosition, setJobControlPosition] = useState(defaultJobControlPosition);
-    
-    const [speakerLabelsDimensions, setSpeakerLabelsDimensions] = useState({width: 2.7, height: 11.4});
-    const defaultSpeakerLabelsPosition = {x: 10, y: 1};
-    const [speakerLabelsPosition, setSpeakerLabelsPosition] = useState(defaultSpeakerLabelsPosition);
-
-    const layouts = {
-        lg: [
-            { i: 'AudioPlayer', x: audioPlayerPosition.x, y: audioPlayerPosition.y, w: audioPlayerDimensions.width, h: audioPlayerDimensions.height, isResizable: false},
-            { i: 'AnnotationText', x: annotationTextPosition.x, y: annotationTextPosition.y, w: annotationTextDimensions.width, h: annotationTextDimensions.height, isResizable: false},
-            { i: 'TextTags', x: textTagsPosition.x, y: textTagsPosition.y, w: textTagsDimensions.width, h: textTagsDimensions.height, isResizable: false},
-            { i: 'RecordingDetails', x: recordingDetailsPosition.x, y: recordingDetailsPosition.y, w: recordingDetailsDimensions.width, h: recordingDetailsDimensions.height, isResizable: false},
-            { i: 'Changes', x: changesPosition.x, y: changesPosition.y, w: changesDimensions.width, h: changesDimensions.height, isResizable: false},
-            { i: 'JobControl', x: jobControlPosition.x, y: jobControlPosition.y, w: jobControlDimensions.width, h: jobControlDimensions.height, isResizable: false},
-            { i: 'SpeakerLabels', x: speakerLabelsPosition.x, y: speakerLabelsPosition.y, w: speakerLabelsDimensions.width, h: speakerLabelsDimensions.height, isResizable: false},
-        ]
-    };
-
     const updateElementGridSize = (moduleName: string, height: number) => {
         // (height + margin) / (rowHeight + margin) - margin default is 10
         var newHeight = (height + 10) / 20;
-        switch (moduleName) {
-            case "AudioPlayer":
-                setAudioPlayerDimensions({width: audioPlayerDimensions.width, height: newHeight});
-                break;
-            case "AnnotationText":
-                setAnnotationTextDimensions({width: annotationTextDimensions.width, height: newHeight});
-                break;
-            case "RecordingDetails":
-                setRecordingDetailsDimensions({width: recordingDetailsDimensions.width, height: newHeight});
-                break;
-            case "TextTags":
-                setTextTagsDimensions({width: textTagsDimensions.width, height: newHeight});
-                break;
-            case "Changes":
-                setChangesDimensions({width: changesDimensions.width, height: newHeight});
-                break;
-            case "JobControl":
-                setJobControlDimensions({width: jobControlDimensions.width, height: newHeight});
-                break;
-            case "SpeakerLabels":
-                setSpeakerLabelsDimensions({width: speakerLabelsDimensions.width, height: newHeight});
-                break;
-            default:
-                break;
+        let updatedLayouts = JSON.parse(JSON.stringify(layouts));
+        let layoutItem = updatedLayouts.lg.find((l: { i: string; }) => l.i === moduleName);
+        if (layoutItem) {
+            layoutItem.h = newHeight;
         }
+        setLayouts(updatedLayouts);
     };
 
     const onLayoutChange = (_: any, changedLayouts: any) => {
-        const changedLayoutsLg = changedLayouts.lg;
-        for (let i in changedLayoutsLg) {
-            let currentLayout = changedLayoutsLg[i];
-            switch (currentLayout.i) {
-                case "AudioPlayer":
-                    setAudioPlayerPosition({x: currentLayout.x, y: currentLayout.y});
-                    break;
-                case "AnnotationText":
-                    setAnnotationTextPosition({x: currentLayout.x, y: currentLayout.y});
-                    break;
-                case "RecordingDetails":
-                    setRecordingDetailsPosition({x: currentLayout.x, y: currentLayout.y});
-                    break;
-                case "TextTags":
-                    setTextTagsPosition({x: currentLayout.x, y: currentLayout.y});
-                    break;
-                case "Changes":
-                    setChangesPosition({x: currentLayout.x, y: currentLayout.y});
-                    break;
-                case "JobControl":
-                    setJobControlPosition({x: currentLayout.x, y: currentLayout.y});
-                    break;
-                case "SpeakerLabels":
-                    setSpeakerLabelsPosition({x: currentLayout.x, y: currentLayout.y});
-                    break;  
-                default:
-                    break;
-            }
-        }
+        setLayouts(changedLayouts);
+        saveToLS("layouts", changedLayouts);
     };
 
     return (

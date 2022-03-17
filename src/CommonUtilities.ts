@@ -19,6 +19,29 @@ export const pressStopPropagation = (e: any) => {
     e.stopPropagation();
 }
 
+export function getFromLS(key: string) {
+    let ls;
+    if (global.localStorage) {
+        try {
+        let parsedLs = global.localStorage.getItem(key);
+        if (parsedLs) {
+            ls = parsedLs as string;
+        }
+        } catch (e) {}
+    }
+    if (ls) {
+        return JSON.parse(ls as string);
+    }
+}
+
+export function saveToLS(key: any, value: any) {
+    if (global.localStorage) {
+        global.localStorage.setItem(
+        key,
+        JSON.stringify(value));
+    }
+}
+
 export const recordingJson = {
     "transcript": {
   
