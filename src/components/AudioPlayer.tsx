@@ -154,10 +154,17 @@ function AudioPlayer(props: AudioPlayerInterface) {
     if (audioReady) {
       switch (audioPlay.type) {
         case "AUDIO_PLAY_SEGMENT":
-          wavesurfer.current?.regions.list[audioPlay.segmentId].play();
+          let segment = wavesurfer.current?.regions.list[audioPlay.segmentId];
+          if (segment) {
+            let resultStart = segment.start - audioPlay.prePlay;
+            if (resultStart < 0) resultStart = 0.001;
+            segment?.play(resultStart);
+          }
           break;
         case "AUDIO_PLAY_FROM_TIME":
-          wavesurfer.current?.play(audioPlay.time);
+          let resultStart = audioPlay.time - audioPlay.prePlay;
+          if (resultStart < 0) resultStart = 0;
+          wavesurfer.current?.play(resultStart);
           break;
         default:
       }

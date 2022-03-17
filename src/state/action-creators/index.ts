@@ -20,6 +20,15 @@ export const createActionAudioPlayFromTime = (time: number) => {
   }
 }
 
+export const createActionAudioPlaySetPreplay = (prePlay: number) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "AUDIO_PLAY_SET_PREPLAY",
+      payload: prePlay
+    })
+  }
+}
+
 export const createActionTranscriptInitialize = (transcript: any) => {
   return (dispatch: any) => {
     dispatch({

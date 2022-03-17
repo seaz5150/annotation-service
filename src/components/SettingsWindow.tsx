@@ -12,7 +12,10 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
     const dashboard = useSelector((state: any) => state.dashboard);
     const dispatch = useDispatch();
     const { createActionDashboardToggleModule, 
-            createActionDashboardResetLayout } = bindActionCreators(actionCreators, dispatch);
+            createActionDashboardResetLayout, 
+            createActionAudioPlaySetPreplay } = bindActionCreators(actionCreators, dispatch);
+
+    const audioPlay = useSelector((state: any) => state.audioPlay);
 
     const toggleModule = (e: React.ChangeEvent<HTMLInputElement>, moduleName: string) => {
         createActionDashboardToggleModule(moduleName, e.target.checked);
@@ -64,12 +67,12 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                     <div className="mx-2">
                         <span className="title-small fw-normal mb-1 d-flex justify-content-between">
                             Pre-play (s):
-                            <input className="misc-input" type="number" step="0.1"></input>
+                            <input className="misc-input" type="number" min="0" step="0.1" value={audioPlay.prePlay} onChange={(e) => createActionAudioPlaySetPreplay(Number(e.target.value))}></input>
                         </span>
                         <span className="title-small fw-normal d-flex justify-content-between">
                             Time shift (s):
                             <span>
-                                <input className="misc-input me-1" type="number" min="1"></input>
+                                <input className="misc-input me-1" type="number" step="0.01"></input>
                                 <button className="text-tag-button btn-secondary job-control-done-button shift-button">
                                     <i className="bi bi-check-lg"></i>
                                 </button>
