@@ -263,7 +263,28 @@ let jobData = {
           "label": "PDC",
           "type": "img",
           "url": "https://aim.rlp.cz/vfrmanual/actual/ad/lkpr_pdc.jpg"
-        }
+        },
+        {
+      "label": "Waypoints",
+      "type": "text",
+      "text": "List of waypoints in area of 60km:\n AKEVA ANEXO ARVEG BAGRU BAROX BAVIN BEKVI BULEK DIKVA DOBEN DOKEL EKMES EKROT ELMEK ELPON ERASU ESINU EVEMI GOLIN GOLOP GOPSI GOSEK KENOK KUVIX LEMBI LETNA NEPOV NIMUL ODPAL RATEV RISUK SOMIS SULOV TIPR" +
+"U ULNIP UTORO VENOX"
+    }
+    ,{
+      "label": "Callsigns",
+      "type": "text",
+      "text": "List of callsigns in -1 hour and +0 hour:\nDINNN Aerodin November November\nDLH8YX Lufthansa Eight Yankee X-ray\nEWG4213 Eurowings Four Two One Three\nOKFAK Oscar Kilo Foxtrot Alfa Kilo\nOKHEZ Oscar Kilo Hotel Echo Zulu\nOKPUS34 Okapi Unif" +
+"orm Sierra Three Four\nRYR3418 Ryan Three Four One Eight\nTAP124V Air Portugal One Two Four Victor\nTXLU04 Taxi Cozatl Uniform Zero Four\nUAE45 Emirates Four Five\n"
+    }
+    ,{
+      "label": "Sorted Waypoint-Callsign pairs",
+      "type": "text",
+      "text": "List of waypoints in area of 60km | List of callsigns in -1 hour and +0 hour:\n    AKEVA  |  DINNN Aerodin November November\n    ANEXO  |  DLH8YX Lufthansa Eight Yankee X-ray\n ARVEG  |  EWG4213 Eurowings Four Two One Three\n    BAGRU" +
+" |  OKFAK Oscar Kilo Foxtrot Alfa Kilo\n    BAROX  |  OKHEZ Oscar Kilo Hotel Echo Zulu\n    BAVIN  |  OKPUS34 Okapi Uniform Sierra Three Four\n    BEKVI  |  RYR3418 Ryan Three Four One Eight\n BULEK  |  TAP124V Air Portugal One Two Four Victor\n    DI" +
+"KVA  |  TXLU04 Taxi Cozatl Uniform Zero Four\n    DOBEN  |  UAE45 Emirates Four Five\n    DOKEL  |           \n    EKMES  | \n    EKROT  |           \n    ELMEK  |           \n    ELPON |           \n    ERASU  |           \n    ESINU  |" +
+"     \n    EVEMI  |           \n    GOLIN  |           \n    GOLOP |           \n    GOPSI  |           \n    GOSEK  |           \n KENOK  |           \n    KUVIX  |           \n    LEMBI  | \n    LETNA  |           \n    NEPOV  |" +
+" \n    NIMUL  |           \n    ODPAL  |           \n    RATEV |           \n    RISUK  |           \n    SOMIS  |           \n SULOV  |           \n    TIPRU  |           \n    ULNIP  | \n    UTORO  |           \n    VENOX  |           \n"
+    }
       ]
     }
   }

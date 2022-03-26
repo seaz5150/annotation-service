@@ -257,6 +257,18 @@ export const createActionDashboardToggleModule = (moduleName: string, value: boo
   }
 }
 
+export const createActionDashboardToggleModuleStatic = (moduleName: string, value: boolean) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "DASHBOARD_TOGGLE_MODULE_STATIC",
+      payload: {
+        moduleName: moduleName,
+        value: value
+      }
+    })
+  }
+}
+
 export const createActionDashboardInitializeModules = (modules: string[]) => {
   return (dispatch: any) => {
     dispatch({

@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import sizeMe from "react-sizeme";
 import { pressStopPropagation } from "../CommonUtilities";
 import { actionCreators } from "../state";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 interface SpeakerLabelsInterface {
     updateElementGridSize: any,
@@ -12,36 +11,15 @@ interface SpeakerLabelsInterface {
     view: any
 }
 
-const AttachedImage = (props: SpeakerLabelsInterface) => {
+const Plaintext = (props: SpeakerLabelsInterface) => {
     const { width, height } = props.size;
     const dispatch = useDispatch();
-    const { createActionDashboardToggleModule, createActionDashboardToggleModuleStatic } = bindActionCreators(actionCreators, dispatch);
+    const { createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [imageDimensions, setImageDimensions] = useState({height: 0, width: 0});
 
     useEffect(() => {
         props.updateElementGridSize(props.view.label, height);
     }, [height]);
-
-    useEffect(() => {
-        setImageSize();
-    }, []);
-
-    const setImageSize = () => {
-        const image = new Image();
-        image.src = props.view.url;
-        let resizeRatio = image.width / width;
-        image.onload = () => {
-          setImageDimensions({
-            height: image.height / resizeRatio,
-            width: width - 10
-          });
-        };
-    };
-
-    useEffect(() => {
-        setImageSize();
-    }, [width]);
     
     return (  
         <div className="module module-settings">
@@ -60,19 +38,11 @@ const AttachedImage = (props: SpeakerLabelsInterface) => {
                     </button>
                 </span>
             </div>
-            <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "p-0 pt-1 m-0")}>
-                <div onMouseDownCapture={() => createActionDashboardToggleModuleStatic(props.view.label, true)}
-                     onMouseUp={() => createActionDashboardToggleModuleStatic(props.view.label, false)}
-                     className="d-flex justify-content-center">
-                    <TransformWrapper>
-                        <TransformComponent>
-                            <img className="border-radius-025em mb-1" src={props.view.url} width={imageDimensions.width} height={imageDimensions.height}></img>
-                        </TransformComponent>
-                    </TransformWrapper>
-                </div>
+            <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "p-1 m-0")}>
+                <textarea rows={5} className="form-control form-control-sm custom-textarea" onMouseDown={pressStopPropagation} readOnly defaultValue={props.view.text} />
             </div>
         </div>
     );
 }
  
-export default sizeMe({ monitorHeight: true })(AttachedImage)
+export default sizeMe({ monitorHeight: true })(Plaintext)

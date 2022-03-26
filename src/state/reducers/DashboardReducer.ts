@@ -50,6 +50,13 @@ const DashboardReducer = (state = initialState, action: any) => {
                 value: action.payload.value,
                 type: "DASHBOARD_TOGGLE_MODULE"
             };
+        case "DASHBOARD_TOGGLE_MODULE_STATIC":
+            return {
+                ...state,
+                moduleName: action.payload.moduleName,
+                value: action.payload.value,
+                type: "DASHBOARD_TOGGLE_MODULE_STATIC"
+            };
         case "DASHBOARD_RESET_LAYOUT":
             return {
                 ...state,

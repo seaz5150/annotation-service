@@ -21,6 +21,7 @@ import { actionCreators } from '../state';
 import { getFromLS, saveToLS } from '../CommonUtilities';
 import MapLeaflet from './MapLeaflet';
 import AttachedImage from './AttachedImage';
+import Plaintext from './Plaintext';
 
 type SizeParams = {
     width: number;
@@ -74,7 +75,13 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
         // Module is a dynamic attachment.
         else {
             let updatedLayouts = JSON.parse(JSON.stringify(layouts));
-            updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: 4, h: 11.4, isResizable: false, autoSize: true});
+            let view = jobData.user_interface.views.find((v: { label: string; }) => v.label === moduleName);
+            if (view.type === "text") {
+                updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: 2.7, h: 11.4, isResizable: false, autoSize: true});
+            }
+            else {
+                updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: 4, h: 11.4, isResizable: false, autoSize: true});
+            }
             setLayouts(updatedLayouts);
         }
         setModules([...modules, moduleName]);
@@ -108,6 +115,14 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             else {
                 closeModule(dashboard.moduleName);
             }
+            break;
+        case "DASHBOARD_TOGGLE_MODULE_STATIC":
+            let updatedLayouts = JSON.parse(JSON.stringify(layouts));
+            let layoutItem = updatedLayouts.lg.find((l: { i: string; }) => l.i === dashboard.moduleName);
+            if (layoutItem) {
+                layoutItem.static = dashboard.value;
+            }
+            setLayouts(updatedLayouts);
             break;
         case "DASHBOARD_RESET_LAYOUT":
             setModules(defaultModules);
@@ -164,18 +179,18 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             }
         }
         let modulesToSave = JSON.parse(JSON.stringify(modules));
-        for (let indexx in modulesToSave) {
-            let currentModule = modulesToSave[indexx];
+        for (let index in modulesToSave) {
+            let currentModule = modulesToSave[index];
 
             if (defaultModules.indexOf(currentModule) === -1) {
-                modulesToSave.splice(indexx, 1);
+                modulesToSave.splice(index, 1);
             }
         }
         saveToLS("layouts", changedLayoutsToSave);
         saveToLS("modules", modulesToSave);
     };
 
-    const renderSwitch = (label: string) => {
+    const attachmentRenderSwitch = (label: string) => {
         let view = jobData.user_interface.views.find((v: { label: string; }) => v.label === label);
         switch(view.type) {
             case "iframe":
@@ -186,13 +201,13 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
                 return (<div key={label}>
                            <AttachedImage updateElementGridSize={updateElementGridSize} view={view} />
                        </div>);
+            case "text":
+                return (<div key={label}>
+                           <Plaintext updateElementGridSize={updateElementGridSize} view={view} />
+                       </div>);
             default: 
                 return null;
         }
-    };
-
-    const onBreakpointChange = (newBreakpoint: string, newCols: number) => {
-        console.log(newBreakpoint);
     };
 
     return (
@@ -202,8 +217,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
                               cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
                               rowHeight={10}
                               width={width}
-                              onLayoutChange={onLayoutChange}
-                              onBreakpointChange={onBreakpointChange}>
+                              onLayoutChange={onLayoutChange}>
             {modules.some(m => m === "AudioPlayer") &&
                 <div key="AudioPlayer">
                     <AudioPlayer updateElementGridSize={updateElementGridSize} />
@@ -240,7 +254,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
                 </div>
             }
             {jobData && jobData.user_interface.views.map((v: any) =>
-                modules.some(m => m === v.label) && renderSwitch(v.label)      
+                modules.some(m => m === v.label) && attachmentRenderSwitch(v.label)      
             )}
         </ResponsiveGridLayout>
     );
