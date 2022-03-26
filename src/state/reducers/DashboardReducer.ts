@@ -18,7 +18,7 @@ const DashboardReducer = (state = initialState, action: any) => {
                         currentModuleListItem.viewName = "Text labels";
                         break;
                     case "RecordingDetails":
-                        currentModuleListItem.viewName = "Recording details";
+                        currentModuleListItem.viewName = "Job details";
                         break;
                     case "Changes":
                         currentModuleListItem.viewName = "Changes";

@@ -35,7 +35,7 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
     return (  
         <div className="module module-settings">
             <div className="card-header d-flex justify-content-between">
-                Recording details
+                Job details
                 <span className="d-flex align-content-center">
                     <button className="strip-button-style module-header-button pe-2"
                             onMouseDown={pressStopPropagation}
@@ -52,10 +52,10 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
             <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "mt-1 pb-2")}>
                 <div className="row">
                     <p className="title-small col-3">Name:</p>
-                    <p className="text-small col-9 d-flex justify-content-end">YSSY Tower 2021-06-02 22:13:43</p>
+                    <p className="text-small col-9 d-flex justify-content-end">{jobData.title}</p>
                 </div>
                 <p className="title-small col-12 mb-1">Description:</p>
-                <textarea className="form-control form-control-sm custom-textarea" onMouseDown={e => handlePress(e)} readOnly defaultValue="Integer lacinia. Maecenas aliquet accumsan leo. Aliquam ante. Aenean fermentum risus id tortor. Donec ipsum massa, ullamcorper in, auctor et, scelerisque sed, est. Nunc tincidunt ante vitae massa. Vivamus ac leo pretium faucibus."/>
+                <textarea className="form-control form-control-sm custom-textarea" onMouseDown={e => handlePress(e)} readOnly defaultValue={jobData.description}/>
                 <p className="title-small col-12 mb-1 mt-2">Display attached resources:</p>
                 <div className="row">
                     {jobData.user_interface.views.map((v: any) =>
@@ -71,22 +71,27 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
                 </div>
                 <div className="row mt-3 align-items-center">
                     <p className="title-small col-7">Manuals and others:</p>
-                    <div className="dropdown col-5 d-flex justify-content-end">
+                    <div className="dropup col-5 d-flex justify-content-end">
                         <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"
                                 onMouseDown={e => handlePress(e)}
                                 type="button" id="dropdownMenuButton1"
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                         >
-                            Attached links
+                            <span className="me-1">Attached links</span>
                         </button>
-                        <ul className="dropdown-menu"
-                            aria-labelledby="dropdownMenuButton1" 
-                            onMouseDown={e => handlePress(e)}
+                        <ul className="dropdown-menu dropdown-menu-end segment-label-dropdown-menu"
+                            aria-labelledby="dropdownMenuButton1"
+                            onMouseDown={e => pressStopPropagation(e)}
                         >
-                            <li><a className="dropdown-item" href="#">Action</a></li>
-                            <li><a className="dropdown-item" href="#">Another action</a></li>
-                            <li><a className="dropdown-item" href="#">Something else here</a></li>
+                            <li>
+                                {jobData.user_interface.links.map((link: any) =>
+                                        <a className="dropdown-item segment-label-dropdown-item me-3" href={link.url} key={link.label}>
+                                            {link.label}
+                                        </a>                                              
+                                    )
+                                }
+                            </li>
                         </ul>
                     </div>
                 </div>
