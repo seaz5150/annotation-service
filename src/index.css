@@ -677,10 +677,6 @@ code {
   text-transform: unset;
 }
 
-.map-leaflet {
+.border-radius-025em {
   border-radius: 0.25em;
-}
-
-.map-leaflet-wrapper {
-
 }

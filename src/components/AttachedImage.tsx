@@ -11,15 +11,36 @@ interface SpeakerLabelsInterface {
     view: any
 }
 
-const MapLeaflet = (props: SpeakerLabelsInterface) => {
+const AttachedImage = (props: SpeakerLabelsInterface) => {
     const { width, height } = props.size;
     const dispatch = useDispatch();
     const { createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [imageDimensions, setImageDimensions] = useState({height: 0, width: 0});
 
     useEffect(() => {
         props.updateElementGridSize(props.view.label, height);
     }, [height]);
+
+    useEffect(() => {
+        setImageSize();
+    }, []);
+
+    const setImageSize = () => {
+        const image = new Image();
+        image.src = props.view.url;
+        let resizeRatio = image.width / width;
+        image.onload = () => {
+          setImageDimensions({
+            height: image.height / resizeRatio,
+            width: width - 10
+          });
+        };
+    };
+
+    useEffect(() => {
+        setImageSize();
+    }, [width]);
     
     return (  
         <div className="module module-settings">
@@ -39,10 +60,10 @@ const MapLeaflet = (props: SpeakerLabelsInterface) => {
                 </span>
             </div>
             <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "p-0 pt-1 m-0")}>
-                <iframe className="border-radius-025em" src={props.view.url} width={width - 10} height="400" onMouseDown={pressStopPropagation}> </iframe>
+                <img className="border-radius-025em mb-1" src={props.view.url} width={imageDimensions.width} height={imageDimensions.height}></img>
             </div>
         </div>
     );
 }
  
-export default sizeMe({ monitorHeight: true })(MapLeaflet)
+export default sizeMe({ monitorHeight: true })(AttachedImage)

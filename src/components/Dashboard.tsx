@@ -20,6 +20,7 @@ import { bindActionCreators } from '@reduxjs/toolkit';
 import { actionCreators } from '../state';
 import { getFromLS, saveToLS } from '../CommonUtilities';
 import MapLeaflet from './MapLeaflet';
+import AttachedImage from './AttachedImage';
 
 type SizeParams = {
     width: number;
@@ -47,7 +48,6 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             { i: 'Changes', x: 0, y: 1, w: 2.7, h: 11.4, isResizable: false},
             { i: 'JobControl', x: 0, y: 2, w: 2.7, h: 11.4, isResizable: false},
             { i: 'SpeakerLabels', x: 10, y: 1, w: 2.7, h: 11.4, isResizable: false},
-            // { i: 'MapLeaflet', x: 0, y: 4, w: 4, h: 11.4, isResizable: false},
         ]
     };
 
@@ -74,7 +74,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
         // Module is a dynamic attachment.
         else {
             let updatedLayouts = JSON.parse(JSON.stringify(layouts));
-            updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: 4, h: 11.4, isResizable: false});
+            updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: 4, h: 11.4, isResizable: false, autoSize: true});
             setLayouts(updatedLayouts);
         }
         setModules([...modules, moduleName]);
@@ -89,6 +89,13 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
     }, [modules]);
 
     useEffect(() => {
+        let layoutBackupsToSave = JSON.parse(JSON.stringify(layoutBackups));
+        for (let index in layoutBackupsToSave) {
+            let currentLayout = layoutBackupsToSave[index];
+            if (defaultModules.indexOf(currentLayout.i) === -1) {
+                layoutBackupsToSave.splice(index, 1);
+            }
+        }
         saveToLS("layoutBackups", layoutBackups);
     }, [layoutBackups]);
 
@@ -138,12 +145,18 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
     };
 
     const onLayoutChange = (_: any, changedLayouts: any) => {
+        delete changedLayouts.sm;
+        delete changedLayouts.md;
+        delete changedLayouts.xs;
+        delete changedLayouts.xxs;
         setLayouts(changedLayouts);
+
         let changedLayoutsToSave = JSON.parse(JSON.stringify(changedLayouts));
         delete changedLayoutsToSave.sm;
         delete changedLayoutsToSave.md;
         delete changedLayoutsToSave.xs;
         delete changedLayoutsToSave.xxs;
+
         for (let index in changedLayoutsToSave.lg) {
             let currentLayout = changedLayoutsToSave.lg[index];
             if (defaultModules.indexOf(currentLayout.i) === -1) {
@@ -151,10 +164,11 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             }
         }
         let modulesToSave = JSON.parse(JSON.stringify(modules));
-        for (let index in modulesToSave) {
-            let currentModule = modulesToSave[index];
+        for (let indexx in modulesToSave) {
+            let currentModule = modulesToSave[indexx];
+
             if (defaultModules.indexOf(currentModule) === -1) {
-                modulesToSave.splice(index, 1);
+                modulesToSave.splice(indexx, 1);
             }
         }
         saveToLS("layouts", changedLayoutsToSave);
@@ -168,9 +182,17 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
                 return (<div key={label}>
                            <MapLeaflet updateElementGridSize={updateElementGridSize} view={view} />
                        </div>);
+            case "img":
+                return (<div key={label}>
+                           <AttachedImage updateElementGridSize={updateElementGridSize} view={view} />
+                       </div>);
             default: 
                 return null;
         }
+    };
+
+    const onBreakpointChange = (newBreakpoint: string, newCols: number) => {
+        console.log(newBreakpoint);
     };
 
     return (
@@ -180,7 +202,8 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
                               cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
                               rowHeight={10}
                               width={width}
-                              onLayoutChange={onLayoutChange}>
+                              onLayoutChange={onLayoutChange}
+                              onBreakpointChange={onBreakpointChange}>
             {modules.some(m => m === "AudioPlayer") &&
                 <div key="AudioPlayer">
                     <AudioPlayer updateElementGridSize={updateElementGridSize} />
