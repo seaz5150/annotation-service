@@ -89,7 +89,6 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     }
 
     const mergeNextSegment = () => {
-
         createActionTranscriptMergeSegments(segment.id)
     }
 

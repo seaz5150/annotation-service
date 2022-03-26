@@ -113,7 +113,8 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                             start: (action.payload.segmentStart ? action.payload.segmentStart : segment.start),
                             end: (action.payload.segmentEnd ? action.payload.segmentEnd : segment.end),
                             speaker: ((action.payload.segmentSpeakerId || action.payload.segmentSpeakerId === "") ? action.payload.segmentSpeakerId : segment.speaker),
-                            segmentTags: (action.payload.segmentTags ? action.payload.segmentTags : segment.segmentTags)
+                            segmentTags: (action.payload.segmentTags ? action.payload.segmentTags : segment.segmentTags),
+                            words: (action.payload.segmentWords ? action.payload.segmentWords : segment.words),
                         }
                     : segment
                 )
@@ -265,6 +266,11 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 type: "TRANSCRIPT_INITIALIZE_LENGTH",
                 audioLength: action.payload
             };
+        case "TRANSCRIPT_UPDATE_WORDS":
+            return {
+                ...state,
+                type: "TRANSCRIPT_UPDATE_WORDS"
+            };
         case "TRANSCRIPT_MERGE_SEGMENTS":
             var newSegments = JSON.parse(JSON.stringify(state.segments));
             newSegments.sort((a: { start: number; }, b: { start: number; }) => a.start - b.start);
@@ -273,6 +279,7 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             var mergeTargetSegmentIndex = newSegments.findIndex((s: { id: any; }) => s.id === action.payload);
             var mergeSourceSegment = newSegments[mergeTargetSegmentIndex + 1];
 
+            mergeTargetSegment.words = mergeTargetSegment.words.concat(mergeSourceSegment.words);
             mergeTargetSegment.end = mergeSourceSegment.end;
             newSegments = newSegments.filter((s: { id: any; }) => s.id !== mergeSourceSegment.id);
 

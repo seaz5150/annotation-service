@@ -1,6 +1,6 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
-import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import sizeMe from "react-sizeme";
 import { pressStopPropagation } from "../CommonUtilities";
 import { actionCreators } from "../state";
@@ -13,6 +13,10 @@ interface RecordingDetailsInterface {
 const RecordingDetails = (props: RecordingDetailsInterface) => {
     const dispatch = useDispatch();
     const { createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
+
+    const jobData = useSelector((state: any) => state.job.jobData);
+    const dashboard = useSelector((state: any) => state.dashboard);
+
     const [isCollapsed, setIsCollapsed] = useState(false);
     const { width, height } = props.size;
 
@@ -23,6 +27,10 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
     useEffect(() => {
         props.updateElementGridSize("RecordingDetails", height);
     }, [height]);
+
+    const toggleModule = (e: React.ChangeEvent<HTMLInputElement>, moduleName: string) => {
+        createActionDashboardToggleModule(moduleName, e.target.checked);
+    }
     
     return (  
         <div className="module module-settings">
@@ -50,8 +58,16 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
                 <textarea className="form-control form-control-sm custom-textarea" onMouseDown={e => handlePress(e)} readOnly defaultValue="Integer lacinia. Maecenas aliquet accumsan leo. Aliquam ante. Aenean fermentum risus id tortor. Donec ipsum massa, ullamcorper in, auctor et, scelerisque sed, est. Nunc tincidunt ante vitae massa. Vivamus ac leo pretium faucibus."/>
                 <p className="title-small col-12 mb-1 mt-2">Display attached resources:</p>
                 <div className="row">
-                    <p className="title-small col-10 ms-2 fw-normal">Traffic map</p>
-                    <input className="form-check-input custom-checkbox col-2 ms-3" type="checkbox" value="" onMouseDown={e => handlePress(e)} />
+                    {jobData.user_interface.views.map((v: any) =>
+                        <React.Fragment key={v.label}>
+                            <p className="title-small col-10 ms-2 fw-normal">{v.label}</p>
+                            <input className="form-check-input custom-checkbox col-2 ms-3" 
+                                       type="checkbox"
+                                       onMouseDown={e => pressStopPropagation(e)} 
+                                       onChange={(e) => toggleModule(e, v.label)}
+                                       checked={dashboard.openModules ? dashboard.openModules.some((om: string) => om === v.label) : false}/>
+                        </React.Fragment>
+                    )}
                 </div>
                 <div className="row mt-3 align-items-center">
                     <p className="title-small col-7">Manuals and others:</p>

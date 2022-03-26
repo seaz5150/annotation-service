@@ -104,19 +104,12 @@ function AudioPlayer(props: AudioPlayerInterface) {
           addSegments();
           createActionTranscriptInitializeLength(wavesurfer.current?.getDuration() || 0);
           break;
-         case "TRANSCRIPT_SEGMENT_DELETE":
-          refreshSegments();
-          break;
+        case "TRANSCRIPT_SEGMENT_DELETE":
         case "TRANSCRIPT_SEGMENT_UPDATE":
-          refreshSegments();
-          break;
         case "TRANSCRIPT_PLAYER_UNDO_ACTION":
-          refreshSegments();
-          break;
         case "TRANSCRIPT_PLAYER_REDO_ACTION":
-          refreshSegments();
-          break;
         case "TRANSCRIPT_SEGMENTS_SHIFT":
+        case "TRANSCRIPT_MERGE_SEGMENTS":
           refreshSegments();
           break;
       }

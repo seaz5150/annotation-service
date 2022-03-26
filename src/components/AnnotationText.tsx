@@ -20,7 +20,8 @@ interface AnnotationTextInterface {
 function AnnotationText(props: AnnotationTextInterface) {
     const dispatch = useDispatch();
     const { createActionTranscriptInitialize,
-            createActionSegmentReferencesInitialize 
+            createActionSegmentReferencesInitialize,
+            createActionJobInitialize
           } = bindActionCreators(actionCreators, dispatch);
 
     const segments = useSelector((state: any) => state.recordingTranscript.segments);
@@ -37,6 +38,7 @@ function AnnotationText(props: AnnotationTextInterface) {
     }, [height]);
 
     useEffect(() => {
+        createActionJobInitialize();
         createActionTranscriptInitialize(recordingJson.transcript);
     }, []);
 

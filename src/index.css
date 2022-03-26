@@ -676,3 +676,11 @@ code {
   padding-left: 0.25em;
   text-transform: unset;
 }
+
+.map-leaflet {
+  border-radius: 0.25em;
+}
+
+.map-leaflet-wrapper {
+
+}

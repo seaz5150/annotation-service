@@ -38,7 +38,7 @@ export const createActionTranscriptInitialize = (transcript: any) => {
   }
 }
 
-export const createActionTranscriptSegmentUpdate = (segmentId: string, segmentStart?: number, segmentEnd?: number, segmentSpeakerId?: string, segmentTags?: string[]) => {
+export const createActionTranscriptSegmentUpdate = (segmentId: string, segmentStart?: number, segmentEnd?: number, segmentSpeakerId?: string, segmentTags?: string[], segmentWords?: any[]) => {
   return (dispatch: any) => {
     dispatch({
       type: "TRANSCRIPT_SEGMENT_UPDATE",
@@ -47,7 +47,8 @@ export const createActionTranscriptSegmentUpdate = (segmentId: string, segmentSt
         segmentStart: segmentStart,
         segmentEnd: segmentEnd,
         segmentSpeakerId: segmentSpeakerId,
-        segmentTags: segmentTags
+        segmentTags: segmentTags,
+        segmentwords: segmentWords
       }
     })
   }
@@ -165,6 +166,15 @@ export const createActionTranscriptPlayerRedoAction = () => {
   }
 }
 
+export const createActionTranscriptUpdateWords = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_UPDATE_WORDS",
+      payload: null
+    })
+  }
+}
+
 export const createActionEditorAddSectionTag = (tagId: string) => {
   return (dispatch: any) => {
     dispatch({
@@ -269,6 +279,15 @@ export const createActionDashboardResetLayout = () => {
   return (dispatch: any) => {
     dispatch({
       type: "DASHBOARD_RESET_LAYOUT",
+      payload: null
+    })
+  }
+}
+
+export const createActionJobInitialize = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "JOB_INITIALIZE",
       payload: null
     })
   }

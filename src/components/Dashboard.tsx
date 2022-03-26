@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from '@reduxjs/toolkit';
 import { actionCreators } from '../state';
 import { getFromLS, saveToLS } from '../CommonUtilities';
+import MapLeaflet from './MapLeaflet';
 
 type SizeParams = {
     width: number;
@@ -33,8 +34,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             createActionDashboardInitializeModules } = bindActionCreators(actionCreators, dispatch);
 
     const defaultModules = ["AudioPlayer", "AnnotationText", "TextTags", "RecordingDetails", "Changes", "JobControl", "SpeakerLabels"];
-    const [modules, setModules] = useState(defaultModules);
-    const [layoutBackups, setLayoutBackups] = useState([] as any[]);
+    const [modules, setModules] = useState(getFromLS("modules") as string[] || defaultModules);
+    const [layoutBackups, setLayoutBackups] = useState(getFromLS("layoutBackups") as any[] || [] as any[]);
+    const jobData = useSelector((state: any) => state.job.jobData);
 
     const defaultLayouts = {
         lg: [
@@ -45,6 +47,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             { i: 'Changes', x: 0, y: 1, w: 2.7, h: 11.4, isResizable: false},
             { i: 'JobControl', x: 0, y: 2, w: 2.7, h: 11.4, isResizable: false},
             { i: 'SpeakerLabels', x: 10, y: 1, w: 2.7, h: 11.4, isResizable: false},
+            // { i: 'MapLeaflet', x: 0, y: 4, w: 4, h: 11.4, isResizable: false},
         ]
     };
 
@@ -53,18 +56,26 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
     const closeModule = (moduleName: string) => {
         setModules(modules.filter((m: string) => m !== moduleName));
         let layoutsJSON = JSON.parse(JSON.stringify(layouts));
-        console.log(layoutsJSON);
         let backupLayout = layoutsJSON.lg.find((m: { i: string; }) => m.i === moduleName);
         setLayoutBackups([...layoutBackups, backupLayout]);
     };
 
     const openModule = (moduleName: string) => {
         let recoveredLayout = layoutBackups.find(m => m.i === moduleName);
+        if (!recoveredLayout) {
+            recoveredLayout = defaultLayouts.lg.find(m => m.i === moduleName); 
+        }
         if (recoveredLayout) {
             let updatedLayouts = JSON.parse(JSON.stringify(layouts));
             updatedLayouts.lg.push(recoveredLayout);
             setLayouts(updatedLayouts);
             setLayoutBackups(layoutBackups.filter(m => m.i !== moduleName));
+        }
+        // Module is a dynamic attachment.
+        else {
+            let updatedLayouts = JSON.parse(JSON.stringify(layouts));
+            updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: 4, h: 11.4, isResizable: false});
+            setLayouts(updatedLayouts);
         }
         setModules([...modules, moduleName]);
     };
@@ -76,6 +87,10 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
     useEffect(() => {
         createActionDashboardInitializeOpenModules(modules);
     }, [modules]);
+
+    useEffect(() => {
+        saveToLS("layoutBackups", layoutBackups);
+    }, [layoutBackups]);
 
     useEffect(() => {
         switch (dashboard.type) {
@@ -124,7 +139,38 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
 
     const onLayoutChange = (_: any, changedLayouts: any) => {
         setLayouts(changedLayouts);
-        saveToLS("layouts", changedLayouts);
+        let changedLayoutsToSave = JSON.parse(JSON.stringify(changedLayouts));
+        delete changedLayoutsToSave.sm;
+        delete changedLayoutsToSave.md;
+        delete changedLayoutsToSave.xs;
+        delete changedLayoutsToSave.xxs;
+        for (let index in changedLayoutsToSave.lg) {
+            let currentLayout = changedLayoutsToSave.lg[index];
+            if (defaultModules.indexOf(currentLayout.i) === -1) {
+                changedLayoutsToSave.lg.splice(index, 1);
+            }
+        }
+        let modulesToSave = JSON.parse(JSON.stringify(modules));
+        for (let index in modulesToSave) {
+            let currentModule = modulesToSave[index];
+            if (defaultModules.indexOf(currentModule) === -1) {
+                modulesToSave.splice(index, 1);
+            }
+        }
+        saveToLS("layouts", changedLayoutsToSave);
+        saveToLS("modules", modulesToSave);
+    };
+
+    const renderSwitch = (label: string) => {
+        let view = jobData.user_interface.views.find((v: { label: string; }) => v.label === label);
+        switch(view.type) {
+            case "iframe":
+                return (<div key={label}>
+                           <MapLeaflet updateElementGridSize={updateElementGridSize} view={view} />
+                       </div>);
+            default: 
+                return null;
+        }
     };
 
     return (
@@ -170,6 +216,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
                     <SpeakerLabels updateElementGridSize={updateElementGridSize} />
                 </div>
             }
+            {jobData && jobData.user_interface.views.map((v: any) =>
+                modules.some(m => m === v.label) && renderSwitch(v.label)      
+            )}
         </ResponsiveGridLayout>
     );
 }

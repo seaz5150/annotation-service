@@ -45,7 +45,8 @@ interface AnnotationEditorInterface {
 const AnnotationEditor = (props: AnnotationEditorInterface) => {
   const dispatch = useDispatch();
   const { createActionHistoryAddAction,
-          createActionEditorSaveData } = bindActionCreators(actionCreators, dispatch);
+          createActionEditorSaveData,
+          createActionTranscriptSegmentUpdate } = bindActionCreators(actionCreators, dispatch);
         
   let initialValue: Descendant[] = [
     {
@@ -63,6 +64,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
   const editor = useSelector((state: any) => state.editor);
   const history = useSelector((state: any) => state.history);
+  const transcript = useSelector((state: any) => state.transcript);
 
   const [editorFocused, setEditorFocused] = useState(false);
   const [historyPrevious, setHistoryPrevious] = useState<History | null>(null);
@@ -111,6 +113,19 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
         break;
     }
   }, [history]);
+
+  useEffect(() => {
+    switch (history.type) {
+      case "TRANSCRIPT_UPDATE_WORDS":
+        break;
+    }
+  }, [transcript]);
+
+  const parseWords = () => {
+    let result;
+    
+    return result;
+  };
 
   useEffect(() => {
     switch (editor.type) {

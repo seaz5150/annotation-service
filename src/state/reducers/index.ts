@@ -5,6 +5,7 @@ import ReferenceReducer from "./ReferenceReducer";
 import EditorReducer from "./EditorReducer";
 import HistoryReducer from "./HistoryReducer";
 import DashboardReducer from "./DashboardReducer";
+import JobReducer from "./JobReducer";
 
 const reducers = combineReducers({
     audioPlay: AudioPlayReducer,
@@ -12,7 +13,8 @@ const reducers = combineReducers({
     references: ReferenceReducer,
     editor: EditorReducer,
     history: HistoryReducer,
-    dashboard: DashboardReducer
+    dashboard: DashboardReducer,
+    job: JobReducer
 });
 
 export default reducers;
