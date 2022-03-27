@@ -86,7 +86,7 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
                         >
                             <li>
                                 {jobData.user_interface.links.map((link: any) =>
-                                        <a className="dropdown-item segment-label-dropdown-item me-3" href={link.url} key={link.label}>
+                                        <a className="dropdown-item segment-label-dropdown-item me-3" href={link.url} target="_blank" key={link.label}>
                                             {link.label}
                                         </a>                                              
                                     )
