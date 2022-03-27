@@ -121,12 +121,12 @@ function AudioPlayer(props: AudioPlayerInterface) {
     switch (transcript.type) {
         case "TRANSCRIPT_PLAYER_UNDO_ACTION":
             if (transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1].type === "MERGE") {
-              createActionEditorReinitializeWords();
+              createActionEditorReinitializeWords(true);
             }
             break;
        case "TRANSCRIPT_PLAYER_REDO_ACTION":
           if (transcript.playerActionHistory[transcript.playerActionHistoryIndex].type === "MERGE") {
-            createActionEditorReinitializeWords();
+            createActionEditorReinitializeWords(true);
           }
           break;
     }

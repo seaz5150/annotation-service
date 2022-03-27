@@ -221,11 +221,11 @@ export const createActionEditorRequestDataSave = (segmentId: string) => {
   }
 }
 
-export const createActionEditorReinitializeWords = () => {
+export const createActionEditorReinitializeWords = (loadSavedData: boolean) => {
   return (dispatch: any) => {
     dispatch({
       type: "EDITOR_REINITIALIZE_WORDS",
-      payload: null
+      payload: loadSavedData
     })
   }
 }

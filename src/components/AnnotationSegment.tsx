@@ -111,9 +111,12 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
         createActionHistoryAddAction("AnnotationSegment", resultSegment.id);
         createActionTranscriptPlayerAddAction("MERGE", JSON.parse(JSON.stringify(resultSegment)), JSON.parse(JSON.stringify(nextSegment)));
 
-        createActionTranscriptSegmentUpdate(resultSegment.id, undefined, segment.end, undefined, undefined, resultSegment.words);
-        createActionEditorRequestDataSave(nextSegment.id);
-        setTimeout(() => {createActionTranscriptSegmentDelete(nextSegment.id); createActionEditorReinitializeWords();}, 10);
+        createActionEditorRequestDataSave(resultSegment.id);
+        setTimeout(() => {
+            createActionTranscriptSegmentUpdate(resultSegment.id, undefined, segment.end, undefined, undefined, resultSegment.words);
+            createActionEditorRequestDataSave(nextSegment.id);
+            setTimeout(() => {createActionTranscriptSegmentDelete(nextSegment.id); createActionEditorReinitializeWords(false);}, 10);
+        }, 10);
     }
 
     useEffect(() => {

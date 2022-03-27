@@ -1,7 +1,8 @@
 const initialState = {
     tagId: null,
     segmentId: null,
-    editorData: [] as any[]
+    editorData: [] as any[],
+    loadSavedData: false
 };
 
 const EditorReducer = (state = initialState, action: any) => {
@@ -21,7 +22,8 @@ const EditorReducer = (state = initialState, action: any) => {
         case "EDITOR_REINITIALIZE_WORDS":
             return {
                 ...state,
-                type: "EDITOR_REINITIALIZE_WORDS"
+                type: "EDITOR_REINITIALIZE_WORDS",
+                loadSavedData: action.payload
             };
         case "EDITOR_REQUEST_DATA_SAVE":
             return {

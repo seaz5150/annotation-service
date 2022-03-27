@@ -87,6 +87,10 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
   useEffect(() => {
     initializeText();
+    loadSavedData();
+  }, []);
+
+  const loadSavedData = () => {
     if (editor.editorData) {
       let foundData;
       if (foundData = editor.editorData.find((item: { id: string; }) => item.id === props.segmentId)) {
@@ -99,7 +103,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
         slateEditor.history = foundData.history;
       }
     }
-  }, []);
+  };
 
   useEffect(() => {
     switch (history.type) {
@@ -169,6 +173,9 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
         break;
       case "EDITOR_REINITIALIZE_WORDS":
         initializeText();
+        if (editor.loadSavedData) {
+          loadSavedData();
+        }
         setKey(uuidv4());
         break;
     }
