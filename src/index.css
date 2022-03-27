@@ -680,3 +680,13 @@ code {
 .border-radius-025em {
   border-radius: 0.25em;
 }
+
+.time-since-save {
+  color: rgb(201, 201, 201) !important;
+  font-size: 0.8em;
+  text-align: right;
+}
+
+.disabled {
+  opacity: 0.5;
+}

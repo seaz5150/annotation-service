@@ -1,10 +1,14 @@
 import axios from "axios";
+import moment from "moment";
 
 const apiToken = "tyksc1fgc3jj5x6oc1wmxj3pabo74imfzpt8ittj";
 
 const initialState = {
     jobId: 0,
-    jobData: null
+    jobData: null,
+    jobLastSaveTime: null,
+    autosaveEnabled: true,
+    autosaveInterval: 120000
 };
 
 const JobReducer = (state = initialState, action: any) => {
@@ -16,6 +20,25 @@ const JobReducer = (state = initialState, action: any) => {
                 jobData: jobData,
                 type: "JOB_INITIALIZE"
             };
+        case "JOB_SAVE_CHANGES":
+          let currentTime = moment();
+          return {
+              ...state,
+              jobLastSaveTime: currentTime,
+              type: "JOB_SAVE_CHANGES"
+          };
+        case "JOB_TOGGLE_AUTOSAVE":
+          return {
+              ...state,
+              autosaveEnabled: action.payload,
+              type: "JOB_TOGGLE_AUTOSAVE"
+          };
+        case "JOB_SET_AUTOSAVE_INTERVAL":
+          return {
+              ...state,
+              autosaveInterval: action.payload,
+              type: "JOB_SET_AUTOSAVE_INTERVAL"
+          };
         default:
             return state;
     }

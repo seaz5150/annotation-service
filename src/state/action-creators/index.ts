@@ -353,3 +353,30 @@ export const createActionJobInitialize = () => {
     })
   }
 }
+
+export const createActionJobSaveChanges = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "JOB_SAVE_CHANGES",
+      payload: null
+    })
+  }
+}
+
+export const createActionJobToggleAutosave = (value: boolean) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "JOB_TOGGLE_AUTOSAVE",
+      payload: value
+    })
+  }
+}
+
+export const createActionJobSetAutosaveInterval = (interval: number) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "JOB_SET_AUTOSAVE_INTERVAL",
+      payload: interval
+    })
+  }
+}

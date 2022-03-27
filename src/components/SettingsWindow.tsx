@@ -14,15 +14,23 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
     const { createActionDashboardToggleModule, 
             createActionDashboardResetLayout, 
             createActionAudioPlaySetPreplay,
-            createActionTranscriptSegmentsShift } = bindActionCreators(actionCreators, dispatch);
+            createActionTranscriptSegmentsShift,
+            createActionJobSetAutosaveInterval,
+            createActionJobToggleAutosave } = bindActionCreators(actionCreators, dispatch);
 
     const audioPlay = useSelector((state: any) => state.audioPlay);
+    const job = useSelector((state: any) => state.job);
     
     const [shiftAmount, setShiftAmount] = useState(0);
+    const [autosaveInterval, setAutosaveInterval] = useState(job.autosaveInterval / 1000);
 
     const toggleModule = (e: React.ChangeEvent<HTMLInputElement>, moduleName: string) => {
         createActionDashboardToggleModule(moduleName, e.target.checked);
     }
+
+    useEffect(() => {
+        createActionJobSetAutosaveInterval(autosaveInterval * 1000);
+    }, [autosaveInterval]);
 
     return (  
         <div className={"settings-window ms-auto me-auto" + (props.settingsExpanded ? " settings-window-expand" : "")}>
@@ -72,7 +80,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                             Pre-play (s):
                             <input className="misc-input" type="number" min="0" step="0.1" value={audioPlay.prePlay} onChange={(e) => createActionAudioPlaySetPreplay(Number(e.target.value))}></input>
                         </span>
-                        <span className="title-small fw-normal d-flex justify-content-between">
+                        <span className="title-small fw-normal mb-1 d-flex justify-content-between">
                             Time shift (s):
                             <span>
                                 <input className="misc-input me-1" type="number" step="0.01" value={shiftAmount} onChange={(e) => setShiftAmount(Number(e.target.value))}></input>
@@ -80,6 +88,25 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                                     <i className="bi bi-arrow-right-short me-1"></i>
                                     Shift
                                 </button>
+                            </span>
+                        </span>
+                        <div className="d-flex pb-1">
+                                <p className="title-small fw-normal">Autosave enabled:</p>
+                                <input className="form-check-input custom-checkbox ms-auto me-2" 
+                                       type="checkbox"
+                                       onMouseDown={e => pressStopPropagation(e)} 
+                                       onChange={(e) => createActionJobToggleAutosave(e.target.checked)}
+                                       checked={job.autosaveEnabled}/>
+                        </div>
+                        <span className={"title-small fw-normal mb-1 d-flex justify-content-between" + (!job.autosaveEnabled ? " disabled" : "")}>
+                            Autosave interval (s):
+                            <span>
+                                <input className="misc-input me-1"
+                                       type="number" min="10" step="1"
+                                       value={autosaveInterval} 
+                                       onChange={(e) => setAutosaveInterval(Number(e.target.value))}
+                                       disabled={!job.autosaveEnabled}>
+                                </input>
                             </span>
                         </span>
                     </div>
