@@ -48,7 +48,7 @@ export const createActionTranscriptSegmentUpdate = (segmentId: string, segmentSt
         segmentEnd: segmentEnd,
         segmentSpeakerId: segmentSpeakerId,
         segmentTags: segmentTags,
-        segmentwords: segmentWords
+        segmentWords: segmentWords
       }
     })
   }
@@ -136,13 +136,14 @@ export const createActionTranscriptSpeakerUpdate = (speakerId: string, speakerLa
   }
 }
 
-export const createActionTranscriptPlayerAddAction = (actionType: string, segmentAfter: any) => {
+export const createActionTranscriptPlayerAddAction = (actionType: string, segmentAfter: any, mergeSourceSegment?: any) => {
   return (dispatch: any) => {
     dispatch({
       type: "TRANSCRIPT_PLAYER_ADD_ACTION",
       payload: {
         actionType: actionType,
-        segmentAfter: segmentAfter
+        segmentAfter: segmentAfter,
+        mergeSourceSegment: mergeSourceSegment
       }
     })
   }
@@ -175,6 +176,24 @@ export const createActionTranscriptUpdateWords = () => {
   }
 }
 
+export const createActionTranscriptIncreaseAmountUpdated = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_INCREASE_AMOUNT_UPDATED",
+      payload: null
+    })
+  }
+}
+
+export const createActionTranscriptResetAmountUpdated = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_RESET_AMOUNT_UPDATED",
+      payload: null
+    })
+  }
+}
+
 export const createActionEditorAddSectionTag = (tagId: string) => {
   return (dispatch: any) => {
     dispatch({
@@ -198,6 +217,15 @@ export const createActionEditorRequestDataSave = (segmentId: string) => {
     dispatch({
       type: "EDITOR_REQUEST_DATA_SAVE",
       payload: segmentId
+    })
+  }
+}
+
+export const createActionEditorReinitializeWords = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "EDITOR_REINITIALIZE_WORDS",
+      payload: null
     })
   }
 }

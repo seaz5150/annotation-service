@@ -18,6 +18,11 @@ const EditorReducer = (state = initialState, action: any) => {
                 tagId: action.payload,
                 type: "EDITOR_ADD_UNPAIRED_TAG"
             };
+        case "EDITOR_REINITIALIZE_WORDS":
+            return {
+                ...state,
+                type: "EDITOR_REINITIALIZE_WORDS"
+            };
         case "EDITOR_REQUEST_DATA_SAVE":
             return {
                 ...state,

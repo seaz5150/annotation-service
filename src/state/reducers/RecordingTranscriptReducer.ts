@@ -8,7 +8,8 @@ import { TagColors } from "../../enums/TagColors";
 type PlayerAction = {
     type: string,
     segmentBefore?: any,
-    segmentAfter?: any
+    segmentAfter?: any,
+    mergeSourceSegment?: any
 };
 
 const initialState = {
@@ -20,7 +21,8 @@ const initialState = {
     segmentId: "",
     playerActionHistory: [] as PlayerAction[],
     playerActionHistoryIndex: -1,
-    audioLength: 0
+    audioLength: 0,
+    amountUpdated: 0
 };
 
 const RecordingTranscriptReducer = (state = initialState, action: any) => {
@@ -126,6 +128,18 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 segments: state.segments.filter((segment) => segment.id !== action.payload),
                 segmentId: action.payload
             };
+        case "TRANSCRIPT_INCREASE_AMOUNT_UPDATED":        
+            return {
+                ...state,
+                type: "TRANSCRIPT_INCREASE_AMOUNT_UPDATED",
+                amountUpdated: state.amountUpdated + 1
+            };
+        case "TRANSCRIPT_RESET_AMOUNT_UPDATED":        
+            return {
+                ...state,
+                type: "TRANSCRIPT_RESET_AMOUNT_UPDATED",
+                amountUpdated: 0
+            };
         case "TRANSCRIPT_SEGMENT_CREATE":
             return {
                 ...state,
@@ -158,14 +172,14 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             };
         case "TRANSCRIPT_PLAYER_ADD_ACTION":
             var segmentBefore: any;
-            if (action.payload.actionType === "UPDATE" || action.payload.actionType === "REMOVE") {
+            if (action.payload.actionType === "UPDATE" || action.payload.actionType === "REMOVE" || action.payload.actionType === "MERGE") {
                 segmentBefore = state.segments.find(segment => segment.id === action.payload.segmentAfter.id);
             }
 
             return {
                 ...state,
                 type: "TRANSCRIPT_PLAYER_ADD_ACTION",
-                playerActionHistory: [...state.playerActionHistory, {type: action.payload.actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter}],
+                playerActionHistory: [...state.playerActionHistory, {type: action.payload.actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter, mergeSourceSegment: action.payload.mergeSourceSegment}],
                 playerActionHistoryIndex: state.playerActionHistoryIndex + 1
             };
         case "TRANSCRIPT_PLAYER_UNDO_ACTION":
@@ -191,6 +205,16 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     else {
                         console.log("ERROR: Segment to undo update of was not found.")
                     }
+                    break;
+                case "MERGE":
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    if (segmentToRevert) {
+                        segmentToRevert.words = currentHistoryAction.segmentBefore.words;
+                    }
+                    else {
+                        console.log("ERROR: Segment to undo update of was not found.")
+                    }
+                    newSegments.push(currentHistoryAction.mergeSourceSegment);
                     break;
             }
 
@@ -228,11 +252,21 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                         console.log("ERROR: Segment to undo update of was not found.")
                     }
                     break;
+                case "MERGE":
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    if (segmentToRevert) {
+                        segmentToRevert.words = currentHistoryAction.segmentAfter.words;
+                    }
+                    else {
+                        console.log("ERROR: Segment to undo update of was not found.")
+                    }
+                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.mergeSourceSegment.id);
+                    break;
             }
 
             return {
                 ...state,
-                type: "TRANSCRIPT_PLAYER_UNDO_ACTION",
+                type: "TRANSCRIPT_PLAYER_REDO_ACTION",
                 playerActionHistoryIndex: state.playerActionHistoryIndex + 1,
                 segments: newSegments
             };
@@ -252,8 +286,6 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 currentSegment.start = newStart;
                 currentSegment.end = newEnd;
             }
-
-            console.log(newSegments);
 
             return {
                 ...state,
@@ -279,7 +311,6 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             var mergeTargetSegmentIndex = newSegments.findIndex((s: { id: any; }) => s.id === action.payload);
             var mergeSourceSegment = newSegments[mergeTargetSegmentIndex + 1];
 
-            mergeTargetSegment.words = mergeTargetSegment.words.concat(mergeSourceSegment.words);
             mergeTargetSegment.end = mergeSourceSegment.end;
             newSegments = newSegments.filter((s: { id: any; }) => s.id !== mergeSourceSegment.id);
 

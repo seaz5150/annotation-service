@@ -21,7 +21,9 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
             createActionTranscriptPlayerAddAction,
             createActionHistoryAddAction,
             createActionEditorRequestDataSave,
-            createActionTranscriptMergeSegments
+            createActionTranscriptUpdateWords,
+            createActionEditorReinitializeWords,
+            createActionTranscriptResetAmountUpdated
           } = bindActionCreators(actionCreators, dispatch);
 
     
@@ -43,6 +45,11 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const [speakerId, setSpeakerId] = useState((segment.speaker));
     const [segmentTags, setSegmentTags] = useState((segment.segmentTags));
     const [segmentWords, setSegmentWords] = useState((segment.words));
+
+    const amountUpdated = useSelector((state: any) => state.recordingTranscript.amountUpdated);
+    const [mergeInProgress, setMergeInProgress] = useState(false);
+
+    const transcript = useSelector((state: any) => state.recordingTranscript);
 
     useEffect(() => {
         if (speakerId !== segment.speaker) {
@@ -88,9 +95,35 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
         setSegmentTags(newSegmentTags);
     }
 
-    const mergeNextSegment = () => {
-        createActionTranscriptMergeSegments(segment.id)
+    const mergeNextSegmentStepOne = () => {
+        createActionTranscriptUpdateWords();
+        setMergeInProgress(true);
     }
+
+    const mergeNextSegmentStepTwo = () => {
+        let segmentIndex = segments.findIndex((s: { id: string; }) => s.id == segment.id);
+        let nextSegment = segments[segmentIndex + 1];
+
+        createActionHistoryAddAction("AnnotationSegment", segment.id);
+        createActionTranscriptPlayerAddAction("MERGE", JSON.parse(JSON.stringify(segment)), JSON.parse(JSON.stringify(nextSegment)));
+
+        segment.end = nextSegment.end;
+        segments.words = segment.words.concat(nextSegment.words);
+
+        createActionTranscriptSegmentUpdate(segment.id, undefined, segment.end, undefined, undefined, segments.words);
+        createActionEditorRequestDataSave(nextSegment.id);
+        setTimeout(() => {createActionTranscriptSegmentDelete(nextSegment.id)}, 10);
+
+        createActionEditorReinitializeWords();
+    }
+
+    useEffect(() => {
+        if (mergeInProgress && amountUpdated === segments.length) {
+            setMergeInProgress(false);
+            createActionTranscriptResetAmountUpdated();
+            mergeNextSegmentStepTwo();
+        }
+    }, [amountUpdated]);
 
     return (
         <React.Fragment>
@@ -101,7 +134,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                         {(segments.indexOf(segment) !== segments.length - 1) &&
                             <button className="merge-segments-button text-tag-button btn-secondary custom-dropdown"
                                     onMouseDown={pressStopPropagation}
-                                    onClick={mergeNextSegment}>
+                                    onClick={mergeNextSegmentStepOne}>
                             <i className="fas fa-arrows-alt-v"></i>
                             </button>
                         }

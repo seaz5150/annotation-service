@@ -57,7 +57,8 @@ function AudioPlayer(props: AudioPlayerInterface) {
           createActionTranscriptPlayerUndoAction,
           createActionTranscriptPlayerRedoAction,
           createActionEditorRequestDataSave,
-          createActionTranscriptInitializeLength } = bindActionCreators(actionCreators, dispatch);
+          createActionTranscriptInitializeLength,
+          createActionEditorReinitializeWords } = bindActionCreators(actionCreators, dispatch);
 
   const windingUnit = 0.1;
   const windingSpeed = 10;
@@ -115,6 +116,21 @@ function AudioPlayer(props: AudioPlayerInterface) {
       }
     }
   }, [transcript, audioReady]);
+
+  useEffect(() => {
+    switch (transcript.type) {
+        case "TRANSCRIPT_PLAYER_UNDO_ACTION":
+            if (transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1].type === "MERGE") {
+              createActionEditorReinitializeWords();
+            }
+            break;
+       case "TRANSCRIPT_PLAYER_REDO_ACTION":
+          if (transcript.playerActionHistory[transcript.playerActionHistoryIndex].type === "MERGE") {
+            createActionEditorReinitializeWords();
+          }
+          break;
+    }
+}, [transcript]);
 
   const refreshSegments = () => {
     wavesurfer.current?.clearRegions();

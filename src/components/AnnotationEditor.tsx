@@ -46,7 +46,8 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   const dispatch = useDispatch();
   const { createActionHistoryAddAction,
           createActionEditorSaveData,
-          createActionTranscriptSegmentUpdate } = bindActionCreators(actionCreators, dispatch);
+          createActionTranscriptSegmentUpdate,
+          createActionTranscriptIncreaseAmountUpdated } = bindActionCreators(actionCreators, dispatch);
         
   let initialValue: Descendant[] = [
     {
@@ -60,14 +61,17 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
   const textTags = props.textTags;
   const unpairedTags = props.unpairedTags;
-  const words = props.words;
+
+  const segment = useSelector((state: any) => state.recordingTranscript.segments.find((segment: { id: string; }) => segment.id === props.segmentId));
 
   const editor = useSelector((state: any) => state.editor);
   const history = useSelector((state: any) => state.history);
-  const transcript = useSelector((state: any) => state.transcript);
+  const transcript = useSelector((state: any) => state.recordingTranscript);
 
   const [editorFocused, setEditorFocused] = useState(false);
   const [historyPrevious, setHistoryPrevious] = useState<History | null>(null);
+
+  const [key, setKey] = useState(uuidv4());
 
   useEffect(() => {
     if (historyPrevious === null) {
@@ -115,15 +119,38 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   }, [history]);
 
   useEffect(() => {
-    switch (history.type) {
+    switch (transcript.type) {
       case "TRANSCRIPT_UPDATE_WORDS":
+        createActionTranscriptSegmentUpdate(props.segmentId, undefined, undefined, undefined, undefined, parseWords());
+        createActionTranscriptIncreaseAmountUpdated();
         break;
     }
   }, [transcript]);
 
   const parseWords = () => {
-    let result;
-    
+    let children = JSON.parse(JSON.stringify((value as any)[0].children));
+    let result = [] as any[];
+
+    for (let i in children) {
+      let currentChild = children[i];
+      let childText = currentChild.text;
+      let childLabels = currentChild.tagLabels as string[];
+
+      if (childText.trim().length > 0) {
+        let splitWords = childText.split(" ");
+
+        for (let j in splitWords) {
+          let currentWord = splitWords[j];
+          let newWord = {label: currentWord} as any;
+
+          if (childLabels) {
+            newWord.textTags = childLabels;
+          }
+
+          result.push(newWord);
+        }
+      }
+    }
     return result;
   };
 
@@ -140,6 +167,10 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
           createActionEditorSaveData(props.segmentId, slateEditor.history, value);
         }
         break;
+      case "EDITOR_REINITIALIZE_WORDS":
+        initializeText();
+        setKey(uuidv4());
+        break;
     }
   }, [editor]);
 
@@ -147,6 +178,8 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
     let paragraphChildren = (initialValue[0] as any).children;
     let currentTag;
     let lastTag;
+
+    let words = segment.words;
 
     if (words && words.length === 0) {
       paragraphChildren.push({text: ""});
@@ -318,7 +351,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
          onFocus={() => setEditorFocused(true)}
          onBlur={() => setEditorFocused(false)}>
       {value &&
-        <Slate editor={slateEditor} value={value} onChange={newValue => setValue(newValue)}>
+        <Slate key={key} editor={slateEditor} value={value} onChange={newValue => setValue(newValue)}>
           <Editable onMouseDown={pressStopPropagation} renderLeaf={leaf} />
         </Slate>
       }
