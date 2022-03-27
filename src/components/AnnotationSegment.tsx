@@ -115,7 +115,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
         setTimeout(() => {
             createActionTranscriptSegmentUpdate(resultSegment.id, undefined, segment.end, undefined, undefined, resultSegment.words);
             createActionEditorRequestDataSave(nextSegment.id);
-            setTimeout(() => {createActionTranscriptSegmentDelete(nextSegment.id); createActionEditorReinitializeWords(false);}, 10);
+            setTimeout(() => {createActionTranscriptSegmentDelete(nextSegment.id); createActionEditorReinitializeWords([resultSegment.id]);}, 10);
         }, 10);
     }
 

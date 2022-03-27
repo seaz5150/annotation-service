@@ -58,6 +58,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
           createActionTranscriptPlayerRedoAction,
           createActionEditorRequestDataSave,
           createActionTranscriptInitializeLength,
+          createActionEditorReinitializeWordsFromSaved,
           createActionEditorReinitializeWords } = bindActionCreators(actionCreators, dispatch);
 
   const windingUnit = 0.1;
@@ -120,13 +121,16 @@ function AudioPlayer(props: AudioPlayerInterface) {
   useEffect(() => {
     switch (transcript.type) {
         case "TRANSCRIPT_PLAYER_UNDO_ACTION":
-            if (transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1].type === "MERGE") {
-              createActionEditorReinitializeWords(true);
+            var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1];
+            if (currentHistoryAction.type === "MERGE") {
+              createActionEditorReinitializeWordsFromSaved([currentHistoryAction.segmentAfter.id, currentHistoryAction.mergeSourceSegment.id]);
             }
             break;
        case "TRANSCRIPT_PLAYER_REDO_ACTION":
-          if (transcript.playerActionHistory[transcript.playerActionHistoryIndex].type === "MERGE") {
-            createActionEditorReinitializeWords(true);
+          var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex];
+          if (currentHistoryAction.type === "MERGE") {
+            createActionEditorRequestDataSave(currentHistoryAction.segmentAfter.id);
+            setTimeout(() => { createActionEditorReinitializeWords([currentHistoryAction.segmentAfter.id])}, 10);
           }
           break;
     }

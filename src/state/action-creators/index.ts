@@ -221,11 +221,32 @@ export const createActionEditorRequestDataSave = (segmentId: string) => {
   }
 }
 
-export const createActionEditorReinitializeWords = (loadSavedData: boolean) => {
+export const createActionEditorPopData = (segmentId: string, order: number) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "EDITOR_POP_DATA",
+      payload: {
+        segmentId: segmentId,
+        order: order
+      }
+    })
+  }
+}
+
+export const createActionEditorReinitializeWords = (segmentIds: string[]) => {
   return (dispatch: any) => {
     dispatch({
       type: "EDITOR_REINITIALIZE_WORDS",
-      payload: loadSavedData
+      payload: segmentIds
+    })
+  }
+}
+
+export const createActionEditorReinitializeWordsFromSaved = (segmentIds: string[]) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "EDITOR_REINITIALIZE_WORDS_FROM_SAVED",
+      payload: segmentIds
     })
   }
 }

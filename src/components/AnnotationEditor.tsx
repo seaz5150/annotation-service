@@ -47,7 +47,8 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   const { createActionHistoryAddAction,
           createActionEditorSaveData,
           createActionTranscriptSegmentUpdate,
-          createActionTranscriptIncreaseAmountUpdated } = bindActionCreators(actionCreators, dispatch);
+          createActionTranscriptIncreaseAmountUpdated,
+          createActionEditorPopData } = bindActionCreators(actionCreators, dispatch);
         
   let initialValue: Descendant[] = [
     {
@@ -86,21 +87,31 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   }, [slateEditor.history.undos.length]);
 
   useEffect(() => {
+    if (editor.editorData) {
+      var segmentData = editor.editorData.filter((d: { id: string; }) => d.id === props.segmentId);
+      if (segmentData && segmentData.length > 0) {
+        loadSavedData();
+        return;
+      }
+    }
     initializeText();
-    loadSavedData();
   }, []);
 
   const loadSavedData = () => {
     if (editor.editorData) {
-      let foundData;
-      if (foundData = editor.editorData.find((item: { id: string; }) => item.id === props.segmentId)) {
-        HistoryEditor.withoutSaving(slateEditor, () => Transforms.select(slateEditor, {
-          anchor: {path: [0,0], offset: 0},
-          focus: {path: [0,0], offset: 0},
-        }));
-        setValue(foundData.value);
-        setHistoryPrevious(JSON.parse(JSON.stringify(foundData.history)));
-        slateEditor.history = foundData.history;
+      var segmentData = editor.editorData.filter((d: { id: string; }) => d.id === props.segmentId);
+      if (segmentData && segmentData.length > 0) {
+        var mostRecentSegmentData = segmentData.reduce((previous: { order: number; }, current: { order: number; }) => (+previous.order > +current.order) ? previous : current);
+        if (mostRecentSegmentData) {
+          HistoryEditor.withoutSaving(slateEditor, () => Transforms.select(slateEditor, {
+            anchor: {path: [0,0], offset: 0},
+            focus: {path: [0,0], offset: 0},
+          }));
+          setValue(mostRecentSegmentData.value);
+          setHistoryPrevious(JSON.parse(JSON.stringify(mostRecentSegmentData.history)));
+          slateEditor.history = mostRecentSegmentData.history;
+          setTimeout(() => {createActionEditorPopData(props.segmentId, mostRecentSegmentData.order);}, 10);
+        }
       }
     }
   };
@@ -172,11 +183,16 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
         }
         break;
       case "EDITOR_REINITIALIZE_WORDS":
-        initializeText();
-        if (editor.loadSavedData) {
-          loadSavedData();
+        if (editor.segmentIds.find((segmentId: string) => segmentId === props.segmentId)) {
+          initializeText();
+          setKey(uuidv4());
         }
-        setKey(uuidv4());
+        break;
+      case "EDITOR_REINITIALIZE_WORDS_FROM_SAVED":
+        if (editor.segmentIds.find((segmentId: string) => segmentId === props.segmentId)) {
+          loadSavedData();
+          setKey(uuidv4());
+        }
         break;
     }
   }, [editor]);

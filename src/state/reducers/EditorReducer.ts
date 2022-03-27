@@ -2,7 +2,7 @@ const initialState = {
     tagId: null,
     segmentId: null,
     editorData: [] as any[],
-    loadSavedData: false
+    segmentIds: []
 };
 
 const EditorReducer = (state = initialState, action: any) => {
@@ -22,8 +22,14 @@ const EditorReducer = (state = initialState, action: any) => {
         case "EDITOR_REINITIALIZE_WORDS":
             return {
                 ...state,
-                type: "EDITOR_REINITIALIZE_WORDS",
-                loadSavedData: action.payload
+                segmentIds: action.payload,
+                type: "EDITOR_REINITIALIZE_WORDS"
+            };
+        case "EDITOR_REINITIALIZE_WORDS_FROM_SAVED":
+            return {
+                ...state,
+                segmentIds: action.payload,
+                type: "EDITOR_REINITIALIZE_WORDS_FROM_SAVED"
             };
         case "EDITOR_REQUEST_DATA_SAVE":
             return {
@@ -31,20 +37,31 @@ const EditorReducer = (state = initialState, action: any) => {
                 segmentId: action.payload,
                 type: "EDITOR_REQUEST_DATA_SAVE"
             };
-        case "EDITOR_SAVE_DATA":   
-            if (action.payload.history.undos.length === 0 && action.payload.history.redos.length === 0) {
-                return state;
-            }
+        case "EDITOR_POP_DATA":
+            var resultData = JSON.parse(JSON.stringify(state.editorData));
+            resultData = resultData.filter((d: { id: string; order: number; }) => !(d.id === action.payload.segmentId && d.order === action.payload.order));
 
-            var itemToUpdate;
-            if (itemToUpdate = state.editorData.find((item: { id: any; }) => item.id === action.payload.segmentId)) {
-                itemToUpdate.history = action.payload.history;
-                itemToUpdate.value = action.payload.value;
+            return {
+                ...state,
+                segmentId: action.payload.segmentId,
+                editorData: resultData,
+                type: "EDITOR_POP_DATA"
+            };
+        case "EDITOR_SAVE_DATA":
+            var resultData = JSON.parse(JSON.stringify(state.editorData));
+            var segmentData = resultData.filter((d: { id: string; }) => d.id === action.payload.segmentId);
+
+            var newOrder = 0;
+            if (segmentData && segmentData.length > 0) {
+                var mostRecentSegmentData = segmentData.reduce((previous: { order: number; }, current: { order: number; }) => (+previous.order > +current.order) ? previous : current);
+                if (mostRecentSegmentData) {
+                    newOrder = mostRecentSegmentData.order + 1;
+                }
             }
 
             return {
                 ...state,
-                editorData: itemToUpdate ? state.editorData : [...state.editorData, {id: action.payload.segmentId, history: action.payload.history, value: action.payload.value}],
+                editorData: [...state.editorData, {id: action.payload.segmentId, history: action.payload.history, value: action.payload.value, order: newOrder}],
                 type: "EDITOR_SAVE_DATA"
             };
         default:
