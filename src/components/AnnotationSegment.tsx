@@ -103,18 +103,17 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const mergeNextSegmentStepTwo = () => {
         let segmentIndex = segments.findIndex((s: { id: string; }) => s.id == segment.id);
         let nextSegment = segments[segmentIndex + 1];
+        let resultSegment = JSON.parse(JSON.stringify(segment));
 
-        createActionHistoryAddAction("AnnotationSegment", segment.id);
-        createActionTranscriptPlayerAddAction("MERGE", JSON.parse(JSON.stringify(segment)), JSON.parse(JSON.stringify(nextSegment)));
+        resultSegment.end = nextSegment.end;
+        resultSegment.words = resultSegment.words.concat(nextSegment.words);
 
-        segment.end = nextSegment.end;
-        segments.words = segment.words.concat(nextSegment.words);
+        createActionHistoryAddAction("AnnotationSegment", resultSegment.id);
+        createActionTranscriptPlayerAddAction("MERGE", JSON.parse(JSON.stringify(resultSegment)), JSON.parse(JSON.stringify(nextSegment)));
 
-        createActionTranscriptSegmentUpdate(segment.id, undefined, segment.end, undefined, undefined, segments.words);
+        createActionTranscriptSegmentUpdate(resultSegment.id, undefined, segment.end, undefined, undefined, resultSegment.words);
         createActionEditorRequestDataSave(nextSegment.id);
-        setTimeout(() => {createActionTranscriptSegmentDelete(nextSegment.id)}, 10);
-
-        createActionEditorReinitializeWords();
+        setTimeout(() => {createActionTranscriptSegmentDelete(nextSegment.id); createActionEditorReinitializeWords();}, 10);
     }
 
     useEffect(() => {
