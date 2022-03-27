@@ -32,6 +32,14 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
         createActionJobSetAutosaveInterval(autosaveInterval * 1000);
     }, [autosaveInterval]);
 
+    const updateAutosaveInterval = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let newValue = Number(e.target.value);
+        if (newValue < 10) {
+            newValue = 10;
+        }
+        setAutosaveInterval(newValue);
+    }
+
     return (  
         <div className={"settings-window ms-auto me-auto" + (props.settingsExpanded ? " settings-window-expand" : "")}>
             <div className="card-header d-flex justify-content-between">
@@ -104,7 +112,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                                 <input className="misc-input me-1"
                                        type="number" min="10" step="1"
                                        value={autosaveInterval} 
-                                       onChange={(e) => setAutosaveInterval(Number(e.target.value))}
+                                       onChange={(e) => updateAutosaveInterval(e)}
                                        disabled={!job.autosaveEnabled}>
                                 </input>
                             </span>
