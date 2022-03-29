@@ -6,6 +6,7 @@ import EditorReducer from "./EditorReducer";
 import HistoryReducer from "./HistoryReducer";
 import DashboardReducer from "./DashboardReducer";
 import JobReducer from "./JobReducer";
+import HotkeyReducer from "./HotkeyReducer";
 
 const reducers = combineReducers({
     audioPlay: AudioPlayReducer,
@@ -14,7 +15,8 @@ const reducers = combineReducers({
     editor: EditorReducer,
     history: HistoryReducer,
     dashboard: DashboardReducer,
-    job: JobReducer
+    job: JobReducer,
+    hotkey: HotkeyReducer
 });
 
 export default reducers;

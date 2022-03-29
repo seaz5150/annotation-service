@@ -380,3 +380,15 @@ export const createActionJobSetAutosaveInterval = (interval: number) => {
     })
   }
 }
+
+export const createActionHotkeySet = (name: string, hotkey: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "HOTKEY_SET",
+      payload: {
+        name: name,
+        hotkey: hotkey
+      }
+    })
+  }
+}

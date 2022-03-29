@@ -1,6 +1,7 @@
 import { Tooltip } from 'bootstrap';
 import React, { useEffect, useRef, useState } from 'react';
 import Dashboard from './components/Dashboard';
+import HotkeyListener from './components/renderless-components/HotkeyListener';
 import SettingsWindow from './components/SettingsWindow';
 
 function App() {
@@ -17,6 +18,9 @@ function App() {
         <i className="fas fa-cog settings-button-gear-icon"></i>
       </button>
       <SettingsWindow settingsExpanded={settingsExpanded} />
+
+      {/* Renderless components */}
+      <HotkeyListener />
     </div>
   );
 }

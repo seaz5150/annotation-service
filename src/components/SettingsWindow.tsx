@@ -1,5 +1,5 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
-import { Key, ReactChild, ReactFragment, ReactPortal, useEffect, useState } from "react";
+import { Fragment, Key, ReactChild, ReactFragment, ReactPortal, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { pressStopPropagation } from "../CommonUtilities";
 import { actionCreators } from "../state";
@@ -16,13 +16,19 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
             createActionAudioPlaySetPreplay,
             createActionTranscriptSegmentsShift,
             createActionJobSetAutosaveInterval,
-            createActionJobToggleAutosave } = bindActionCreators(actionCreators, dispatch);
+            createActionJobToggleAutosave,
+            createActionHotkeySet } = bindActionCreators(actionCreators, dispatch);
 
     const audioPlay = useSelector((state: any) => state.audioPlay);
     const job = useSelector((state: any) => state.job);
+    const hotkey = useSelector((state: any) => state.hotkey);
     
     const [shiftAmount, setShiftAmount] = useState(0);
     const [autosaveInterval, setAutosaveInterval] = useState(job.autosaveInterval / 1000);
+
+    const activeHotkeyRef = useRef("");
+
+    var event2string = require('key-event-to-string')({cmd: "mod", joinWith: "+", ctrl: "mod"});
 
     const toggleModule = (e: React.ChangeEvent<HTMLInputElement>, moduleName: string) => {
         createActionDashboardToggleModule(moduleName, e.target.checked);
@@ -40,6 +46,17 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
         setAutosaveInterval(newValue);
     }
 
+    const OnKeyDown = (e: any) => {
+        if (activeHotkeyRef.current !== "") {
+            e.preventDefault();
+            createActionHotkeySet(activeHotkeyRef.current, event2string(e).toLowerCase());
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener('keydown', OnKeyDown);
+    }, []);
+
     return (  
         <div className={"settings-window ms-auto me-auto" + (props.settingsExpanded ? " settings-window-expand" : "")}>
             <div className="card-header d-flex justify-content-between">
@@ -48,6 +65,20 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
             <div className="row mt-2 ms-4 me-4">
                 <div className="settings-column col">
                     <p className="title-small pb-1">Shortcuts</p>
+                    <div className="settings-modules-container ms-2 me-2">
+                        <div className="d-flex pb-1 justify-content-between">
+                            {hotkey.hotkeys.map((h: { label: string; hotkey: string; name: string }) => 
+                                <Fragment key={h.name}>
+                                    <p className="title-small fw-normal">{h.label}</p>
+                                    <button className="badge strip-button-style bg-secondary hotkey-button"
+                                            onFocus={() => activeHotkeyRef.current = h.name}
+                                            onBlur={() => activeHotkeyRef.current = ""}>
+                                        {h.hotkey}
+                                    </button>
+                                </Fragment>
+                            )}
+                        </div>
+                    </div>
                 </div>
                 <div className="settings-column col ms-4 me-4">
                     <p className="title-small pb-1">Layout</p>
