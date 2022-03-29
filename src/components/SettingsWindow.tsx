@@ -28,7 +28,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
 
     const activeHotkeyRef = useRef("");
 
-    var event2string = require('key-event-to-string')({cmd: "mod", joinWith: "+", ctrl: "mod"});
+    var event2string = require('key-event-to-string')({cmd: "Ctrl/Cmd", ctrl: "Ctrl/Cmd"});
 
     const toggleModule = (e: React.ChangeEvent<HTMLInputElement>, moduleName: string) => {
         createActionDashboardToggleModule(moduleName, e.target.checked);
@@ -49,7 +49,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
     const OnKeyDown = (e: any) => {
         if (activeHotkeyRef.current !== "") {
             e.preventDefault();
-            createActionHotkeySet(activeHotkeyRef.current, event2string(e).toLowerCase());
+            createActionHotkeySet(activeHotkeyRef.current, event2string(e));
         }
     }
 

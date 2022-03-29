@@ -9,7 +9,7 @@ const HotkeyListener = () => {
     const { createActionJobSaveChanges } = bindActionCreators(actionCreators, dispatch);
     const hotkey = useSelector((state: any) => state.hotkey);
     
-    var event2string = require('key-event-to-string')({cmd: "mod", joinWith: "+", ctrl: "mod"});
+    var event2string = require('key-event-to-string')({cmd: "Ctrl/Cmd", ctrl: "Ctrl/Cmd"});
 
     const saveHotkey = useRef("");
 
@@ -22,7 +22,7 @@ const HotkeyListener = () => {
     }, []);
 
     const OnKeyDown = (e: any) => {
-        if (event2string(e).toLowerCase() === saveHotkey.current) {
+        if (event2string(e) === saveHotkey.current) {
             e.preventDefault();
             createActionJobSaveChanges();
         }
