@@ -336,15 +336,6 @@ export const createActionDashboardInitializeOpenModules = (modules: string[]) =>
   }
 }
 
-export const createActionDashboardInitializeOpenAttachmentTabs = (attachmentTabs: string[]) => {
-  return (dispatch: any) => {
-    dispatch({
-      type: "DASHBOARD_INITIALIZE_OPEN_ATTACHMENT_TABS",
-      payload: attachmentTabs
-    })
-  }
-}
-
 export const createActionDashboardResetLayout = () => {
   return (dispatch: any) => {
     dispatch({

@@ -34,12 +34,11 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
 
     const dispatch = useDispatch();
     const { createActionDashboardInitializeOpenModules, 
-            createActionDashboardInitializeModules,
-            createActionDashboardInitializeOpenAttachmentTabs } = bindActionCreators(actionCreators, dispatch);
+            createActionDashboardInitializeModules
+          } = bindActionCreators(actionCreators, dispatch);
 
     const defaultModules = ["AudioPlayer", "AnnotationText", "TextTags", "RecordingDetails", "Changes", "JobControl", "SpeakerLabels"];
     const [modules, setModules] = useState(getFromLS("modules") as string[] || defaultModules);
-    const [openAttachmentTabs, setOpenAttachmentTabs] = useState([] as string[]);
     const [layoutBackups, setLayoutBackups] = useState(getFromLS("layoutBackups") as any[] || [] as any[]);
     const jobData = useSelector((state: any) => state.job.jobData);
 
@@ -51,25 +50,18 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             { i: 'RecordingDetails', x: 10, y: 0, w: 2.7, h: 11.4, isResizable: false},
             { i: 'Changes', x: 0, y: 1, w: 2.7, h: 11.4, isResizable: false},
             { i: 'JobControl', x: 0, y: 2, w: 2.7, h: 11.4, isResizable: false},
-            { i: 'SpeakerLabels', x: 10, y: 1, w: 2.7, h: 11.4, isResizable: false}
+            { i: 'SpeakerLabels', x: 10, y: 1, w: 2.7, h: 11.4, isResizable: false},
+            { i: "AttachmentTabs", x: 4, y: 1, w: 4, h: 11.4, isResizable: false}
         ]
     };
 
     const [layouts, setLayouts] = useState(getFromLS("layouts") as Layouts || defaultLayouts);
 
     const closeModule = (moduleName: string) => {
-        if (openAttachmentTabs.some(t => t === moduleName)) {
-            setOpenAttachmentTabs(openAttachmentTabs.filter(t => t !== moduleName));
-            if (openAttachmentTabs.length === 1) {
-                setModules(modules.filter(t => t !== "AttachmentTabs"));
-            }
-        }
-        else {
-            setModules(modules.filter((m: string) => m !== moduleName));
-            let layoutsJSON = JSON.parse(JSON.stringify(layouts));
-            let backupLayout = layoutsJSON.lg.find((m: { i: string; }) => m.i === moduleName);
-            setLayoutBackups([...layoutBackups, backupLayout]);
-        }
+        setModules(modules.filter((m: string) => m !== moduleName));
+        let layoutsJSON = JSON.parse(JSON.stringify(layouts));
+        let backupLayout = layoutsJSON.lg.find((m: { i: string; }) => m.i === moduleName);
+        setLayoutBackups([...layoutBackups, backupLayout]);
     };
 
     const openModule = (moduleName: string) => {
@@ -89,19 +81,10 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             let view = jobData.user_interface.views.find((v: { label: string; }) => v.label === moduleName);
             if (view.type === "text") {
                 updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: 2.7, h: 11.4, isResizable: false});
-                setModules([...modules, moduleName]);
-            }
-            else {
-                if (!modules.some(m => m === "AttachmentTabs")) {
-                    updatedLayouts.lg.push({ i: "AttachmentTabs", x: 4, y: 1, w: 4, h: 11.4, isResizable: false});
-                    setModules([...modules, "AttachmentTabs"]);
-                }
-                if (!openAttachmentTabs.some(t => t === moduleName)) {
-                    setOpenAttachmentTabs([...openAttachmentTabs, moduleName]);
-                }
             }
             setLayouts(updatedLayouts);
         }
+        setModules([...modules, moduleName]);
     };
     
     useEffect(() => {
@@ -111,10 +94,6 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
     useEffect(() => {
         createActionDashboardInitializeOpenModules(modules);
     }, [modules]);
-
-    useEffect(() => {
-        createActionDashboardInitializeOpenAttachmentTabs(openAttachmentTabs);
-    }, [openAttachmentTabs]);
 
     useEffect(() => {
         let layoutBackupsToSave = JSON.parse(JSON.stringify(layoutBackups));
@@ -212,7 +191,15 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
     };
 
     const attachmentRenderSwitch = (label: string) => {
-
+        let view = jobData.user_interface.views.find((v: { label: string; }) => v.label === label);
+        switch(view.type) {
+            case "text":
+                return (<div key={label}>
+                           <Plaintext updateElementGridSize={updateElementGridSize} view={view} />
+                       </div>);
+            default: 
+                return null;
+        }
     };
 
     return (
@@ -258,6 +245,9 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
                     <SpeakerLabels updateElementGridSize={updateElementGridSize} />
                 </div>
             }
+            {jobData && jobData.user_interface.views.map((v: any) =>
+                modules.some(m => m === v.label) && attachmentRenderSwitch(v.label)      
+            )}
             {modules.some(m => m === "AttachmentTabs") &&
                 <div key="AttachmentTabs">
                     <AttachmentTabs updateElementGridSize={updateElementGridSize} />

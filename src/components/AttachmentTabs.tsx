@@ -20,7 +20,7 @@ const JobControl = (props: JobControlInterface) => {
     const jobData = useSelector((state: any) => state.job.jobData);
 
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [activeTab, setActiveTab] = useState(dashboard.openAttachmentTabs[0]);
+    const [activeTab, setActiveTab] = useState(jobData.user_interface.views.find((v: { type: string; }) => (v.type === "img" || v.type === "iframe")).label);
     const { width, height } = props.size;
 
     useEffect(() => {
@@ -48,8 +48,7 @@ const JobControl = (props: JobControlInterface) => {
             <div className="card-header d-flex justify-content-between">
                 <ul className="module-tabs">
                     <li>
-                        {jobData && jobData.user_interface.views.map((v: any) =>
-                            dashboard.openAttachmentTabs.some((t: string, index: number) => t === v.label) &&
+                        {jobData && jobData.user_interface.views.map((v: any) => (v.type === "img" || v.type === "iframe") &&
                             <>
                                 <button className={"tab-button " + (activeTab === v.label ? " tab-button-active" : "")}
                                         onClick={() => setActiveTab(v.label)}
@@ -76,7 +75,7 @@ const JobControl = (props: JobControlInterface) => {
             </div>
             <div className={"" + (isCollapsed ? "module-content-collapsed" : "mt-1")}>
                 {jobData && jobData.user_interface.views.map((v: any) =>
-                    (dashboard.openAttachmentTabs.some((t: string) => t === v.label) && activeTab === v.label) && attachmentRenderSwitch(v.label)      
+                    activeTab === v.label && attachmentRenderSwitch(v.label)      
                 )}
             </div>
         </div>
