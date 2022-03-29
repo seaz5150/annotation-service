@@ -65,7 +65,7 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
                                        type="checkbox"
                                        onMouseDown={e => pressStopPropagation(e)} 
                                        onChange={(e) => toggleModule(e, v.label)}
-                                       checked={dashboard.openModules ? dashboard.openModules.some((om: string) => om === v.label) : false}/>
+                                       checked={(dashboard.openModules.some((om: string) => om === v.label) || dashboard.openAttachmentTabs.some((om: string) => om === v.label))}/>
                         </React.Fragment>
                     )}
                 </div>

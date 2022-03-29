@@ -44,32 +44,15 @@ const AttachedImage = (props: SpeakerLabelsInterface) => {
     }, [width]);
     
     return (  
-        <div className="module module-settings">
-            <div className="card-header d-flex justify-content-between">
-                {props.view.label}
-                <span className="d-flex align-content-center">
-                    <button className="strip-button-style module-header-button pe-2"
-                            onMouseDown={pressStopPropagation}
-                            onClick={() => setIsCollapsed(!isCollapsed)}>
-                        <i style={{fontSize: "1.2em"}} className="bi bi-dash-lg"></i>
-                    </button>
-                    <button className="strip-button-style module-header-button"
-                            onMouseDown={pressStopPropagation}
-                            onClick={() => createActionDashboardToggleModule(props.view.label, false)}>
-                        <i className="bi bi-x-lg"></i>
-                    </button>
-                </span>
-            </div>
-            <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "p-0 pt-1 m-0")}>
-                <div onMouseDownCapture={() => createActionDashboardToggleModuleStatic(props.view.label, true)}
-                     onMouseUp={() => createActionDashboardToggleModuleStatic(props.view.label, false)}
-                     className="d-flex justify-content-center">
-                    <TransformWrapper>
-                        <TransformComponent>
-                            <img className="border-radius-025em mb-1" src={props.view.url} width={imageDimensions.width} height={imageDimensions.height}></img>
-                        </TransformComponent>
-                    </TransformWrapper>
-                </div>
+        <div>
+            <div onMouseDownCapture={() => createActionDashboardToggleModuleStatic("AttachmentTabs", true)}
+                    onMouseUp={() => createActionDashboardToggleModuleStatic("AttachmentTabs", false)}
+                    className="d-flex justify-content-center">
+                <TransformWrapper>
+                    <TransformComponent>
+                        <img className="border-radius-025em mb-1" src={props.view.url} width={imageDimensions.width} height={imageDimensions.height}></img>
+                    </TransformComponent>
+                </TransformWrapper>
             </div>
         </div>
     );

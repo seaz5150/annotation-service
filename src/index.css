@@ -634,7 +634,7 @@ code {
   bottom: 0;
   right: 10em;
   left: 10em;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(20px);
   min-width: 510px;
 }
 
@@ -689,4 +689,29 @@ code {
 
 .disabled {
   opacity: 0.5;
+}
+
+.module-tabs {
+  list-style-type: none;
+  padding: 0;
+}
+
+.tab-button {
+  margin-right: 1em;
+  margin-left: 1em;
+  color: rgb(201, 201, 201);
+  font-weight: 500;
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+}
+
+.tab-button:hover {
+  color: white;
+}
+
+.tab-button-active {
+  color: white;
 }

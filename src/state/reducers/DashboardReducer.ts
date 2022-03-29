@@ -2,7 +2,8 @@ const initialState = {
     moduleName: "",
     value: false,
     allModules: [] as {name: string, viewName?: string}[],
-    openModules: [] as string[]
+    openModules: [] as string[],
+    openAttachmentTabs: [] as string[]
 };
 
 const DashboardReducer = (state = initialState, action: any) => {
@@ -42,6 +43,12 @@ const DashboardReducer = (state = initialState, action: any) => {
                 ...state,
                 openModules: action.payload,
                 type: "DASHBOARD_INITIALIZE_OPEN_MODULES"
+            };
+        case "DASHBOARD_INITIALIZE_OPEN_ATTACHMENT_TABS":
+            return {
+                ...state,
+                openAttachmentTabs: action.payload,
+                type: "DASHBOARD_INITIALIZE_OPEN_ATTACHMENT_TABS"
             };
         case "DASHBOARD_TOGGLE_MODULE":
             return {
