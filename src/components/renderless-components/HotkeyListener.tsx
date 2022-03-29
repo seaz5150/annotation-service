@@ -1,7 +1,6 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../../state";
-import isHotkey, { KeyboardEventLike } from 'is-hotkey';
 import { useEffect, useRef } from "react";
 
 const HotkeyListener = () => {
