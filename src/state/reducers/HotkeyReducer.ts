@@ -1,5 +1,5 @@
 const initialState = {
-    hotkeys: [{name: "SAVE", hotkey: "mod+s", label: "Save transcript"}]
+    hotkeys: [{name: "SAVE", hotkey: "Ctrl/Cmd + S", label: "Save transcript"}]
 };
 
 
