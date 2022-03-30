@@ -9,7 +9,7 @@ type PlayerAction = {
     type: string,
     segmentBefore?: any,
     segmentAfter?: any,
-    mergeSourceSegment?: any
+    additionalSegment?: any
 };
 
 const initialState = {
@@ -28,7 +28,13 @@ const initialState = {
     splitPlayerSegmentId: "",
     splitEditorSegmentId: "",
     splitWordIndex: 0,
-    splitWord: false
+    splitWord: false,
+    splitCompleted: false,
+
+    // For split undo.
+    segmentToSplit: {},
+    segmentAfterSplit: {},
+    addedSplitSegment: {}
 };
 
 const RecordingTranscriptReducer = (state = initialState, action: any) => {
@@ -178,14 +184,20 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             };
         case "TRANSCRIPT_PLAYER_ADD_ACTION":
             var segmentBefore: any;
-            if (action.payload.actionType === "UPDATE" || action.payload.actionType === "REMOVE" || action.payload.actionType === "MERGE") {
-                segmentBefore = state.segments.find(segment => segment.id === action.payload.segmentAfter.id);
+            if ((action.payload.actionType === "UPDATE" || action.payload.actionType === "REMOVE" 
+               || action.payload.actionType === "MERGE" || action.payload.actionType === "SPLIT")) {
+                if (action.payload.segmentBefore === undefined) {
+                    segmentBefore = state.segments.find(segment => segment.id === action.payload.segmentAfter.id);
+                }
+                else {
+                    segmentBefore = action.payload.segmentBefore;
+                }
             }
 
             return {
                 ...state,
                 type: "TRANSCRIPT_PLAYER_ADD_ACTION",
-                playerActionHistory: [...state.playerActionHistory, {type: action.payload.actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter, mergeSourceSegment: action.payload.mergeSourceSegment}],
+                playerActionHistory: [...state.playerActionHistory, {type: action.payload.actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter, additionalSegment: action.payload.additionalSegment}],
                 playerActionHistoryIndex: state.playerActionHistoryIndex + 1
             };
         case "TRANSCRIPT_PLAYER_UNDO_ACTION":
@@ -220,7 +232,19 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     else {
                         console.log("ERROR: Segment to undo update of was not found.")
                     }
-                    newSegments.push(currentHistoryAction.mergeSourceSegment);
+                    newSegments.push(currentHistoryAction.additionalSegment);
+                    break;
+                case "SPLIT":
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    if (segmentToRevert) {
+                        segmentToRevert.start = currentHistoryAction.segmentBefore.start;
+                        segmentToRevert.end = currentHistoryAction.segmentBefore.end;
+                        segmentToRevert.words = currentHistoryAction.segmentBefore.words;
+                    }
+                    else {
+                        console.log("ERROR: Segment to undo update of was not found.")
+                    }
+                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.additionalSegment.id);
                     break;
             }
 
@@ -266,7 +290,19 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     else {
                         console.log("ERROR: Segment to undo update of was not found.")
                     }
-                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.mergeSourceSegment.id);
+                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.additionalSegment.id);
+                    break;
+                case "SPLIT":
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    if (segmentToRevert) {
+                        segmentToRevert.start = currentHistoryAction.segmentAfter.start;
+                        segmentToRevert.end = currentHistoryAction.segmentAfter.end;
+                        segmentToRevert.words = currentHistoryAction.segmentAfter.words;
+                    }
+                    else {
+                        console.log("ERROR: Segment to undo update of was not found.")
+                    }
+                    newSegments.push(currentHistoryAction.additionalSegment);
                     break;
             }
 
@@ -327,21 +363,23 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             };
         case "TRANSCRIPT_SPLIT_SEGMENT":
             if (state.splitWord) {
-                return state;
+                return {...state, splitCompleted: false};
             }
 
             if (state.splitPlayerSegmentId !== state.splitEditorSegmentId) {
-                return state;
+                return {...state, splitCompleted: false};
             }
 
             if (state.splitTime === undefined || state.splitPlayerSegmentId === "") {
-                return state;
+                return {...state, splitCompleted: false};
             }
 
             var newSegments = JSON.parse(JSON.stringify(state.segments));
             var segmentToSplit = newSegments.find((s: any) => s.id === state.splitPlayerSegmentId);
+            var segmentToSplitBackup = JSON.parse(JSON.stringify(segmentToSplit));
+
             if ((state.splitTime <= segmentToSplit.start) && (state.splitTime >= segmentToSplit.end)) {
-                return state;
+                return {...state, splitCompleted: false};
             }
 
             var segmentToInsert = JSON.parse(JSON.stringify(segmentToSplit));
@@ -356,6 +394,10 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 segments: newSegments,
+                segmentToSplit: segmentToSplitBackup,
+                segmentAfterSplit: segmentToSplit,
+                addedSplitSegment: segmentToInsert,
+                splitCompleted: true,
                 type: "TRANSCRIPT_SPLIT_SEGMENT"
             };
         case "TRANSCRIPT_INPUT_PLAYER_SPLIT_INFO":

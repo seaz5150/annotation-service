@@ -54,7 +54,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     useEffect(() => {
         if (speakerId !== segment.speaker) {
             createActionHistoryAddAction("AnnotationSegment", segment.id);
-            createActionTranscriptPlayerAddAction("UPDATE", {id: segment.id, speaker: speakerId});
+            createActionTranscriptPlayerAddAction("UPDATE", undefined, {id: segment.id, speaker: speakerId});
             createActionTranscriptSegmentUpdate(segment.id, undefined, undefined, speakerId);
         }
     }, [speakerId]);
@@ -62,14 +62,14 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     useEffect(() => {
         if (segmentTags !== segment.segmentTags) {
             createActionHistoryAddAction("AnnotationSegment", segment.id);
-            createActionTranscriptPlayerAddAction("UPDATE", {id: segment.id, segmentTags: segmentTags});
+            createActionTranscriptPlayerAddAction("UPDATE", undefined, {id: segment.id, segmentTags: segmentTags});
             createActionTranscriptSegmentUpdate(segment.id, undefined, undefined, undefined, segmentTags);
         }
     }, [segmentTags]);
 
     const deleteSegmentTag = () => {
         createActionHistoryAddAction("AnnotationSegment", segment.id);
-        createActionTranscriptPlayerAddAction("REMOVE", {id: segment.id});
+        createActionTranscriptPlayerAddAction("REMOVE", undefined, {id: segment.id});
         createActionEditorRequestDataSave(segment.id);
         setTimeout(() => {createActionTranscriptSegmentDelete(segment.id)}, 10);
     }

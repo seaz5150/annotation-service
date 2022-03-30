@@ -54,7 +54,6 @@ function AudioPlayer(props: AudioPlayerInterface) {
           createActionHistoryAddAction,
           createActionTranscriptPlayerAddAction,
           createActionTranscriptInitializeLength,
-          createActionTranscriptSplitSegment,
           createActionTranscriptInputPlayerSplitInfo } = bindActionCreators(actionCreators, dispatch);
 
   const windingUnit = 0.1;
@@ -88,8 +87,12 @@ function AudioPlayer(props: AudioPlayerInterface) {
         case "TRANSCRIPT_PLAYER_REDO_ACTION":
         case "TRANSCRIPT_SEGMENTS_SHIFT":
         case "TRANSCRIPT_MERGE_SEGMENTS":
-        case "TRANSCRIPT_SPLIT_SEGMENT":
           refreshSegments();
+          break;
+        case "TRANSCRIPT_SPLIT_SEGMENT":
+          if (transcript.splitCompleted) {
+            refreshSegments();
+          }
           break;
       }
     }
@@ -197,12 +200,12 @@ function AudioPlayer(props: AudioPlayerInterface) {
         wavesurfer.current?.on("region-update-end", (region) => {
           if (regionCreatedByUser === true) {
             regionCreatedByUser = false;
-            createActionTranscriptPlayerAddAction("CREATE", {id: region.id, start: region.start, end: region.end});
+            createActionTranscriptPlayerAddAction("CREATE", undefined, {id: region.id, start: region.start, end: region.end});
             createActionTranscriptSegmentCreate(region.id, region.start, region.end);
             createActionHistoryAddAction("AudioPlayer", region.id);
           }
           else {
-            createActionTranscriptPlayerAddAction("UPDATE", {id: region.id, start: region.start, end: region.end});
+            createActionTranscriptPlayerAddAction("UPDATE", undefined, {id: region.id, start: region.start, end: region.end});
             createActionTranscriptSegmentUpdate(region.id, region.start, region.end, undefined);
             createActionHistoryAddAction("AudioPlayer", region.id);
           }

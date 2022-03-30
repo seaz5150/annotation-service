@@ -136,14 +136,15 @@ export const createActionTranscriptSpeakerUpdate = (speakerId: string, speakerLa
   }
 }
 
-export const createActionTranscriptPlayerAddAction = (actionType: string, segmentAfter: any, mergeSourceSegment?: any) => {
+export const createActionTranscriptPlayerAddAction = (actionType: string, segmentBefore: any | undefined, segmentAfter: any, additionalSegment?: any) => {
   return (dispatch: any) => {
     dispatch({
       type: "TRANSCRIPT_PLAYER_ADD_ACTION",
       payload: {
         actionType: actionType,
+        segmentBefore: segmentBefore,
         segmentAfter: segmentAfter,
-        mergeSourceSegment: mergeSourceSegment
+        additionalSegment: additionalSegment
       }
     })
   }

@@ -44,7 +44,10 @@ const EventReactor = () => {
             case "TRANSCRIPT_PLAYER_UNDO_ACTION":
                 var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1];
                 if (currentHistoryAction.type === "MERGE") {
-                    createActionEditorReinitializeWordsFromSaved([currentHistoryAction.segmentAfter.id, currentHistoryAction.mergeSourceSegment.id]);
+                    createActionEditorReinitializeWordsFromSaved([currentHistoryAction.segmentAfter.id, currentHistoryAction.additionalSegment.id]);
+                }
+                else if (currentHistoryAction.type === "SPLIT") {
+                  createActionEditorReinitializeWordsFromSaved([currentHistoryAction.segmentAfter.id]);
                 }
                 break;
             case "TRANSCRIPT_PLAYER_REDO_ACTION":
@@ -52,6 +55,9 @@ const EventReactor = () => {
                 if (currentHistoryAction.type === "MERGE") {
                     createActionEditorRequestDataSave(currentHistoryAction.segmentAfter.id);
                     setTimeout(() => { createActionEditorReinitializeWords([currentHistoryAction.segmentAfter.id])}, 10);
+                }
+                else if (currentHistoryAction.type === "SPLIT") {
+                  createActionEditorReinitializeWords([currentHistoryAction.segmentAfter.id]);
                 }
                 break;
         }

@@ -9,7 +9,12 @@ const HotkeyListener = () => {
             createActionTranscriptGatherSplitInfo,
             createActionTranscriptSplitSegment,
             createActionTranscriptUpdateWords,
-            createActionEditorReinitializeWords } = bindActionCreators(actionCreators, dispatch);
+            createActionEditorReinitializeWords,
+            createActionHistoryUndoAction, 
+            createActionHistoryRedoAction,
+            createActionHistoryAddAction,
+            createActionTranscriptPlayerAddAction,
+            createActionEditorRequestDataSave } = bindActionCreators(actionCreators, dispatch);
     const hotkey = useSelector((state: any) => state.hotkey);
     const transcript = useSelector((state: any) => state.recordingTranscript);
     
@@ -18,12 +23,19 @@ const HotkeyListener = () => {
     const hotkeyRebindInProgress = useRef(false);
     const saveHotkey = useRef("");
     const splitHotkey = useRef("");
+    const undoHotkey = useRef("");
+    const redoHotkey = useRef("");
 
-    const splitSegmentId = useRef("");
+    const splitCompleted = useRef(false);
+    const splitSegmentBefore = useRef<any>();
+    const splitSegmentAfter = useRef<any>();
+    const splitSegmentAdded = useRef<any>();
 
     useEffect(() => {
         saveHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "SAVE").hotkey;
         splitHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "SPLIT").hotkey;
+        undoHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "UNDO").hotkey;
+        redoHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "REDO").hotkey;
     }, [hotkey.hotkeys]);
 
     useEffect(() => {
@@ -31,8 +43,20 @@ const HotkeyListener = () => {
     }, [hotkey.rebindInProgress]);
 
     useEffect(() => {
-        splitSegmentId.current = transcript.splitPlayerSegmentId;
-    }, [transcript.splitPlayerSegmentId]);
+        splitSegmentBefore.current = transcript.segmentToSplit;
+    }, [transcript.segmentToSplit]);
+
+    useEffect(() => {
+        splitCompleted.current = transcript.splitCompleted;
+    }, [transcript.splitCompleted]);
+
+    useEffect(() => {
+        splitSegmentAfter.current = transcript.segmentAfterSplit;
+    }, [transcript.segmentAfterSplit]);
+
+    useEffect(() => {
+        splitSegmentAdded.current = transcript.addedSplitSegment;
+    }, [transcript.addedSplitSegment]);
 
     useEffect(() => {
         document.addEventListener('keydown', OnKeyDown);
@@ -48,13 +72,30 @@ const HotkeyListener = () => {
             else if (keyString === splitHotkey.current) {
                 e.preventDefault();
                 createActionTranscriptGatherSplitInfo();
+
                 setTimeout(() => {
                     createActionTranscriptUpdateWords();
                     setTimeout(() => {
                         createActionTranscriptSplitSegment();
-                        setTimeout(() => {createActionEditorReinitializeWords([splitSegmentId.current]);}, 10);
+                        setTimeout(() => {
+                            // Split was completed
+                            if (splitCompleted.current) {
+                                createActionHistoryAddAction("AnnotationSegment", splitSegmentBefore.current.id);
+                                createActionTranscriptPlayerAddAction("SPLIT", splitSegmentBefore.current, splitSegmentAfter.current, splitSegmentAdded.current);
+                                createActionEditorRequestDataSave(splitSegmentBefore.current.id);
+                                setTimeout(() => {createActionEditorReinitializeWords([splitSegmentBefore.current.id]);}, 10);
+                            }
+                        }, 10);
                     }, 10);
                 }, 10);
+            }
+            else if (keyString === undoHotkey.current) {
+                e.preventDefault();
+                createActionHistoryUndoAction();
+            }
+            else if (keyString === redoHotkey.current) {
+                e.preventDefault();
+                createActionHistoryRedoAction();
             }
         }
     }
