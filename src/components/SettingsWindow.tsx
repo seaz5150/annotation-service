@@ -17,7 +17,8 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
             createActionTranscriptSegmentsShift,
             createActionJobSetAutosaveInterval,
             createActionJobToggleAutosave,
-            createActionHotkeySet } = bindActionCreators(actionCreators, dispatch);
+            createActionHotkeySet,
+            createActionHotkeySetRebindInProgress } = bindActionCreators(actionCreators, dispatch);
 
     const audioPlay = useSelector((state: any) => state.audioPlay);
     const job = useSelector((state: any) => state.job);
@@ -27,6 +28,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
     const [autosaveInterval, setAutosaveInterval] = useState(job.autosaveInterval / 1000);
 
     const activeHotkeyRef = useRef("");
+    const [hotkeyActive, setHotkeyActive] = useState(false);
 
     var event2string = require('key-event-to-string')({cmd: "Ctrl/Cmd", ctrl: "Ctrl/Cmd"});
 
@@ -54,6 +56,10 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
     }
 
     useEffect(() => {
+        createActionHotkeySetRebindInProgress(activeHotkeyRef.current !== "");
+    }, [hotkeyActive]);
+
+    useEffect(() => {
         document.addEventListener('keydown', OnKeyDown);
     }, []);
 
@@ -71,8 +77,8 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                                 <Fragment key={h.name}>
                                     <p className="title-small fw-normal">{h.label}</p>
                                     <button className="badge strip-button-style bg-secondary hotkey-button"
-                                            onFocus={() => activeHotkeyRef.current = h.name}
-                                            onBlur={() => activeHotkeyRef.current = ""}>
+                                            onFocus={() => {activeHotkeyRef.current = h.name; setHotkeyActive(true)}}
+                                            onBlur={() => {activeHotkeyRef.current = ""; setHotkeyActive(false)}}>
                                         {h.hotkey}
                                     </button>
                                 </Fragment>

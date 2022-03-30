@@ -10,20 +10,27 @@ const HotkeyListener = () => {
     
     var event2string = require('key-event-to-string')({cmd: "Ctrl/Cmd", ctrl: "Ctrl/Cmd"});
 
+    const hotkeyRebindInProgress = useRef(false);
     const saveHotkey = useRef("");
 
     useEffect(() => {
         saveHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "SAVE").hotkey;
-    }, [hotkey]);
+    }, [hotkey.hotkeys]);
+
+    useEffect(() => {
+        hotkeyRebindInProgress.current = hotkey.rebindInProgress;
+    }, [hotkey.rebindInProgress]);
 
     useEffect(() => {
         document.addEventListener('keydown', OnKeyDown);
     }, []);
 
     const OnKeyDown = (e: any) => {
-        if (event2string(e) === saveHotkey.current) {
-            e.preventDefault();
-            createActionJobSaveChanges();
+        if (!hotkeyRebindInProgress.current) {
+            if (event2string(e) === saveHotkey.current) {
+                e.preventDefault();
+                createActionJobSaveChanges();
+            }
         }
     }
 
