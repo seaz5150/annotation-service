@@ -12,9 +12,11 @@ const HotkeyListener = () => {
 
     const hotkeyRebindInProgress = useRef(false);
     const saveHotkey = useRef("");
+    const splitHotkey = useRef("");
 
     useEffect(() => {
         saveHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "SAVE").hotkey;
+        splitHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "SPLIT").hotkey;
     }, [hotkey.hotkeys]);
 
     useEffect(() => {
@@ -27,9 +29,13 @@ const HotkeyListener = () => {
 
     const OnKeyDown = (e: any) => {
         if (!hotkeyRebindInProgress.current) {
-            if (event2string(e) === saveHotkey.current) {
+            let keyString = event2string(e);
+            if (keyString === saveHotkey.current) {
                 e.preventDefault();
                 createActionJobSaveChanges();
+            }
+            else if (keyString === splitHotkey.current) {
+                e.preventDefault();
             }
         }
     }

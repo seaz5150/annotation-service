@@ -1,6 +1,7 @@
 import { Tooltip } from 'bootstrap';
 import React, { useEffect, useRef, useState } from 'react';
 import Dashboard from './components/Dashboard';
+import EventReactor from './components/renderless-components/EventReactor';
 import HotkeyListener from './components/renderless-components/HotkeyListener';
 import SettingsWindow from './components/SettingsWindow';
 
@@ -21,6 +22,7 @@ function App() {
 
       {/* Renderless components */}
       <HotkeyListener />
+      <EventReactor />
     </div>
   );
 }

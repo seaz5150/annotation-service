@@ -45,7 +45,6 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const transcript = useSelector((state: any) => state.recordingTranscript);
   const segments = transcript.segments;
   const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
-  const history = useSelector((state: any) => state.history);
 
   const segmentColorAlpha = 0.4; // Alpha values 0-1
 
@@ -54,12 +53,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
           createActionTranscriptSegmentCreate,
           createActionHistoryAddAction,
           createActionTranscriptPlayerAddAction,
-          createActionTranscriptPlayerUndoAction,
-          createActionTranscriptPlayerRedoAction,
-          createActionEditorRequestDataSave,
-          createActionTranscriptInitializeLength,
-          createActionEditorReinitializeWordsFromSaved,
-          createActionEditorReinitializeWords } = bindActionCreators(actionCreators, dispatch);
+          createActionTranscriptInitializeLength } = bindActionCreators(actionCreators, dispatch);
 
   const windingUnit = 0.1;
   const windingSpeed = 10;
@@ -69,31 +63,6 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const { width, height } = props.size;
 
   const segmentRefs = useSelector((state: any) => state.references.segmentRefs);
-
-  useEffect(() => {
-    switch (history.type) {
-      case "HISTORY_REDO_ACTION":
-        var historyItem = history.actionHistory[history.currentActionIndex];
-        if (historyItem.componentName === "AudioPlayer") {
-          createActionTranscriptPlayerRedoAction();
-        }
-        if (historyItem.componentName === "AnnotationSegment") {
-          createActionTranscriptPlayerRedoAction();
-        }
-        break;
-      case "HISTORY_UNDO_ACTION":
-        var historyItem = history.actionHistory[history.currentActionIndex + 1];
-        if (historyItem.componentName === "AudioPlayer") {
-          // We could be undoing the creation of a segment, so save the editor history first.
-          createActionEditorRequestDataSave(historyItem.segmentId);
-          setTimeout(() => {createActionTranscriptPlayerUndoAction()}, 10);
-        }
-        if (historyItem.componentName === "AnnotationSegment") {
-          createActionTranscriptPlayerUndoAction();
-        }
-        break;
-    }
-  }, [history]);
 
   useEffect(() => {
     props.updateElementGridSize("AudioPlayer", height);
@@ -117,24 +86,6 @@ function AudioPlayer(props: AudioPlayerInterface) {
       }
     }
   }, [transcript, audioReady]);
-
-  useEffect(() => {
-    switch (transcript.type) {
-        case "TRANSCRIPT_PLAYER_UNDO_ACTION":
-            var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1];
-            if (currentHistoryAction.type === "MERGE") {
-              createActionEditorReinitializeWordsFromSaved([currentHistoryAction.segmentAfter.id, currentHistoryAction.mergeSourceSegment.id]);
-            }
-            break;
-       case "TRANSCRIPT_PLAYER_REDO_ACTION":
-          var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex];
-          if (currentHistoryAction.type === "MERGE") {
-            createActionEditorRequestDataSave(currentHistoryAction.segmentAfter.id);
-            setTimeout(() => { createActionEditorReinitializeWords([currentHistoryAction.segmentAfter.id])}, 10);
-          }
-          break;
-    }
-}, [transcript]);
 
   const refreshSegments = () => {
     wavesurfer.current?.clearRegions();

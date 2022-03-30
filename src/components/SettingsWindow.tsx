@@ -56,7 +56,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
     }
 
     useEffect(() => {
-        createActionHotkeySetRebindInProgress(activeHotkeyRef.current !== "");
+        createActionHotkeySetRebindInProgress(hotkeyActive);
     }, [hotkeyActive]);
 
     useEffect(() => {
@@ -72,18 +72,16 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                 <div className="settings-column col">
                     <p className="title-small pb-1">Shortcuts</p>
                     <div className="settings-modules-container ms-2 me-2">
-                        <div className="d-flex pb-1 justify-content-between">
                             {hotkey.hotkeys.map((h: { label: string; hotkey: string; name: string }) => 
-                                <Fragment key={h.name}>
+                                <div key={h.name} className="d-flex pb-1 justify-content-between">
                                     <p className="title-small fw-normal">{h.label}</p>
                                     <button className="badge strip-button-style bg-secondary hotkey-button"
                                             onFocus={() => {activeHotkeyRef.current = h.name; setHotkeyActive(true)}}
                                             onBlur={() => {activeHotkeyRef.current = ""; setHotkeyActive(false)}}>
                                         {h.hotkey}
                                     </button>
-                                </Fragment>
+                                </div>
                             )}
-                        </div>
                     </div>
                 </div>
                 <div className="settings-column col ms-4 me-4">

@@ -1,5 +1,8 @@
 const initialState = {
-    hotkeys: [{name: "SAVE", hotkey: "Ctrl/Cmd + S", label: "Save transcript"}],
+    hotkeys: [
+        {name: "SAVE", hotkey: "Ctrl/Cmd + S", label: "Save transcript"},
+        {name: "SPLIT", hotkey: "Ctrl/Cmd + Enter", label: "Split caption at cursor position at current time"}
+    ],
     rebindInProgress: false
 };
 
