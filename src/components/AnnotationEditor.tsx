@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { pressStopPropagation } from "../CommonUtilities";
 import { v4 as uuidv4 } from "uuid";
 import { createEditor, BaseEditor, Descendant, Transforms, Editor, Range, Text } from 'slate'
-import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
+import { Slate, Editable, withReact, ReactEditor} from 'slate-react'
 import { History, HistoryEditor, withHistory } from 'slate-history'
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -48,7 +48,8 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
           createActionEditorSaveData,
           createActionTranscriptSegmentUpdate,
           createActionTranscriptIncreaseAmountUpdated,
-          createActionEditorPopData } = bindActionCreators(actionCreators, dispatch);
+          createActionEditorPopData,
+          createActionTranscriptInputEditorSplitInfo } = bindActionCreators(actionCreators, dispatch);
         
   let initialValue: Descendant[] = [
     {
@@ -139,6 +140,53 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
         createActionTranscriptSegmentUpdate(props.segmentId, undefined, undefined, undefined, undefined, parseWords());
         createActionTranscriptIncreaseAmountUpdated();
         break;
+      case "TRANSCRIPT_GATHER_SPLIT_INFO":
+        if (editorFocused) {
+          if (Range.isCollapsed(slateEditor.selection as Range)) {
+            let children = JSON.parse(JSON.stringify((value as any)[0].children));
+            let wordCount = 0;
+            let selectedChildIndex = Number(slateEditor.selection?.anchor.path[1]);
+            let characterIndex = Number(slateEditor.selection?.anchor.offset);
+            let splitWord = false;
+
+            for (let i in children) {
+              if (Number(i) > selectedChildIndex) {
+                break;
+              }
+              let currentChildText = children[i].text;
+
+              if (currentChildText.trim().length === 0) {
+                continue;
+              }
+
+              if (Number(i) === selectedChildIndex) {
+                let splitTextStart = currentChildText.substring(0, characterIndex);
+                let splitTextStartWords = splitTextStart.split(" ");
+                splitTextStartWords = splitTextStartWords.filter((w: string) => w.trim().length !== 0);
+                let splitTextStartWordsCount = splitTextStartWords.length;
+
+                let splitTextEnd = currentChildText.substring(characterIndex, currentChildText.length);
+                let splitTextEndWords = splitTextEnd.split(" ");
+                splitTextEndWords = splitTextEndWords.filter((w: string) => w.trim().length !== 0);
+                let splitTextEndWordsCount = splitTextEndWords.length;
+
+                if ((splitTextStartWordsCount + splitTextEndWordsCount) > currentChildText.split(" ").length) {
+                  splitWord = true;
+                }
+                wordCount += splitTextStartWordsCount;
+              }
+              else {
+                let currentWords = currentChildText.split(" ");
+                currentWords = currentWords.map((w: string) => w.trim().length !== 0);
+                let currentWordsCount = currentWords.length;
+
+                wordCount += currentWordsCount;
+              }
+            }
+            createActionTranscriptInputEditorSplitInfo(props.segmentId, wordCount, splitWord)
+          }
+        }
+        break;
     }
   }, [transcript]);
 
@@ -228,6 +276,10 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
       lastTag = currentTag;
     }
+    HistoryEditor.withoutSaving(slateEditor, () => Transforms.select(slateEditor, {
+      anchor: {path: [0,0], offset: 0},
+      focus: {path: [0,0], offset: 0},
+    }));
     setValue(initialValue);
   };
 
@@ -241,7 +293,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
                 <button onClick={() => deleteTag(leaf.tagId)} contentEditable={false} className="strip-button-style text-tag-delete-button">
                   <i className="bi bi-x"></i>
                 </button>
-        </mark>
+               </mark>
       }
       else {
         const textTag = textTags.find(tag => tag.id === tagLabels[0]);

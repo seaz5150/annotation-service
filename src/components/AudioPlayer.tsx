@@ -53,7 +53,9 @@ function AudioPlayer(props: AudioPlayerInterface) {
           createActionTranscriptSegmentCreate,
           createActionHistoryAddAction,
           createActionTranscriptPlayerAddAction,
-          createActionTranscriptInitializeLength } = bindActionCreators(actionCreators, dispatch);
+          createActionTranscriptInitializeLength,
+          createActionTranscriptSplitSegment,
+          createActionTranscriptInputPlayerSplitInfo } = bindActionCreators(actionCreators, dispatch);
 
   const windingUnit = 0.1;
   const windingSpeed = 10;
@@ -63,6 +65,8 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const { width, height } = props.size;
 
   const segmentRefs = useSelector((state: any) => state.references.segmentRefs);
+
+  const enteredSegment = useRef("");
 
   useEffect(() => {
     props.updateElementGridSize("AudioPlayer", height);
@@ -75,12 +79,16 @@ function AudioPlayer(props: AudioPlayerInterface) {
           addSegments();
           createActionTranscriptInitializeLength(wavesurfer.current?.getDuration() || 0);
           break;
+        case "TRANSCRIPT_GATHER_SPLIT_INFO":
+          createActionTranscriptInputPlayerSplitInfo(enteredSegment.current, wavesurfer.current?.getCurrentTime())
+          break;
         case "TRANSCRIPT_SEGMENT_DELETE":
         case "TRANSCRIPT_SEGMENT_UPDATE":
         case "TRANSCRIPT_PLAYER_UNDO_ACTION":
         case "TRANSCRIPT_PLAYER_REDO_ACTION":
         case "TRANSCRIPT_SEGMENTS_SHIFT":
         case "TRANSCRIPT_MERGE_SEGMENTS":
+        case "TRANSCRIPT_SPLIT_SEGMENT":
           refreshSegments();
           break;
       }
@@ -207,6 +215,10 @@ function AudioPlayer(props: AudioPlayerInterface) {
             region.id = uuidv4();
             regionCreatedByUser = true;
           }
+        });
+
+        wavesurfer.current?.on("region-click", (region) => {
+          enteredSegment.current = region.id;
         });
 
         wavesurfer.current?.on("pause", () => {setPlaying(false)});

@@ -194,6 +194,49 @@ export const createActionTranscriptResetAmountUpdated = () => {
   }
 }
 
+export const createActionTranscriptGatherSplitInfo = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_GATHER_SPLIT_INFO",
+      payload: null
+    })
+  }
+}
+
+export const createActionTranscriptInputPlayerSplitInfo = (segmentId: string, time: number | undefined) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_INPUT_PLAYER_SPLIT_INFO",
+      payload: {
+        segmentId: segmentId,
+        time: time
+      }
+    })
+  }
+}
+
+export const createActionTranscriptInputEditorSplitInfo = (segmentId: string, wordIndex: number, splitWord: boolean) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_INPUT_EDITOR_SPLIT_INFO",
+      payload: {
+        segmentId: segmentId,
+        wordIndex: wordIndex,
+        splitWord: splitWord
+      }
+    })
+  }
+}
+
+export const createActionTranscriptSplitSegment = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_SPLIT_SEGMENT",
+      payload: null
+    })
+  }
+}
+
 export const createActionEditorAddSectionTag = (tagId: string) => {
   return (dispatch: any) => {
     dispatch({

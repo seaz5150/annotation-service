@@ -22,7 +22,13 @@ const initialState = {
     playerActionHistory: [] as PlayerAction[],
     playerActionHistoryIndex: -1,
     audioLength: 0,
-    amountUpdated: 0
+    amountUpdated: 0,
+
+    splitTime: undefined,
+    splitPlayerSegmentId: "",
+    splitEditorSegmentId: "",
+    splitWordIndex: 0,
+    splitWord: false
 };
 
 const RecordingTranscriptReducer = (state = initialState, action: any) => {
@@ -318,6 +324,62 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 ...state,
                 type: "TRANSCRIPT_MERGE_SEGMENTS",
                 segments: newSegments
+            };
+        case "TRANSCRIPT_SPLIT_SEGMENT":
+            if (state.splitWord) {
+                return state;
+            }
+
+            if (state.splitPlayerSegmentId !== state.splitEditorSegmentId) {
+                return state;
+            }
+
+            if (state.splitTime === undefined || state.splitPlayerSegmentId === "") {
+                return state;
+            }
+
+            var newSegments = JSON.parse(JSON.stringify(state.segments));
+            var segmentToSplit = newSegments.find((s: any) => s.id === state.splitPlayerSegmentId);
+            if ((state.splitTime <= segmentToSplit.start) && (state.splitTime >= segmentToSplit.end)) {
+                return state;
+            }
+
+            var segmentToInsert = JSON.parse(JSON.stringify(segmentToSplit));
+            segmentToSplit.words.splice(state.splitWordIndex, segmentToInsert.words.length);
+            segmentToInsert.words.splice(0, state.splitWordIndex);
+
+            segmentToSplit.end = state.splitTime;
+            segmentToInsert.start = state.splitTime;
+            segmentToInsert.id = uuidv4();
+
+            newSegments.push(segmentToInsert);
+            return {
+                ...state,
+                segments: newSegments,
+                type: "TRANSCRIPT_SPLIT_SEGMENT"
+            };
+        case "TRANSCRIPT_INPUT_PLAYER_SPLIT_INFO":
+            if (action.payload.time === undefined || action.payload.segmentId === "") {
+                return state;
+            }
+            return {
+                ...state,
+                splitTime: action.payload.time,
+                splitPlayerSegmentId: action.payload.segmentId,
+                type: "TRANSCRIPT_INPUT_PLAYER_SPLIT_INFO"
+            };
+        case "TRANSCRIPT_INPUT_EDITOR_SPLIT_INFO":
+            return {
+                ...state,
+                splitEditorSegmentId: action.payload.segmentId,
+                splitWordIndex: action.payload.wordIndex,
+                splitWord: action.payload.splitWord,
+                type: "TRANSCRIPT_INPUT_PLAYER_SPLIT_INFO"
+            };
+        case "TRANSCRIPT_GATHER_SPLIT_INFO":
+            return {
+                ...state,
+                type: "TRANSCRIPT_GATHER_SPLIT_INFO"
             };
         default:
             return state;
