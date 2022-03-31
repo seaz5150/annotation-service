@@ -215,6 +215,31 @@ function AudioPlayer(props: AudioPlayerInterface) {
           }
         });
 
+        wavesurfer.current?.on("region-updated", (region) => {
+          let regionsList = [] as any[];
+          for (let index in wavesurfer.current?.regions.list) {
+            let currentRegion = wavesurfer.current?.regions.list[index];
+            regionsList.push({id: currentRegion?.id, start: currentRegion?.start, end: currentRegion?.end})
+          }
+          regionsList.sort((a: { start: number; }, b: { start: number; }) => a.start - b.start);
+          
+          let regionIndex = regionsList.findIndex((r: { id: string; }) => r.id === region.id);
+          let nextRegion = regionsList[regionIndex + 1];
+          let previousRegion = regionsList[regionIndex - 1];
+
+          let difference = 0;
+          if (nextRegion && (region.end > nextRegion.start)) {
+            difference = region.end - nextRegion.start;
+            region.end = nextRegion.start;
+            region.start -= difference;
+          }
+          if (previousRegion && (region.start < previousRegion.end)) {
+            difference = previousRegion.end - region.start;
+            region.start = previousRegion.end;
+            region.end += difference;
+          }
+        });
+
         wavesurfer.current?.on("region-created", (region) => {
           const newRegionIdPrefix = "wavesurfer_";
           if ((region.id).substr(0, newRegionIdPrefix.length) === newRegionIdPrefix) {
