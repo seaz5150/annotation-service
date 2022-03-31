@@ -341,7 +341,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
               </div>
           </div>
         </div>
-        <div id="waveform" ref={waveformRef} onMouseDown={e => handlePress(e)} />
+        <div id="waveform" className={currentZoom > 0 ? "waveform-enable-scroll" : ""} ref={waveformRef} onMouseDown={e => handlePress(e)} />
         <div id="wave-timeline"></div>
       </div>
     </div>

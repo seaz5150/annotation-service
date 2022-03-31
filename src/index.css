@@ -21,6 +21,10 @@ code {
   margin-left: auto;
 }
 
+.waveform-enable-scroll > * {
+  overflow: scroll hidden !important;
+}
+
 .audiocontrols-button{
   height: 27px !important;
   line-height: 8px !important;
