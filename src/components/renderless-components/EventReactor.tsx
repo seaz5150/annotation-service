@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../../state";
 import { useEffect } from "react";
 
+// Component used for chaining events.
 const EventReactor = () => {
     const dispatch = useDispatch();
     const { createActionTranscriptPlayerRedoAction,

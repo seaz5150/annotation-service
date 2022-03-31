@@ -389,11 +389,11 @@ export const createActionDashboardResetLayout = () => {
   }
 }
 
-export const createActionJobInitialize = () => {
+export const createActionJobInitialize = (jobData: {}) => {
   return (dispatch: any) => {
     dispatch({
       type: "JOB_INITIALIZE",
-      payload: null
+      payload: jobData
     })
   }
 }

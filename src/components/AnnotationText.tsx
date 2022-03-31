@@ -38,7 +38,6 @@ function AnnotationText(props: AnnotationTextInterface) {
     }, [height]);
 
     useEffect(() => {
-        createActionJobInitialize();
         createActionTranscriptInitialize(recordingJson.transcript);
     }, []);
 

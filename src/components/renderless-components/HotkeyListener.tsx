@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../../state";
 import { useEffect, useRef } from "react";
 
+// Component used for listening for key shortcuts and dispatching related actions.
 const HotkeyListener = () => {
     const dispatch = useDispatch();
     const { createActionJobSaveChanges,

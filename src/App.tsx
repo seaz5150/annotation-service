@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Dashboard from './components/Dashboard';
 import EventReactor from './components/renderless-components/EventReactor';
 import HotkeyListener from './components/renderless-components/HotkeyListener';
+import Initializator from './components/renderless-components/Initializator';
 import SettingsWindow from './components/SettingsWindow';
 
 function App() {
@@ -10,6 +11,12 @@ function App() {
 
   return (
     <div className="App">
+      {/* Renderless components */}
+      <Initializator />
+      <HotkeyListener />
+      <EventReactor />
+      {/* Renderless components */}
+      
       <Dashboard />
       <button className="settings-button strip-button-style"
               onClick={() => setSettingsExpanded(!settingsExpanded)}>
@@ -19,10 +26,6 @@ function App() {
         <i className="fas fa-cog settings-button-gear-icon"></i>
       </button>
       <SettingsWindow settingsExpanded={settingsExpanded} />
-
-      {/* Renderless components */}
-      <HotkeyListener />
-      <EventReactor />
     </div>
   );
 }

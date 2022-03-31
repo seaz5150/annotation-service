@@ -32,7 +32,7 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
         createActionDashboardToggleModule(moduleName, e.target.checked);
     }
     
-    return (  
+    return jobData && (
         <div className="module module-settings">
             <div className="card-header d-flex justify-content-between">
                 Job details
