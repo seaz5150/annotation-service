@@ -164,7 +164,6 @@ function AudioPlayer(props: AudioPlayerInterface) {
     responsive: true,
     // vertical: true,
     barWidth: 1,
-    pixelRatio: 1,
     waveColor: "#969393",
     progressColor: "rgba(42, 171, 210, 0.3)",
     cursorColor: "#2aabd2",
@@ -305,7 +304,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
           <div className="audiocontrols-wrapper">
             <div className="audiocontrols-left">
               <div className="me-auto">
-                <button className="btn btn-primary audiocontrols-button audiocontrols-zoom-button me-1" 
+                <button className="btn audiocontrols-button audiocontrols-zoom-button me-1" 
                         onClick={() => (currentZoom >= zoomStep && setCurrentZoom(currentZoom - zoomStep))}
                         onMouseDown={e => handlePress(e)}
                         disabled={currentZoom === 0}
@@ -313,7 +312,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
                 >
                     <i className="audiocontrols-button-icon bi bi-zoom-out"></i>
                 </button>
-                <button className="btn btn-primary audiocontrols-button audiocontrols-zoom-button" 
+                <button className="btn audiocontrols-button audiocontrols-zoom-button" 
                         onClick={() => setCurrentZoom(currentZoom + zoomStep)}
                         onMouseDown={e => handlePress(e)}
                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Increase zoom"
@@ -322,7 +321,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
                 </button>
               </div>
 
-              <button className="btn btn-primary audiocontrols-button me-2" 
+              <button className="btn audiocontrols-button me-2" 
                       onClick={replayAudio}
                       onMouseDown={e => handlePress(e)}
                       data-bs-toggle="tooltip" data-bs-placement="bottom" title="Replay from beginning"
@@ -331,7 +330,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
               </button>
             </div>
             <div className="audiocontrols-center">
-              <button className="btn btn-primary audiocontrols-button me-1" 
+              <button className="btn audiocontrols-button me-1" 
                       onMouseDown={(e) => startSkip(e, "backward")}
                       onMouseUp={stopSkip}
                       onMouseLeave={stopSkip}
@@ -340,7 +339,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
                   <i className="audiocontrols-button-icon bi bi-skip-backward-fill"></i>
               </button>
 
-              <button className="btn btn-primary audiocontrols-button" 
+              <button className="btn audiocontrols-button" 
                       onClick={playAudio} 
                       onMouseDown={e => handlePress(e)}
                       data-bs-toggle="tooltip" data-bs-placement="bottom" title={playing ? "Stop" : "Play"}
@@ -348,7 +347,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
                 <i className={"audiocontrols-button-icon " + (playing ? "bi bi-pause-fill" : "bi bi-play-fill")}></i>
               </button>
 
-              <button className="btn btn-primary audiocontrols-button ms-1" 
+              <button className="btn audiocontrols-button ms-1" 
                       onMouseDown={(e) => startSkip(e, "forward")}
                       onMouseUp={stopSkip}
                       onMouseLeave={stopSkip}     
