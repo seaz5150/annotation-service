@@ -375,7 +375,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
           </div>
         </div>
         <div id="waveform" ref={waveformRef} onMouseDown={e => handlePress(e)} />
-        <div id="wave-timeline"></div>
+        <div id="wave-timeline" className="pb-2"></div>
       </div>
     </div>
   );

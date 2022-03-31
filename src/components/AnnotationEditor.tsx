@@ -202,7 +202,13 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
     for (let i in children) {
       let currentChild = children[i];
-      let childText = currentChild.text;
+      let childText;
+      if (currentChild.unpairedTag) {
+        childText = currentChild.tagLabels[0];
+      }
+      else {
+        childText = currentChild.text;
+      }
       let childLabels = currentChild.tagLabels as string[];
 
       if (childText.trim().length > 0) {
@@ -212,7 +218,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
           let currentWord = splitWords[j];
           let newWord = {label: currentWord} as any;
 
-          if (childLabels) {
+          if (!currentChild.unpairedTag && childLabels) {
             newWord.textTags = childLabels;
           }
 
@@ -264,13 +270,22 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
     for (let index in words) {
       let currentWord = words[index];
+      let matchedUnpairedTag = transcript.unpairedTags.find((u: { id: string; }) => u.id === currentWord.label);
+      let matchedUnpairedTagLabel = matchedUnpairedTag && matchedUnpairedTag.label;
+
       currentTag = currentWord.textTags ? currentWord.textTags[0] : null;
 
-      if (currentTag !== lastTag) {
+      if (currentTag !== lastTag || matchedUnpairedTagLabel) {
         if (paragraphChildren.length !== 0) {
           paragraphChildren.push({text: " "});
         }
-        paragraphChildren.push({text: currentWord.label, tagLabels: currentTag ? [currentTag] : undefined, tagId: uuidv4()});
+        if (matchedUnpairedTagLabel) {
+          paragraphChildren.push({text: "[" + matchedUnpairedTagLabel + "]", tagLabels: [currentWord.label], tagId: uuidv4(), unpairedTag: true});
+          currentTag = uuidv4();
+        }
+        else {
+          paragraphChildren.push({text: currentWord.label, tagLabels: currentTag ? [currentTag] : undefined, tagId: uuidv4()});
+        }
       }
       else {
         paragraphChildren[paragraphChildren.length - 1].text = paragraphChildren[paragraphChildren.length - 1].text + " " + currentWord.label;

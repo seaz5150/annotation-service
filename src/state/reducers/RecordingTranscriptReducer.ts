@@ -45,12 +45,12 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             var textTags = action.payload.textTags;
 
             action.payload.unpairedTags = [
-                {"label": "Unknown", "id": "unknown"},
-                {"label": "Hesitation", "id": "hesitation"},
-                {"label": "Noise", "id": "noise"},
-                {"label": "Speaker noise", "id": "speakernoise"},
-                {"label": "Double-press PTT", "id": "doublepress"},
-                {"label": "Crosstalk", "id": "crosstalk"}
+                {"label": "Unknown", "id": "[unk]"},
+                {"label": "Hesitation", "id": "[hes]"},
+                {"label": "Noise", "id": "[noise]"},
+                {"label": "Speaker noise", "id": "[spk]"},
+                {"label": "Double-press PTT", "id": "[key]"},
+                {"label": "Crosstalk", "id": "[XT]"}
             ];
 
             var unpairedTags = action.payload.unpairedTags;
