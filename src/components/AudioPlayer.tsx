@@ -32,7 +32,8 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const wavesurfer = useRef<WaveSurfer | null>(null);
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
-  const [currentZoom, setCurrentZoom] = useState();
+  const [currentZoom, setCurrentZoom] = useState(0);
+  const zoomStep = 100;
   const [currentTime, setCurrentTime] = useState<number | undefined>(undefined);
   const [durationTime, setDurationTime] = useState<number | undefined>(undefined);
 
@@ -70,6 +71,10 @@ function AudioPlayer(props: AudioPlayerInterface) {
   useEffect(() => {
     props.updateElementGridSize("AudioPlayer", height);
   }, [height]);
+
+  useEffect(() => {
+    wavesurfer.current?.zoom(currentZoom);
+  }, [currentZoom]);
 
   useEffect(() => {
     if (audioReady) {
@@ -275,6 +280,21 @@ function AudioPlayer(props: AudioPlayerInterface) {
         <div className="play-area" onMouseDown={e => handlePress(e)}></div>
           <div className="audiocontrols-wrapper">
             <div className="audiocontrols-left">
+              <div className="me-auto">
+                <button className="btn btn-primary audiocontrols-button audiocontrols-zoom-button me-1" 
+                        onClick={() => (currentZoom >= zoomStep && setCurrentZoom(currentZoom - zoomStep))}
+                        onMouseDown={e => handlePress(e)}
+                >
+                    <i className="audiocontrols-button-icon bi bi-zoom-out"></i>
+                </button>
+                <button className="btn btn-primary audiocontrols-button audiocontrols-zoom-button" 
+                        onClick={() => setCurrentZoom(currentZoom + zoomStep)}
+                        onMouseDown={e => handlePress(e)}
+                >
+                    <i className="audiocontrols-button-icon bi bi-zoom-in"></i>
+                </button>
+              </div>
+
               <button className="btn btn-primary audiocontrols-button me-2" 
                       onClick={replayAudio}
                       onMouseDown={e => handlePress(e)}
