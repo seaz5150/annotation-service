@@ -445,3 +445,12 @@ export const createActionHotkeySetRebindInProgress = (value: boolean) => {
     })
   }
 }
+
+export const createActionHotkeyReset = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "HOTKEY_RESET",
+      payload: null
+    })
+  }
+}

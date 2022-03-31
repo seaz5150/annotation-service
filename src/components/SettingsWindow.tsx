@@ -18,7 +18,8 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
             createActionJobSetAutosaveInterval,
             createActionJobToggleAutosave,
             createActionHotkeySet,
-            createActionHotkeySetRebindInProgress } = bindActionCreators(actionCreators, dispatch);
+            createActionHotkeySetRebindInProgress,
+            createActionHotkeyReset } = bindActionCreators(actionCreators, dispatch);
 
     const audioPlay = useSelector((state: any) => state.audioPlay);
     const job = useSelector((state: any) => state.job);
@@ -82,6 +83,16 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                                     </button>
                                 </div>
                             )}
+                    </div>
+                    <div className="d-flex justify-content-between mt-3">
+                        <button className="text-tag-button btn-secondary custom-dropdown save-button add-label-button " 
+                                onMouseDown={pressStopPropagation}
+                                onClick={createActionHotkeyReset}>
+                                <div className="d-flex align-items-center justify-content-center">
+                                    <i className="bi bi-arrow-repeat me-1"></i>
+                                    Reset hotkeys
+                                </div>
+                        </button>
                     </div>
                 </div>
                 <div className="settings-column col ms-4 me-4">

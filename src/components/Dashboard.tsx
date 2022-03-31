@@ -144,6 +144,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             }
 
             setLayouts(resetLayouts);
+            setLayoutBackups([]);
             break;
         }
     }, [dashboard]);
