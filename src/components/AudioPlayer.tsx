@@ -162,7 +162,6 @@ function AudioPlayer(props: AudioPlayerInterface) {
     normalize: true,
     partialRender: true,
     responsive: true,
-    hideScrollbar: true,
     // vertical: true,
     barWidth: 1,
     pixelRatio: 1,
@@ -341,7 +340,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
               </div>
           </div>
         </div>
-        <div id="waveform" className={currentZoom > 0 ? "waveform-enable-scroll" : ""} ref={waveformRef} onMouseDown={e => handlePress(e)} />
+        <div id="waveform" ref={waveformRef} onMouseDown={e => handlePress(e)} />
         <div id="wave-timeline"></div>
       </div>
     </div>
