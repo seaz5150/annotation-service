@@ -308,12 +308,15 @@ function AudioPlayer(props: AudioPlayerInterface) {
                 <button className="btn btn-primary audiocontrols-button audiocontrols-zoom-button me-1" 
                         onClick={() => (currentZoom >= zoomStep && setCurrentZoom(currentZoom - zoomStep))}
                         onMouseDown={e => handlePress(e)}
+                        disabled={currentZoom === 0}
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Decrease zoom"
                 >
                     <i className="audiocontrols-button-icon bi bi-zoom-out"></i>
                 </button>
                 <button className="btn btn-primary audiocontrols-button audiocontrols-zoom-button" 
                         onClick={() => setCurrentZoom(currentZoom + zoomStep)}
                         onMouseDown={e => handlePress(e)}
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Increase zoom"
                 >
                     <i className="audiocontrols-button-icon bi bi-zoom-in"></i>
                 </button>
@@ -322,6 +325,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
               <button className="btn btn-primary audiocontrols-button me-2" 
                       onClick={replayAudio}
                       onMouseDown={e => handlePress(e)}
+                      data-bs-toggle="tooltip" data-bs-placement="bottom" title="Replay from beginning"
               >
                   <i className="audiocontrols-button-icon bi bi-arrow-clockwise"></i>
               </button>
@@ -331,11 +335,16 @@ function AudioPlayer(props: AudioPlayerInterface) {
                       onMouseDown={(e) => startSkip(e, "backward")}
                       onMouseUp={stopSkip}
                       onMouseLeave={stopSkip}
+                      data-bs-toggle="tooltip" data-bs-placement="bottom" title="Skip backward"
               >
                   <i className="audiocontrols-button-icon bi bi-skip-backward-fill"></i>
               </button>
 
-              <button className="btn btn-primary audiocontrols-button" onClick={playAudio} onMouseDown={e => handlePress(e)}>
+              <button className="btn btn-primary audiocontrols-button" 
+                      onClick={playAudio} 
+                      onMouseDown={e => handlePress(e)}
+                      data-bs-toggle="tooltip" data-bs-placement="bottom" title={playing ? "Stop" : "Play"}
+              >
                 <i className={"audiocontrols-button-icon " + (playing ? "bi bi-pause-fill" : "bi bi-play-fill")}></i>
               </button>
 
@@ -343,6 +352,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
                       onMouseDown={(e) => startSkip(e, "forward")}
                       onMouseUp={stopSkip}
                       onMouseLeave={stopSkip}     
+                      data-bs-toggle="tooltip" data-bs-placement="bottom" title="Skip forward"
               >
                 <i className="audiocontrols-button-icon bi bi-skip-forward-fill"></i>
               </button>

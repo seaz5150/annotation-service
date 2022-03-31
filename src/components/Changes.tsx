@@ -126,13 +126,15 @@ const Changes = (props: ChangesInterface) => {
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
                                 disabled={history.currentActionIndex === -1}
                                 onMouseDown={pressStopPropagation}
-                                onClick={() => createActionHistoryUndoAction()}>
+                                onClick={() => createActionHistoryUndoAction()}
+                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="Undo">
                             <i className="bi bi-arrow-counterclockwise undo-redo-button-icon"></i>
                         </button>
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
                                 disabled={history.currentActionIndex === history.actionHistory.length - 1}
                                 onMouseDown={pressStopPropagation}
-                                onClick={() => createActionHistoryRedoAction()}>
+                                onClick={() => createActionHistoryRedoAction()}
+                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="Redo">
                             <i className="bi bi-arrow-clockwise undo-redo-button-icon"></i>
                         </button>
                     </div>

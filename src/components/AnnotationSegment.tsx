@@ -136,7 +136,8 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                         {(segments.indexOf(segment) !== segments.length - 1) &&
                             <button className="merge-segments-button text-tag-button btn-secondary custom-dropdown"
                                     onMouseDown={pressStopPropagation}
-                                    onClick={mergeNextSegmentStepOne}>
+                                    onClick={mergeNextSegmentStepOne}
+                                    data-bs-toggle="tooltip" data-bs-placement="bottom" title="Merge segments">
                             <i className="fas fa-arrows-alt-v"></i>
                             </button>
                         }
@@ -145,6 +146,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                 <button className="strip-button-style segment-play-button"
                                         onMouseDown={e => pressStopPropagation(e)}
                                         onClick={() => createActionAudioPlaySegment(segment.id)}
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Play segment"
                                 >
                                     <i className="bi bi-play-fill"></i>
                                 </button>
@@ -154,11 +156,13 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                     <button className="strip-button-style segment-time-start"
                                         onMouseDown={e => pressStopPropagation(e)}
                                         onClick={() => createActionAudioPlayFromTime(Number(segment.start))}
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Play segment from the start"
                                     >{getFormattedTime(Number(segment.start))}</button>
                                 
                                     <button className="strip-button-style segment-time-end"
                                         onMouseDown={e => pressStopPropagation(e)}
                                         onClick={() => createActionAudioPlayFromTime(Number(segment.end))}
+                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Play segment from the end"
                                     >{getFormattedTime(Number(segment.end))}</button>
                                 </div>
                             </div>
