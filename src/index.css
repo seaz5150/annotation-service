@@ -26,6 +26,28 @@ code {
   margin-left: auto;
 }
 
+.wavesurfer-region {
+  border-radius: 0.5em;
+  border-style: solid;
+  border-color: black;
+  border-width: 3.1px;
+  border-top: 3.1px;
+  border-bottom: 3.1px;
+}
+
+.wavesurfer-handle {
+  background-color: transparent !important;
+  width: 2.71px !important;
+}
+
+.wavesurfer-handle-start {
+  left: -3px !important;
+}
+
+.wavesurfer-handle-end {
+  right: -3px !important;
+}
+
 .audiocontrols-button{
   height: 27px !important;
   line-height: 8px !important;
