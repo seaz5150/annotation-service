@@ -8,13 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../state";
 
-// interface EditorEntity {
-//     id: string,
-//     text: string,
-//     tags?: Array<string>
-// }
-
-
 export type TagElement = {
   type?: any,
   children?: any,
@@ -73,6 +66,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   const [editorFocused, setEditorFocused] = useState(false);
   const [historyPrevious, setHistoryPrevious] = useState<History | null>(null);
 
+  // Used for forcing editor re-render.
   const [key, setKey] = useState(uuidv4());
 
   useEffect(() => {
@@ -80,9 +74,17 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       setHistoryPrevious(JSON.parse(JSON.stringify(slateEditor.history)));
     }
     else {
-      if ((slateEditor.history.undos.length + slateEditor.history.redos.length) > (historyPrevious.undos.length + historyPrevious.redos.length)) {
-        setHistoryPrevious(JSON.parse(JSON.stringify(slateEditor.history)));
-        createActionHistoryAddAction("AnnotationEditor", props.segmentId);
+      let currentUndos = slateEditor.history.undos;
+      if ((currentUndos.length + slateEditor.history.redos.length) > (historyPrevious.undos.length + historyPrevious.redos.length)) {
+        // Slate adds selection changes to the history - remove that.
+        let lastUndo = currentUndos[currentUndos.length - 1];
+        if (lastUndo && (lastUndo.length === 1) && (lastUndo[0].type === "set_selection")) {
+          slateEditor.history.undos.pop();
+        }
+        else {
+          setHistoryPrevious(JSON.parse(JSON.stringify(slateEditor.history)));
+          createActionHistoryAddAction("AnnotationEditor", props.segmentId);
+        }
       }
     }
   }, [slateEditor.history.undos.length]);
@@ -141,54 +143,58 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
         createActionTranscriptIncreaseAmountUpdated();
         break;
       case "TRANSCRIPT_GATHER_SPLIT_INFO":
-        if (editorFocused) {
-          if (Range.isCollapsed(slateEditor.selection as Range)) {
-            let children = JSON.parse(JSON.stringify((value as any)[0].children));
-            let wordCount = 0;
-            let selectedChildIndex = Number(slateEditor.selection?.anchor.path[1]);
-            let characterIndex = Number(slateEditor.selection?.anchor.offset);
-            let splitWord = false;
-
-            for (let i in children) {
-              if (Number(i) > selectedChildIndex) {
-                break;
-              }
-              let currentChildText = children[i].text;
-
-              if (currentChildText.trim().length === 0) {
-                continue;
-              }
-
-              if (Number(i) === selectedChildIndex) {
-                let splitTextStart = currentChildText.substring(0, characterIndex);
-                let splitTextStartWords = splitTextStart.split(" ");
-                splitTextStartWords = splitTextStartWords.filter((w: string) => w.trim().length !== 0);
-                let splitTextStartWordsCount = splitTextStartWords.length;
-
-                let splitTextEnd = currentChildText.substring(characterIndex, currentChildText.length);
-                let splitTextEndWords = splitTextEnd.split(" ");
-                splitTextEndWords = splitTextEndWords.filter((w: string) => w.trim().length !== 0);
-                let splitTextEndWordsCount = splitTextEndWords.length;
-
-                if ((splitTextStartWordsCount + splitTextEndWordsCount) > currentChildText.split(" ").length) {
-                  splitWord = true;
-                }
-                wordCount += splitTextStartWordsCount;
-              }
-              else {
-                let currentWords = currentChildText.split(" ");
-                currentWords = currentWords.map((w: string) => w.trim().length !== 0);
-                let currentWordsCount = currentWords.length;
-
-                wordCount += currentWordsCount;
-              }
-            }
-            createActionTranscriptInputEditorSplitInfo(props.segmentId, wordCount, splitWord)
-          }
-        }
+        inputSplitInfo();
         break;
     }
   }, [transcript]);
+
+  const inputSplitInfo = () => {
+    if (editorFocused) {
+      if (Range.isCollapsed(slateEditor.selection as Range)) {
+        let children = JSON.parse(JSON.stringify((value as any)[0].children));
+        let wordCount = 0;
+        let selectedChildIndex = Number(slateEditor.selection?.anchor.path[1]);
+        let characterIndex = Number(slateEditor.selection?.anchor.offset);
+        let splitWord = false;
+
+        for (let i in children) {
+          if (Number(i) > selectedChildIndex) {
+            break;
+          }
+          let currentChildText = children[i].text;
+
+          if (currentChildText.trim().length === 0) {
+            continue;
+          }
+
+          if (Number(i) === selectedChildIndex) {
+            let splitTextStart = currentChildText.substring(0, characterIndex);
+            let splitTextStartWords = splitTextStart.split(" ");
+            splitTextStartWords = splitTextStartWords.filter((w: string) => w.trim().length !== 0);
+            let splitTextStartWordsCount = splitTextStartWords.length;
+
+            let splitTextEnd = currentChildText.substring(characterIndex, currentChildText.length);
+            let splitTextEndWords = splitTextEnd.split(" ");
+            splitTextEndWords = splitTextEndWords.filter((w: string) => w.trim().length !== 0);
+            let splitTextEndWordsCount = splitTextEndWords.length;
+
+            if ((splitTextStartWordsCount + splitTextEndWordsCount) > currentChildText.split(" ").length) {
+              splitWord = true;
+            }
+            wordCount += splitTextStartWordsCount;
+          }
+          else {
+            let currentWords = currentChildText.split(" ");
+            currentWords = currentWords.map((w: string) => w.trim().length !== 0);
+            let currentWordsCount = currentWords.length;
+
+            wordCount += currentWordsCount;
+          }
+        }
+        createActionTranscriptInputEditorSplitInfo(props.segmentId, wordCount, splitWord)
+      }
+    }
+  };
 
   const parseWords = () => {
     let children = JSON.parse(JSON.stringify((value as any)[0].children));
