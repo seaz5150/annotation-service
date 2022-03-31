@@ -1,3 +1,5 @@
+import { store } from '../Store'
+
 export const createActionAudioPlaySegment = (segmentId: string) => {
   return (dispatch: any) => {
     dispatch({
@@ -389,6 +391,15 @@ export const createActionDashboardResetLayout = () => {
   }
 }
 
+export const createActionDashboardToggleLockLayout = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "DASHBOARD_TOGGLE_LOCK_LAYOUT",
+      payload: null
+    })
+  }
+}
+
 export const createActionJobInitialize = (jobData: {}) => {
   return (dispatch: any) => {
     dispatch({
@@ -399,10 +410,23 @@ export const createActionJobInitialize = (jobData: {}) => {
 }
 
 export const createActionJobSaveChanges = () => {
+  if (store.getState().history.currentActionIndex === (store.getState().job as any).saveActionIndex) {
+    return;
+  }
+
   return (dispatch: any) => {
     dispatch({
       type: "JOB_SAVE_CHANGES",
       payload: null
+    })
+  }
+}
+
+export const createActionJobSetSaveActionIndex = (actionIndex: number) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "JOB_SET_SAVE_ACTION_INDEX",
+      payload: actionIndex
     })
   }
 }

@@ -3,7 +3,8 @@ const initialState = {
     value: false,
     allModules: [] as {name: string, viewName?: string}[],
     openModules: [] as string[],
-    openAttachmentTabs: [] as string[]
+    openAttachmentTabs: [] as string[],
+    lockLayout: false
 };
 
 const DashboardReducer = (state = initialState, action: any) => {
@@ -62,6 +63,12 @@ const DashboardReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 type: "DASHBOARD_RESET_LAYOUT"
+            };
+        case "DASHBOARD_TOGGLE_LOCK_LAYOUT":
+            return {
+                ...state,
+                lockLayout: !state.lockLayout,
+                type: "DASHBOARD_TOGGLE_LOCK_LAYOUT"
             };
         default:
             return state;

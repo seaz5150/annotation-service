@@ -10,10 +10,12 @@ const EventReactor = () => {
             createActionTranscriptPlayerUndoAction,
             createActionEditorRequestDataSave,
             createActionEditorReinitializeWordsFromSaved,
-            createActionEditorReinitializeWords } = bindActionCreators(actionCreators, dispatch);
+            createActionEditorReinitializeWords,
+            createActionJobSetSaveActionIndex } = bindActionCreators(actionCreators, dispatch);
 
     const history = useSelector((state: any) => state.history);
     const transcript = useSelector((state: any) => state.recordingTranscript);
+    const job = useSelector((state: any) => state.job);
 
     useEffect(() => {
         switch (history.type) {
@@ -39,6 +41,14 @@ const EventReactor = () => {
             break;
         }
       }, [history]);
+
+      useEffect(() => {
+        switch (job.type) {
+          case "JOB_SAVE_CHANGES":
+            createActionJobSetSaveActionIndex(history.currentActionIndex);
+            break;
+        }
+      }, [job]);
 
       useEffect(() => {
         switch (transcript.type) {

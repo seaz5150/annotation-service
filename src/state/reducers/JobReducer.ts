@@ -229,7 +229,8 @@ const initialState = {
     jobData: jobData,
     jobLastSaveTime: null,
     autosaveEnabled: true,
-    autosaveInterval: 120000
+    autosaveInterval: 120000,
+    saveActionIndex: -1
 };
 
 const JobReducer = (state = initialState, action: any) => {
@@ -258,6 +259,12 @@ const JobReducer = (state = initialState, action: any) => {
               ...state,
               autosaveInterval: action.payload,
               type: "JOB_SET_AUTOSAVE_INTERVAL"
+          };
+        case "JOB_SET_SAVE_ACTION_INDEX":
+          return {
+              ...state,
+              saveActionIndex: action.payload,
+              type: "JOB_SET_SAVE_ACTION_INDEX"
           };
         default:
             return state;

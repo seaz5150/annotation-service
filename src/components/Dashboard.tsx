@@ -146,6 +146,11 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             setLayouts(resetLayouts);
             setLayoutBackups([]);
             break;
+        case "DASHBOARD_TOGGLE_LOCK_LAYOUT":
+            if (dashboard.lockLayout) {
+                
+            }
+            break;
         }
     }, [dashboard]);
 

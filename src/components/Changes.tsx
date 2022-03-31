@@ -147,7 +147,8 @@ const Changes = (props: ChangesInterface) => {
                     </button>
                     <button className="text-tag-button btn-secondary custom-dropdown save-button justify-self-end"
                             onMouseDown={pressStopPropagation}
-                            onClick={createActionJobSaveChanges}>
+                            onClick={createActionJobSaveChanges}
+                            disabled={history.currentActionIndex === job.saveActionIndex}>
                         <div className="d-flex align-items-center justify-content-center">
                             <i className="fas fa-save me-2 save-button-icon"></i>
                             Save

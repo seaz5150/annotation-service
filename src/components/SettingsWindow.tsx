@@ -19,7 +19,8 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
             createActionJobToggleAutosave,
             createActionHotkeySet,
             createActionHotkeySetRebindInProgress,
-            createActionHotkeyReset } = bindActionCreators(actionCreators, dispatch);
+            createActionHotkeyReset,
+            createActionDashboardToggleLockLayout } = bindActionCreators(actionCreators, dispatch);
 
     const audioPlay = useSelector((state: any) => state.audioPlay);
     const job = useSelector((state: any) => state.job);
@@ -119,10 +120,20 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                                 </div>
                         </button>
                         <button className="text-tag-button btn-secondary custom-dropdown save-button add-label-button" 
-                                onMouseDown={pressStopPropagation}>
+                                onMouseDown={pressStopPropagation}
+                                onClick={() => createActionDashboardToggleLockLayout()}>
                                 <div className="d-flex align-items-center justify-content-center">
-                                    <i className="bi bi-lock-fill me-1"></i>
-                                    Lock layout
+                                    {dashboard.lockLayout ?
+                                        <>
+                                            <i className="bi bi bi-unlock-fill me-1"></i>
+                                            Unlock layout
+                                        </>
+                                    :
+                                        <>
+                                            <i className="bi bi-lock-fill me-1"></i>
+                                            Lock layout
+                                        </>
+                                    }
                                 </div>
                         </button>
                     </div>
