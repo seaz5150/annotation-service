@@ -31,6 +31,15 @@ export const createActionAudioPlaySetPreplay = (prePlay: number) => {
   }
 }
 
+export const createActionAudioTogglePlay = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "AUDIO_TOGGLE_PLAY",
+      payload: null
+    })
+  }
+}
+
 export const createActionTranscriptInitialize = (transcript: any) => {
   return (dispatch: any) => {
     dispatch({

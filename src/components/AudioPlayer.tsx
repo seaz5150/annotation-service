@@ -152,6 +152,9 @@ function AudioPlayer(props: AudioPlayerInterface) {
           if (resultStart < 0) resultStart = 0;
           wavesurfer.current?.play(resultStart);
           break;
+        case "AUDIO_TOGGLE_PLAY":
+          playAudio();
+          break;
         default:
       }
     }

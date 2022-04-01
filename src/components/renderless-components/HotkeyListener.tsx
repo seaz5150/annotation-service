@@ -15,7 +15,8 @@ const HotkeyListener = () => {
             createActionHistoryRedoAction,
             createActionHistoryAddAction,
             createActionTranscriptPlayerAddAction,
-            createActionEditorRequestDataSave } = bindActionCreators(actionCreators, dispatch);
+            createActionEditorRequestDataSave,
+            createActionAudioTogglePlay } = bindActionCreators(actionCreators, dispatch);
     const hotkey = useSelector((state: any) => state.hotkey);
     const transcript = useSelector((state: any) => state.recordingTranscript);
     
@@ -26,6 +27,7 @@ const HotkeyListener = () => {
     const splitHotkey = useRef("");
     const undoHotkey = useRef("");
     const redoHotkey = useRef("");
+    const togglePlayHotkey = useRef("");
 
     const splitCompleted = useRef(false);
     const splitSegmentBefore = useRef<any>();
@@ -37,6 +39,7 @@ const HotkeyListener = () => {
         splitHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "SPLIT").hotkey;
         undoHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "UNDO").hotkey;
         redoHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "REDO").hotkey;
+        togglePlayHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "TOGGLE_PLAY").hotkey;
     }, [hotkey.hotkeys]);
 
     useEffect(() => {
@@ -97,6 +100,10 @@ const HotkeyListener = () => {
             else if (keyString === redoHotkey.current) {
                 e.preventDefault();
                 createActionHistoryRedoAction();
+            }
+            else if (keyString === togglePlayHotkey.current) {
+                e.preventDefault();
+                createActionAudioTogglePlay();
             }
         }
     }
