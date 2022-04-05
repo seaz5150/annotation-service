@@ -1,5 +1,5 @@
-import { Tooltip } from 'bootstrap';
-import React, { useEffect, useRef, useState } from 'react';
+import LogRocket from 'logrocket';
+import { useEffect, useState } from 'react';
 import Dashboard from './components/Dashboard';
 import EventReactor from './components/renderless-components/EventReactor';
 import HotkeyListener from './components/renderless-components/HotkeyListener';
@@ -8,6 +8,10 @@ import SettingsWindow from './components/SettingsWindow';
 
 function App() {
   const [settingsExpanded, setSettingsExpanded] = useState(false);
+
+  useEffect(() => {
+    LogRocket.init('n3afcu/annotation-service');
+  }, []);
 
   return (
     <div className="App">
