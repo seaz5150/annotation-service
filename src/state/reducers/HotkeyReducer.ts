@@ -32,6 +32,7 @@ const HotkeyReducer = (state = initialState, action: any) => {
                 hotkeys: newHotkeys
             };
         case "HOTKEY_RESET":
+            saveToLS("hotkeys", defaultHotkeys);
             return {
                 ...state,
                 hotkeys: defaultHotkeys
