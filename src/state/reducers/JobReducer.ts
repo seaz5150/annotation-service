@@ -38,7 +38,7 @@ const JobReducer = (state = initialState, action: any) => {
             }
         }
 
-        colorCounter = textTags.length - 1;
+        colorCounter = textTags.length;
         for (let i in unpairedTags) {
             let unpairedTag = unpairedTags[i];
             unpairedTag.color = TagColors[Object.keys(TagColors)[colorCounter]];
