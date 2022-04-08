@@ -296,7 +296,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
       currentTags = currentWord.text_tags;
       if (currentTags.length === 0) {
-        if (lastTags.length === 0) {
+        if (lastTags && lastTags.length === 0) {
           paragraphChildren[paragraphChildren.length - 1].text = paragraphChildren[paragraphChildren.length - 1].text + " " + currentWord.label;
         }
         else {
