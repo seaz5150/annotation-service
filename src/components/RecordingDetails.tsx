@@ -59,13 +59,13 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
                 <p className="title-small col-12 mb-1 mt-2">Display attached resources:</p>
                 <div className="row">
                     {jobData.user_interface.views.map((v: any) => v.type === "text" &&
-                        <React.Fragment key={v.label}>
-                            <p className="title-small col-10 ms-2 fw-normal">{v.label}</p>
+                        <React.Fragment key={v.title}>
+                            <p className="title-small col-10 ms-2 fw-normal">{v.title}</p>
                             <input className="form-check-input custom-checkbox col-2 ms-3" 
                                     type="checkbox"
                                     onMouseDown={e => pressStopPropagation(e)} 
-                                    onChange={(e) => toggleModule(e, v.label)}
-                                    checked={(dashboard.openModules.some((om: string) => om === v.label) || dashboard.openAttachmentTabs.some((om: string) => om === v.label))}/>
+                                    onChange={(e) => toggleModule(e, v.title)}
+                                    checked={(dashboard.openModules.some((om: string) => om === v.title) || dashboard.openAttachmentTabs.some((om: string) => om === v.title))}/>
                         </React.Fragment>
                     )}
                     {jobData.user_interface.views.some((v: any) => v.type === "img" || v.type === "iframe") &&
@@ -96,8 +96,8 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
                         >
                             <li>
                                 {jobData.user_interface.links.map((link: any) =>
-                                        <a className="dropdown-item segment-label-dropdown-item me-3" href={link.url} target="_blank" key={link.label}>
-                                            {link.label}
+                                        <a className="dropdown-item segment-label-dropdown-item me-3" href={link.url} target="_blank" key={link.title}>
+                                            {link.title}
                                         </a>                                              
                                     )
                                 }

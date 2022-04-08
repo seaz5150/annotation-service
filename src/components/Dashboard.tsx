@@ -78,7 +78,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
         // Module is a dynamic attachment.
         else {
             let updatedLayouts = JSON.parse(JSON.stringify(layouts));
-            let view = jobData.user_interface.views.find((v: { label: string; }) => v.label === moduleName);
+            let view = jobData.user_interface.views.find((v: { title: string; }) => v.title === moduleName);
             if (view.type === "text") {
                 updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: 2.7, h: 11.4, isResizable: false});
             }
@@ -196,11 +196,11 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
         saveToLS("modules", modulesToSave);
     };
 
-    const attachmentRenderSwitch = (label: string) => {
-        let view = jobData.user_interface.views.find((v: { label: string; }) => v.label === label);
+    const attachmentRenderSwitch = (title: string) => {
+        let view = jobData.user_interface.views.find((v: { title: string; }) => v.title === title);
         switch(view.type) {
             case "text":
-                return (<div key={label}>
+                return (<div key={title}>
                            <Plaintext updateElementGridSize={updateElementGridSize} view={view} />
                        </div>);
             default: 
@@ -252,7 +252,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
                 </div>
             }
             {jobData && jobData.user_interface.views.map((v: any) =>
-                modules.some(m => m === v.label) && attachmentRenderSwitch(v.label)      
+                modules.some(m => m === v.title) && attachmentRenderSwitch(v.title)      
             )}
             {modules.some(m => m === "AttachmentTabs") &&
                 <div key="AttachmentTabs">

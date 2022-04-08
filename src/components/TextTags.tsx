@@ -18,8 +18,8 @@ const TextTags = (props: AudioPlayerInterface) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     const { width, height } = props.size;
-    const availableTextTags = useSelector((state: any) => state.recordingTranscript.textTags);
-    const availableUnpairedTags = useSelector((state: any) => state.recordingTranscript.unpairedTags);
+    const availableTextTags = useSelector((state: any) => state.job.textTags);
+    const availableUnpairedTags = useSelector((state: any) => state.job.unpairedTags);
 
     useEffect(() => {
         props.updateElementGridSize("TextTags", height);
@@ -47,8 +47,8 @@ const TextTags = (props: AudioPlayerInterface) => {
             <div className="tag-container" onMouseDown={pressStopPropagation}>
                 {availableTextTags && 
                     availableTextTags.map((textTag: any) => 
-                        <button key={textTag.id} 
-                                onMouseDown={() => createActionEditorAddSectionTag(textTag.id)}
+                        <button key={textTag.label} 
+                                onMouseDown={() => createActionEditorAddSectionTag(textTag.label)}
                                 className="text-tag-button btn-secondary custom-dropdown">
                             <div className="d-flex align-items-center">
                                 <span className="tag-button-color text-tag-button-color me-1" style={{backgroundColor: textTag.color}}></span>

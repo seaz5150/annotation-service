@@ -1,7 +1,4 @@
-import { bindActionCreators } from "@reduxjs/toolkit";
-import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { actionCreators } from "..";
 import { SegmentColors } from "../../enums/SegmentColors"
 import { TagColors } from "../../enums/TagColors";
 
@@ -15,8 +12,6 @@ type PlayerAction = {
 const initialState = {
     speakerTags: [] as any[],
     segmentTags: null,
-    textTags: null,
-    unpairedTags: null,
     segments: [] as any[],
     segmentId: "",
     playerActionHistory: [] as PlayerAction[],
@@ -41,19 +36,22 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case "TRANSCRIPT_INITIALIZE":
             var segments = action.payload.segments;
-            var speakerTags = action.payload.speakerTags;
-            var textTags = action.payload.textTags;
+            var speakerTags = action.payload.speaker_tags;
 
-            action.payload.unpairedTags = [
-                {"label": "Unknown", "id": "[unk]"},
-                {"label": "Hesitation", "id": "[hes]"},
-                {"label": "Noise", "id": "[noise]"},
-                {"label": "Speaker noise", "id": "[spk]"},
-                {"label": "Double-press PTT", "id": "[key]"},
-                {"label": "Crosstalk", "id": "[XT]"}
-            ];
-
-            var unpairedTags = action.payload.unpairedTags;
+            action.payload.segment_tags = [
+                {
+                    "label": "Very noisy segment",
+                    "id": "noisy"
+                },
+                {
+                    "label": "Empty segment",
+                    "id": "empty"
+                },
+                {
+                    "label": "Transcript OK",
+                    "id": "checked"
+                }
+            ]
 
             for (let segment in segments) {
                 let segmentObj = segments[segment];
@@ -81,40 +79,12 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     colorCounter++;
                 }
             }
-            
-            colorCounter = 0;
-            for (let i in textTags) {
-                let textTag = textTags[i];
-                textTag.color = TagColors[Object.keys(TagColors)[colorCounter]];
-
-                if (colorCounter >= speakerTags.length - 1) {
-                    colorCounter = 0;
-                }
-                else {
-                    colorCounter++;
-                }
-            }
-
-            colorCounter = speakerTags.length - 1;
-            for (let i in unpairedTags) {
-                let unpairedTag = unpairedTags[i];
-                unpairedTag.color = TagColors[Object.keys(TagColors)[colorCounter]];
-
-                if (colorCounter >= unpairedTag.length - 1) {
-                    colorCounter = 0;
-                }
-                else {
-                    colorCounter++;
-                }
-            }
 
             return {
                 ...state,
                 speakerTags: speakerTags,
-                segmentTags: action.payload.segmentTags,
-                textTags: textTags,
+                segmentTags: action.payload.segment_tags,
                 segments: segments,
-                unpairedTags: unpairedTags,
                 type: "TRANSCRIPT_INITIALIZE"
             };
         case "TRANSCRIPT_SEGMENT_UPDATE":

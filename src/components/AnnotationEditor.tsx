@@ -62,6 +62,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   const editor = useSelector((state: any) => state.editor);
   const history = useSelector((state: any) => state.history);
   const transcript = useSelector((state: any) => state.recordingTranscript);
+  const job = useSelector((state: any) => state.job);
 
   const [editorFocused, setEditorFocused] = useState(false);
   const [historyPrevious, setHistoryPrevious] = useState<History | null>(null);
@@ -216,12 +217,24 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
         for (let j in splitWords) {
           let currentWord = splitWords[j];
-          let newWord = {label: currentWord} as any;
-
+          let newWord = {label: currentWord, text_tags: []} as any;
+          
           if (!currentChild.unpairedTag && childLabels) {
-            newWord.textTags = childLabels;
+            if (splitWords.length === 1) {
+              newWord.text_tags = ["!START_" + childLabels[0], "!END_" + childLabels[0]];
+            }
+            else {
+              if (Number(j) === 0) {
+                newWord.text_tags = ["!START_" + childLabels[0]];
+              }
+              else if (Number(j) === splitWords.length - 1) {
+                newWord.text_tags = ["!END_" + childLabels[0]];
+              }
+              else {
+                newWord.text_tags = ["!IN_" + childLabels[0]];
+              }
+            }
           }
-
           result.push(newWord);
         }
       }
@@ -259,8 +272,8 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
   const initializeText = () => {
     let paragraphChildren = (initialValue[0] as any).children;
-    let currentTag;
-    let lastTag;
+    let currentTags;
+    let lastTags;
 
     let words = segment.words;
 
@@ -268,35 +281,60 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       paragraphChildren.push({text: ""});
     }
 
-    for (let index in words) {
-      let currentWord = words[index];
-      let matchedUnpairedTag = transcript.unpairedTags.find((u: { id: string; }) => u.id === currentWord.label);
+    for (let i in words) {
+      let currentWord = words[i];
+      let matchedUnpairedTag = job.unpairedTags.find((u: { id: string; }) => u.id === currentWord.label);
       let matchedUnpairedTagLabel = matchedUnpairedTag && matchedUnpairedTag.label;
 
-      currentTag = currentWord.textTags ? currentWord.textTags[0] : null;
-
-      if (currentTag !== lastTag || matchedUnpairedTagLabel) {
+      if (matchedUnpairedTagLabel) {
+        paragraphChildren.push({text: "[" + matchedUnpairedTagLabel + "]", tagLabels: [currentWord.label], tagId: uuidv4(), unpairedTag: true});
         if (paragraphChildren.length !== 0) {
           paragraphChildren.push({text: " "});
         }
-        if (matchedUnpairedTagLabel) {
-          paragraphChildren.push({text: "[" + matchedUnpairedTagLabel + "]", tagLabels: [currentWord.label], tagId: uuidv4(), unpairedTag: true});
-          currentTag = uuidv4();
+        continue;
+      }
+
+      currentTags = currentWord.text_tags;
+      if (currentTags.length === 0) {
+        if (lastTags.length === 0) {
+          paragraphChildren[paragraphChildren.length - 1].text = paragraphChildren[paragraphChildren.length - 1].text + " " + currentWord.label;
         }
         else {
-          paragraphChildren.push({text: currentWord.label, tagLabels: currentTag ? [currentTag] : undefined, tagId: uuidv4()});
+          if (paragraphChildren.length !== 0) {
+            paragraphChildren.push({text: " "});
+          }
+          paragraphChildren.push({text: currentWord.label, tagLabels: undefined, tagId: uuidv4()});
         }
       }
-      else {
-        paragraphChildren[paragraphChildren.length - 1].text = paragraphChildren[paragraphChildren.length - 1].text + " " + currentWord.label;
+      else if (currentTags.length === 1) {
+        let currentTag = currentTags[0];
+        let currentTagSplit = currentTag.split("_");
+        let currentTagPrefix = currentTagSplit[0];
+        let tagWithoutPrefix = currentTagSplit[1];
+        if (currentTagPrefix === "!START") {
+          if (paragraphChildren.length !== 0) {
+            paragraphChildren.push({text: " "});
+          }
+          paragraphChildren.push({text: currentWord.label, tagLabels: [tagWithoutPrefix], tagId: uuidv4()});
+        }
+        else {
+          paragraphChildren[paragraphChildren.length - 1].text = paragraphChildren[paragraphChildren.length - 1].text + " " + currentWord.label;
+        }
+      }   
+      else if (currentTags.length === 2) {
+        if (paragraphChildren.length !== 0) {
+          paragraphChildren.push({text: " "});
+        }
+        let tagWithoutPrefix = currentTags[0].split("_")[1];
+        paragraphChildren.push({text: currentWord.label, tagLabels: [tagWithoutPrefix], tagId: uuidv4()});
       }
 
-      if (Number(index) === props.words - 1) {
+      if (Number(i) === props.words - 1) {
         paragraphChildren.push({text: ""});
       }
-
-      lastTag = currentTag;
+      lastTags = currentTags;
     }
+    
     HistoryEditor.withoutSaving(slateEditor, () => Transforms.select(slateEditor, {
       anchor: {path: [0,0], offset: 0},
       focus: {path: [0,0], offset: 0},
@@ -317,7 +355,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
                </mark>
       }
       else {
-        const textTag = textTags.find(tag => tag.id === tagLabels[0]);
+        const textTag = textTags.find(tag => tag.label === tagLabels[0]);
         return <span {...attributes} className="text-tag" style={{borderColor: textTag?.color}}>
                 <span className="text-tag-inside" style={{boxShadow: "inset 0px 0px 0px 1px " + textTag?.color}}>
                   <span className="text-tag-content" style={{backgroundColor: textTag?.color.substring(0, textTag?.color.length - 2) + "26"}}>{children}</span>

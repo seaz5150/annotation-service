@@ -13,22 +13,22 @@ const Initializator = () => {
     const [jobData, setJobData] = useState(null);
     const [jobTranscript, setJobTranscript] = useState(null);
 
-    // useEffect(() => {
-    //   getJob(job.jobId);
-    //   getJobTranscript(job.jobId);
-    // }, [job.jobId]);
+    useEffect(() => {
+      getJob(job.jobId);
+      setTimeout(() => getJobTranscript(job.jobId), 10);
+    }, [job.jobId]);
 
-    // useEffect(() => {
-    //   if (jobTranscript !== null) {
-    //     createActionTranscriptInitialize(jobTranscript);
-    //   }
-    // }, [jobTranscript]);
+    useEffect(() => {
+      if (jobTranscript !== null) {
+        createActionTranscriptInitialize(jobTranscript);
+      }
+    }, [jobTranscript]);
 
-    // useEffect(() => {
-    //   if (jobData !== null) {
-    //     createActionJobInitialize(jobData);
-    //   }
-    // }, [jobData]);
+    useEffect(() => {
+      if (jobData !== null) {
+        createActionJobInitialize(jobData);
+      }
+    }, [jobData]);
 
     const getJobTranscript = async (jobId: string) => {
       var requestReturn;

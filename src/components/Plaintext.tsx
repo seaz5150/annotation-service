@@ -18,13 +18,13 @@ const Plaintext = (props: SpeakerLabelsInterface) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
-        props.updateElementGridSize(props.view.label, height);
+        props.updateElementGridSize(props.view.title, height);
     }, [height]);
     
     return (  
         <div className="module module-settings">
             <div className="card-header d-flex justify-content-between">
-                {props.view.label}
+                {props.view.title}
                 <span className="d-flex align-content-center">
                     <button className="strip-button-style module-header-button pe-2"
                             onMouseDown={pressStopPropagation}
@@ -33,7 +33,7 @@ const Plaintext = (props: SpeakerLabelsInterface) => {
                     </button>
                     <button className="strip-button-style module-header-button"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => createActionDashboardToggleModule(props.view.label, false)}>
+                            onClick={() => createActionDashboardToggleModule(props.view.title, false)}>
                         <i className="bi bi-x-lg"></i>
                     </button>
                 </span>

@@ -20,22 +20,22 @@ const JobControl = (props: JobControlInterface) => {
     const jobData = useSelector((state: any) => state.job.jobData);
 
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [activeTab, setActiveTab] = useState(jobData.user_interface.views.find((v: { type: string; }) => (v.type === "img" || v.type === "iframe")).label);
+    const [activeTab, setActiveTab] = useState(jobData.user_interface.views.find((v: { type: string; }) => (v.type === "img" || v.type === "iframe")).title);
     const { width, height } = props.size;
 
     useEffect(() => {
         props.updateElementGridSize("AttachmentTabs", height);
     }, [height]);
 
-    const attachmentRenderSwitch = (label: string) => {
-        let view = jobData.user_interface.views.find((v: { label: string; }) => v.label === label);
+    const attachmentRenderSwitch = (title: string) => {
+        let view = jobData.user_interface.views.find((v: { title: string; }) => v.title === title);
         switch(view.type) {
             case "iframe":
-                return (<div key={label}>
+                return (<div key={title}>
                            <MapLeaflet updateElementGridSize={props.updateElementGridSize} view={view} />
                        </div>);
             case "img":
-                return (<div key={label}>
+                return (<div key={title}>
                            <AttachedImage updateElementGridSize={props.updateElementGridSize} view={view} />
                        </div>);
             default: 
@@ -50,10 +50,10 @@ const JobControl = (props: JobControlInterface) => {
                     <li>
                         {jobData && jobData.user_interface.views.map((v: any) => (v.type === "img" || v.type === "iframe") &&
                             <>
-                                <button className={"tab-button " + (activeTab === v.label ? " tab-button-active" : "")}
-                                        onClick={() => setActiveTab(v.label)}
+                                <button className={"tab-button " + (activeTab === v.title ? " tab-button-active" : "")}
+                                        onClick={() => setActiveTab(v.title)}
                                         onMouseDown={pressStopPropagation}>
-                                    {v.label}
+                                    {v.title}
                                 </button>
                                 <span className="fw-bolder">|</span>
                             </>
@@ -75,7 +75,7 @@ const JobControl = (props: JobControlInterface) => {
             </div>
             <div className={"" + (isCollapsed ? "module-content-collapsed" : "mt-1")}>
                 {jobData && jobData.user_interface.views.map((v: any) =>
-                    activeTab === v.label && attachmentRenderSwitch(v.label)      
+                    activeTab === v.title && attachmentRenderSwitch(v.title)      
                 )}
             </div>
         </div>

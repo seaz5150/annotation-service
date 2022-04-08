@@ -10,7 +10,6 @@ import { bindActionCreators } from "redux";
 import { actionCreators } from "../state/index";
 import { useDispatch, useSelector } from "react-redux";
 import sizeMe from 'react-sizeme'
-import { recordingJson } from "../CommonUtilities";
 
 interface AnnotationTextInterface {
     updateElementGridSize: any,
@@ -19,10 +18,7 @@ interface AnnotationTextInterface {
 
 function AnnotationText(props: AnnotationTextInterface) {
     const dispatch = useDispatch();
-    const { createActionTranscriptInitialize,
-            createActionSegmentReferencesInitialize,
-            createActionJobInitialize
-          } = bindActionCreators(actionCreators, dispatch);
+    const { createActionSegmentReferencesInitialize } = bindActionCreators(actionCreators, dispatch);
 
     const segments = useSelector((state: any) => state.recordingTranscript.segments);
     segments.sort((a: { start: number; }, b: { start: number; }) => a.start - b.start);
@@ -36,10 +32,6 @@ function AnnotationText(props: AnnotationTextInterface) {
     useEffect(() => {
         updateElementGridSize("AnnotationText", height);
     }, [height]);
-
-    useEffect(() => {
-        createActionTranscriptInitialize(recordingJson.transcript);
-    }, []);
 
     const addToSegmentRefs = (segmentEl: any, segmentId: any) => {
         if (segmentEl && !segmentRefs.current.includes(segmentEl)) {
