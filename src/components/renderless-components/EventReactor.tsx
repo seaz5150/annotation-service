@@ -1,6 +1,6 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
-import { actionCreators } from "../../state";
+import { actionCreators } from "../../state/Index";
 import { useEffect } from "react";
 
 // Component used for chaining events.

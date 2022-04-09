@@ -1,8 +1,8 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
 import { Fragment, Key, ReactChild, ReactFragment, ReactPortal, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { pressStopPropagation } from "../CommonUtilities";
-import { actionCreators } from "../state";
+import { pressStopPropagation } from "../utils/CommonUtilities";
+import { actionCreators } from "../state/Index";
 
 interface SettingsWindowInterface {
     settingsExpanded: boolean

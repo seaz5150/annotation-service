@@ -1,6 +1,6 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
-import { actionCreators } from "../../state";
+import { actionCreators } from "../../state/Index";
 import { useEffect, useRef } from "react";
 
 // Component used for listening for key shortcuts and dispatching related actions.

@@ -6,10 +6,10 @@ import React, {
 import WaveSurfer from "wavesurfer.js";
 import TimelinePlugin from "wavesurfer.js/src/plugin/timeline";
 import RegionsPlugin from "wavesurfer.js/src/plugin/regions";
-import { getFormattedTime, rgbaToHexAlpha } from "../CommonUtilities";
+import { getFormattedTime, rgbaToHexAlpha } from "../utils/CommonUtilities";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import { actionCreators } from "../state/index";
+import { actionCreators } from "../state/Index";
 import { v4 as uuidv4 } from "uuid";
 import { UnassignedColor } from "../enums/SegmentColors";
 import sizeMe from "react-sizeme";

@@ -1,4 +1,4 @@
-import { getFromLS, saveToLS } from "../../CommonUtilities";
+import { getFromLS, saveToLS } from "../../utils/CommonUtilities";
 
 const defaultHotkeys = [
     {name: "SAVE", hotkey: "Ctrl/Cmd + S", label: "Save transcript"},

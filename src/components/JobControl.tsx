@@ -2,8 +2,8 @@ import { bindActionCreators } from "@reduxjs/toolkit";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import sizeMe from "react-sizeme";
-import { pressStopPropagation } from "../CommonUtilities";
-import { actionCreators } from "../state";
+import { pressStopPropagation } from "../utils/CommonUtilities";
+import { actionCreators } from "../state/Index";
 
 interface JobControlInterface {
     updateElementGridSize: any,

@@ -1,6 +1,6 @@
-import { getFormattedTime, pressStopPropagation, rgbaToHexAlpha } from "../../CommonUtilities";
+import { getFormattedTime, pressStopPropagation, rgbaToHexAlpha } from "../../utils/CommonUtilities";
 import { bindActionCreators } from "redux";
-import { actionCreators } from "../../state/index";
+import { actionCreators } from "../../state/Index";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import React from "react";

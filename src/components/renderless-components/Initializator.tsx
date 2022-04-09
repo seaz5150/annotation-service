@@ -1,8 +1,8 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
-import { actionCreators } from "../../state";
+import { actionCreators } from "../../state/Index";
 import { useEffect, useState } from "react";
-import { createHttpsRequest } from "../../ApiRequests";
+import { createHttpsRequest } from "../../utils/ApiRequests";
 
 // Component used for initializing neccessary data (job, transcript...).
 const Initializator = () => {

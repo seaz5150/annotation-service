@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import sizeMe from "react-sizeme";
 import { bindActionCreators } from "redux";
-import { pressStopPropagation } from "../CommonUtilities";
-import { actionCreators } from "../state";
+import { pressStopPropagation } from "../utils/CommonUtilities";
+import { actionCreators } from "../state/Index";
 
 interface ChangesInterface {
     updateElementGridSize: any,
