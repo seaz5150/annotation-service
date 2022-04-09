@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { pressStopPropagation } from "../CommonUtilities";
+import { pressStopPropagation } from "../../CommonUtilities";
 import { v4 as uuidv4 } from "uuid";
 import { createEditor, BaseEditor, Descendant, Transforms, Editor, Range, Text } from 'slate'
 import { Slate, Editable, withReact, ReactEditor} from 'slate-react'
 import { History, HistoryEditor, withHistory } from 'slate-history'
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import { actionCreators } from "../state";
+import { actionCreators } from "../../state";
 
 export type TagElement = {
   type?: any,

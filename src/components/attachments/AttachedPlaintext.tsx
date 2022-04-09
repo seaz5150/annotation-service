@@ -2,8 +2,8 @@ import { bindActionCreators } from "@reduxjs/toolkit";
 import { ReactChild, ReactFragment, ReactPortal, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import sizeMe from "react-sizeme";
-import { pressStopPropagation } from "../CommonUtilities";
-import { actionCreators } from "../state";
+import { pressStopPropagation } from "../../CommonUtilities";
+import { actionCreators } from "../../state";
 
 interface SpeakerLabelsInterface {
     updateElementGridSize: any,

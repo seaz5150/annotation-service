@@ -25,7 +25,7 @@ export const createActionAudioPlayFromTime = (time: number) => {
 export const createActionAudioPlaySetPreplay = (prePlay: number) => {
   return (dispatch: any) => {
     dispatch({
-      type: "AUDIO_PLAY_SET_PREPLAY",
+      type: "AUDIO_SET_PREPLAY",
       payload: prePlay
     })
   }

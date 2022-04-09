@@ -14,14 +14,6 @@ import { v4 as uuidv4 } from "uuid";
 import { UnassignedColor } from "../enums/SegmentColors";
 import sizeMe from "react-sizeme";
 
-const url = "https://audio.jukehost.co.uk/CQlpPUaaYwtJknyv7cgNCQxADk0OVCJr.wav";
-
-type Action = {
-  type: string,
-  segmentBefore?: any,
-  segmentAfter?: any
-};
-
 interface AudioPlayerInterface {
   updateElementGridSize: any,
   size: any
@@ -36,6 +28,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const zoomStep = 100;
   const [currentTime, setCurrentTime] = useState<number | undefined>(undefined);
   const [durationTime, setDurationTime] = useState<number | undefined>(undefined);
+  const [url, setUrl] = useState<string>("https://audio.jukehost.co.uk/CQlpPUaaYwtJknyv7cgNCQxADk0OVCJr.wav");
 
   const intervalRef = useRef<any>(null);
 
@@ -65,8 +58,13 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const { width, height } = props.size;
 
   const segmentRefs = useSelector((state: any) => state.references.segmentRefs);
+  const job = useSelector((state: any) => state.job);
 
   const enteredSegment = useRef("");
+
+  // useEffect(() => {
+  //   setUrl(job.jobData.url.mp3) 
+  // }, [job.jobData.url.mp3]);
 
   useEffect(() => {
     props.updateElementGridSize("AudioPlayer", height);
@@ -187,6 +185,8 @@ function AudioPlayer(props: AudioPlayerInterface) {
   });
 
   useEffect(() => {
+    if (url === "") return;
+    
     setPlaying(false);
 
     const options = formWaveSurferOptions(waveformRef.current);

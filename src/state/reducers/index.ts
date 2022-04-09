@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
-import AudioPlayReducer from "./AudioPlayReducer";
-import RecordingTranscriptReducer from "./RecordingTranscriptReducer";
+import AudioPlayReducer from "./AudioReducer";
+import RecordingTranscriptReducer from "./TranscriptReducer";
 import ReferenceReducer from "./ReferenceReducer";
 import EditorReducer from "./EditorReducer";
 import HistoryReducer from "./HistoryReducer";

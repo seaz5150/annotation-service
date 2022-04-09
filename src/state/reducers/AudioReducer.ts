@@ -19,17 +19,11 @@ const AudioPlayReducer = (state = initialState, action: any) => {
                 time: action.payload.time,
                 type: "AUDIO_PLAY_FROM_TIME"
             };
-        case "AUDIO_PLAY_SET_PREPLAY":
+        case "AUDIO_SET_PREPLAY":
             return {
                 ...state,
                 prePlay: action.payload,
-                type: "AUDIO_PLAY_SET_PREPLAY"
-            };
-        case "AUDIO_PLAY_SET_PREPLAY":
-            return {
-                ...state,
-                prePlay: action.payload,
-                type: "AUDIO_PLAY_SET_PREPLAY"
+                type: "AUDIO_SET_PREPLAY"
             };
         case "AUDIO_TOGGLE_PLAY":
             return {

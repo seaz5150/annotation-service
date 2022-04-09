@@ -4,8 +4,8 @@ import "react-grid-layout/css/styles.css"
 import "react-resizable/css/styles.css"
 
 import AudioPlayer from "./AudioPlayer"
-import TextTags from "./TextTags"
-import AnnotationText from "./AnnotationText"
+import TextTags from "./TextLabels"
+import AnnotationText from "./text-segments/AnnotationTextSegmentContainer"
 import RecordingDetails from "./RecordingDetails"
 
 import React, {
@@ -19,10 +19,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from '@reduxjs/toolkit';
 import { actionCreators } from '../state';
 import { getFromLS, saveToLS } from '../CommonUtilities';
-import MapLeaflet from './MapLeaflet';
-import AttachedImage from './AttachedImage';
-import Plaintext from './Plaintext';
-import AttachmentTabs from './AttachmentTabs';
+import MapLeaflet from './attachments/AttachedMapLeaflet';
+import AttachedImage from './attachments/AttachedImage';
+import Plaintext from './attachments/AttachedPlaintext';
+import AttachmentTabs from './attachments/AttachmentTabs';
 
 type SizeParams = {
     width: number;

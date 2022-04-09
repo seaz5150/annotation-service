@@ -5,9 +5,9 @@ import React, {
   useState,
   useMemo
 } from "react";
-import AnnotationSegment from './AnnotationSegment';
+import AnnotationSegment from './AnnotationTextSegment';
 import { bindActionCreators } from "redux";
-import { actionCreators } from "../state/index";
+import { actionCreators } from "../../state/index";
 import { useDispatch, useSelector } from "react-redux";
 import sizeMe from 'react-sizeme'
 

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { SegmentColors } from "../../enums/SegmentColors"
-import { TagColors } from "../../enums/TagColors";
+import { TagColors } from "../../enums/TextLabelColors";
 
 type PlayerAction = {
     type: string,

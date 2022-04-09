@@ -1,11 +1,11 @@
-import { getFormattedTime, pressStopPropagation, rgbaToHexAlpha } from "../CommonUtilities";
+import { getFormattedTime, pressStopPropagation, rgbaToHexAlpha } from "../../CommonUtilities";
 import { bindActionCreators } from "redux";
-import { actionCreators } from "../state/index";
+import { actionCreators } from "../../state/index";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import React from "react";
-import { UnassignedColor } from "../enums/SegmentColors";
-import AnnotationEditor from "./AnnotationEditor";
+import { UnassignedColor } from "../../enums/SegmentColors";
+import AnnotationEditor from "./AnnotationTextEditor";
 
 interface AnnotationSegmentInterface {
     segmentId: string,

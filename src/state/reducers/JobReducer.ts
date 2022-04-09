@@ -1,8 +1,8 @@
 import moment from "moment";
-import { TagColors } from "../../enums/TagColors";
+import { TagColors } from "../../enums/TextLabelColors";
 
 const initialState = {
-    jobId: "7Nm4rHgnMvIKAxqT",
+    jobId: "cJoQKr9yWZw5bOtJ",
     jobData: null,
     textTags: null,
     unpairedTags: null,
