@@ -1,5 +1,5 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import sizeMe from "react-sizeme";
 import { pressStopPropagation } from "../utils/CommonUtilities";

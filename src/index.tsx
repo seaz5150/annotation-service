@@ -6,7 +6,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "@popperjs/core";
 import "bootstrap";
-import moment from "moment";
 import { Provider } from "react-redux";
 import { store } from "./state/Store";
 

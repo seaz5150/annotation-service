@@ -1,10 +1,6 @@
 import React, {
-  useCallback,
   useEffect,
-  useRef,
-  useState,
-  useMemo
-} from "react";
+  useRef} from "react";
 import AnnotationSegment from './AnnotationTextSegment';
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../../state/Index";

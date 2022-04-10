@@ -8,9 +8,9 @@ import TextTags from "./TextLabels"
 import AnnotationText from "./text-segments/AnnotationTextSegmentContainer"
 import RecordingDetails from "./RecordingDetails"
 
-import React, {
+import {
     useEffect,
-    useRef, useState,
+    useState,
   } from "react";
 import Changes from './Changes';
 import JobControl from './JobControl';
@@ -19,8 +19,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from '@reduxjs/toolkit';
 import { actionCreators } from '../state/Index';
 import { getFromLS, saveToLS } from '../utils/CommonUtilities';
-import MapLeaflet from './attachments/AttachedMapLeaflet';
-import AttachedImage from './attachments/AttachedImage';
 import Plaintext from './attachments/AttachedPlaintext';
 import AttachmentTabs from './attachments/AttachmentTabs';
 

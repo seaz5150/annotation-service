@@ -1,7 +1,7 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../../state/Index";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createHttpsRequest } from "../../utils/ApiRequests";
 
 // Component used for initializing neccessary data (job, transcript...).
@@ -9,14 +9,14 @@ const Initializator = () => {
     const dispatch = useDispatch();
     const { createActionJobInitialize, createActionTranscriptInitialize } = bindActionCreators(actionCreators, dispatch);
 
-    const job = useSelector((state: any) => state.job);
     const [jobData, setJobData] = useState(null);
     const [jobTranscript, setJobTranscript] = useState(null);
 
     useEffect(() => {
-      getJob(job.jobId);
-      setTimeout(() => getJobTranscript(job.jobId), 10);
-    }, [job.jobId]);
+      let currentJobId = window.location.pathname.substring(1);
+      getJob(currentJobId);
+      setTimeout(() => getJobTranscript(currentJobId), 10);
+    }, [window.location.pathname]);
 
     useEffect(() => {
       if (jobTranscript !== null) {
