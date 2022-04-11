@@ -52,7 +52,7 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
             <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "mt-1 pb-2")}>
                 <div className="row">
                     <p className="title-small col-3">Name:</p>
-                    <p className="text-small col-9 d-flex justify-content-end">{jobData.title}</p>
+                    <p className="text-small col-9 d-flex justify-content-end text-end">{jobData.title}</p>
                 </div>
                 <p className="title-small col-12 mb-1">Description:</p>
                 <textarea className="form-control form-control-sm custom-textarea" onMouseDown={e => handlePress(e)} readOnly defaultValue={jobData.description}/>
