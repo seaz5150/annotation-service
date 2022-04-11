@@ -95,12 +95,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
 
     useEffect(() => {
         let layoutBackupsToSave = JSON.parse(JSON.stringify(layoutBackups));
-        for (let index in layoutBackupsToSave) {
-            let currentLayout = layoutBackupsToSave[index];
-            if (defaultModules.indexOf(currentLayout.i) === -1) {
-                layoutBackupsToSave.splice(index, 1);
-            }
-        }
+        layoutBackupsToSave = layoutBackupsToSave.filter((l: { i: string; }) => defaultModules.indexOf(l.i) !== -1);
         saveToLS("layoutBackups", layoutBackups);
     }, [layoutBackups]);
 
@@ -176,20 +171,11 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
         delete changedLayoutsToSave.xs;
         delete changedLayoutsToSave.xxs;
 
-        for (let index in changedLayoutsToSave.lg) {
-            let currentLayout = changedLayoutsToSave.lg[index];
-            if (defaultModules.indexOf(currentLayout.i) === -1) {
-                changedLayoutsToSave.lg.splice(index, 1);
-            }
-        }
-        let modulesToSave = JSON.parse(JSON.stringify(modules));
-        for (let index in modulesToSave) {
-            let currentModule = modulesToSave[index];
+        changedLayoutsToSave.lg = changedLayoutsToSave.lg.filter((l: { i: string; }) => defaultModules.indexOf(l.i) !== -1);
 
-            if (defaultModules.indexOf(currentModule) === -1) {
-                modulesToSave.splice(index, 1);
-            }
-        }
+        let modulesToSave = JSON.parse(JSON.stringify(modules));
+        modulesToSave = modulesToSave.filter((m: string) => defaultModules.indexOf(m) !== -1);
+
         saveToLS("layouts", changedLayoutsToSave);
         saveToLS("modules", modulesToSave);
     };
