@@ -28,7 +28,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const zoomStep = 100;
   const [currentTime, setCurrentTime] = useState<number | undefined>(undefined);
   const [durationTime, setDurationTime] = useState<number | undefined>(undefined);
-  const [url, setUrl] = useState<string>("https://audio.jukehost.co.uk/CQlpPUaaYwtJknyv7cgNCQxADk0OVCJr.wav");
+  const [url, setUrl] = useState<string>("");
 
   const intervalRef = useRef<any>(null);
   const beforeEditRegionRef = useRef<any>(null);
@@ -63,9 +63,11 @@ function AudioPlayer(props: AudioPlayerInterface) {
 
   const enteredSegment = useRef("");
 
-  // useEffect(() => {
-  //   setUrl(job.jobData.url.mp3) 
-  // }, [job.jobData.url.mp3]);
+  useEffect(() => {
+    if (job.jobData) {
+      setUrl(job.jobData.url.mp3);
+    }
+  }, [job.jobData]);
 
   useEffect(() => {
     props.updateElementGridSize("AudioPlayer", height);
@@ -186,7 +188,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
   });
 
   useEffect(() => {
-    if (url === "") return;
+    if (!url) return;
     
     setPlaying(false);
 
