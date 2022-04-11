@@ -6,7 +6,7 @@ import React, {
 import WaveSurfer from "wavesurfer.js";
 import TimelinePlugin from "wavesurfer.js/src/plugin/timeline";
 import RegionsPlugin from "wavesurfer.js/src/plugin/regions";
-import { getFormattedTime, rgbaToHexAlpha } from "../utils/CommonUtilities";
+import { getFormattedTime, pressStopPropagation, rgbaToHexAlpha } from "../utils/CommonUtilities";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../state/Index";
@@ -25,6 +25,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const [currentZoom, setCurrentZoom] = useState(0);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const zoomStep = 100;
   const [currentTime, setCurrentTime] = useState<number | undefined>(undefined);
   const [durationTime, setDurationTime] = useState<number | undefined>(undefined);
@@ -68,6 +69,10 @@ function AudioPlayer(props: AudioPlayerInterface) {
       setUrl(job.jobData.url.mp3);
     }
   }, [job.jobData]);
+
+  useEffect(() => {
+    wavesurfer?.current?.setPlaybackRate(playbackSpeed);
+  }, [playbackSpeed]);
 
   useEffect(() => {
     props.updateElementGridSize("AudioPlayer", height);
@@ -328,7 +333,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
         <div className="play-area" onMouseDown={e => handlePress(e)}></div>
           <div className="audiocontrols-wrapper">
             <div className="audiocontrols-left">
-              <div className="me-auto">
+              <div className="me-auto d-flex">
                 <button className="btn audiocontrols-button audiocontrols-zoom-button me-1" 
                         onClick={() => (currentZoom >= zoomStep && setCurrentZoom(currentZoom - zoomStep))}
                         onMouseDown={e => handlePress(e)}
@@ -344,6 +349,18 @@ function AudioPlayer(props: AudioPlayerInterface) {
                 >
                     <i className="audiocontrols-button-icon bi bi-zoom-in"></i>
                 </button>
+                <select className="form-select form-select-sm custom-dropdown ms-2"
+                        onMouseDown={e => pressStopPropagation(e)}
+                        value={playbackSpeed}
+                        onChange={e => setPlaybackSpeed(Number(e.target.value))}
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Playback speed">
+                    <option value={1}>1x</option>
+                    <option value={0.9}>0.9x</option>
+                    <option value={0.8}>0.8x</option>
+                    <option value={0.7}>0.7x</option>
+                    <option value={0.6}>0.6x</option>
+                    <option value={0.5}>0.5x</option>
+                </select>
               </div>
 
               <button className="btn audiocontrols-button me-2" 
