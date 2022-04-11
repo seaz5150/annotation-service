@@ -31,6 +31,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const [url, setUrl] = useState<string>("https://audio.jukehost.co.uk/CQlpPUaaYwtJknyv7cgNCQxADk0OVCJr.wav");
 
   const intervalRef = useRef<any>(null);
+  const beforeEditRegionRef = useRef<any>(null);
 
   const [audioReady, setAudioReady] = useState(false);
 
@@ -229,17 +230,32 @@ function AudioPlayer(props: AudioPlayerInterface) {
           let nextRegion = regionsList[regionIndex + 1];
           let previousRegion = regionsList[regionIndex - 1];
 
+          let regionIsResized = false;
+          if (beforeEditRegionRef.current && !beforeEditRegionRef.current.regionWasAdjusted
+              && (beforeEditRegionRef.current.id === region.id)) {
+            if (roundToTwoDecimals(beforeEditRegionRef.current.end - beforeEditRegionRef.current.start) 
+                !== roundToTwoDecimals(region.end - region.start)) {
+              regionIsResized = true;
+            }
+          }
+
           let difference = 0;
           if (nextRegion && (region.end > nextRegion.start)) {
             difference = region.end - nextRegion.start;
             region.end = nextRegion.start;
-            region.start -= difference;
+            if (!regionIsResized) {
+              region.start -= difference;
+            }
           }
           if (previousRegion && (region.start < previousRegion.end)) {
             difference = previousRegion.end - region.start;
             region.start = previousRegion.end;
-            region.end += difference;
+            if (!regionIsResized) {
+              region.end += difference;
+            }
           }
+
+          beforeEditRegionRef.current = {start: region.start, end: region.end, id: region.id};
         });
 
         wavesurfer.current?.on("region-created", (region) => {
@@ -264,6 +280,10 @@ function AudioPlayer(props: AudioPlayerInterface) {
     
     return () => wavesurfer.current!.destroy();
   }, [url]);
+
+  const roundToTwoDecimals = (number: number) => {
+    return Math.round((number + Number.EPSILON) * 100) / 100;
+  };
 
   const handlePress = (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
