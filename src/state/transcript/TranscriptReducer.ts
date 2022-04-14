@@ -38,21 +38,6 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             var segments = action.payload.segments;
             var speakerTags = action.payload.speaker_tags;
 
-            action.payload.segment_tags = [
-                {
-                    "label": "Very noisy segment",
-                    "id": "noisy"
-                },
-                {
-                    "label": "Empty segment",
-                    "id": "empty"
-                },
-                {
-                    "label": "Transcript OK",
-                    "id": "checked"
-                }
-            ]
-
             for (let segment in segments) {
                 let segmentObj = segments[segment];
                 // Add unique IDs to the segments before saving them to the store.
