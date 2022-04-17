@@ -305,7 +305,7 @@ code {
   font-size: 1.25em;
 }
 
-.segment:first-of-type{
+.segment:nth-of-type(2){
   border-radius: .25rem .25rem 0 0 !important;
 }
 
