@@ -305,16 +305,14 @@ code {
   font-size: 1.25em;
 }
 
-.segment:nth-of-type(2){
-  border-radius: .25rem .25rem 0 0 !important;
+.segment:nth-of-type(2) {
+  border-top-left-radius: 0.25rem !important;
+  border-top-right-radius: 0.25rem !important;
 }
 
-.segment:last-of-type{
-  border-radius: 0 0 .25rem .25rem !important;
-}
-
-.segment:only-of-type {
-  border-radius: .25rem .25rem .25rem .25rem !important;
+.segment:last-of-type {
+  border-bottom-left-radius: 0.25rem !important;
+  border-bottom-right-radius: 0.25rem !important;
 }
 
 .segment-label-counter {
