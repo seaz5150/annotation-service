@@ -724,6 +724,7 @@ code {
 	border: none;
 	padding: 0;
 	cursor: pointer;
+  text-decoration: underline;
 }
 
 .tab-button:hover {
