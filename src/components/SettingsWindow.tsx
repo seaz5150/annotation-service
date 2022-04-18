@@ -75,7 +75,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                     <p className="title-small pb-1">Shortcuts</p>
                     <div className="settings-modules-container ms-2 me-2">
                             {hotkey.hotkeys.map((h: { label: string; hotkey: string; name: string }) => 
-                                <div key={h.name} className="d-flex pb-1 justify-content-between">
+                                <div key={h.name} className="d-flex pb-1 justify-content-between align-items-center">
                                     <p className="title-small fw-normal">{h.label}</p>
                                     <button className="badge strip-button-style bg-secondary hotkey-button me-1"
                                             onFocus={() => {activeHotkeyRef.current = h.name; setHotkeyActive(true)}}
