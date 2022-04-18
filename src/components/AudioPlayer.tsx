@@ -39,6 +39,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const audioPlay = useSelector((state: any) => state.audioPlay);
 
   const transcript = useSelector((state: any) => state.recordingTranscript);
+  const hotkey = useSelector((state: any) => state.hotkey);
   const segments = transcript.segments;
   const speakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
 
@@ -383,7 +384,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
               <button className="btn audiocontrols-button" 
                       onClick={playAudio} 
                       onMouseDown={e => handlePress(e)}
-                      data-bs-toggle="tooltip" data-bs-placement="bottom" title={playing ? "Stop" : "Play"}
+                      data-bs-toggle="tooltip" data-bs-placement="bottom" title={(playing ? "Stop" : "Play") + " (" + hotkey.hotkeys.find((h: { name: string; }) => h.name === "TOGGLE_PLAY").hotkey + ")"}
               >
                 <i className={"audiocontrols-button-icon " + (playing ? "bi bi-pause-fill" : "bi bi-play-fill")}></i>
               </button>

@@ -19,6 +19,7 @@ const Changes = (props: ChangesInterface) => {
             createActionJobSaveChanges } = bindActionCreators(actionCreators, dispatch);
     const history = useSelector((state: any) => state.history);
     const job = useSelector((state: any) => state.job);
+    const hotkey = useSelector((state: any) => state.hotkey);
 
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [timeSinceSaveString, setTimeSinceSaveString] = useState("");
@@ -127,14 +128,14 @@ const Changes = (props: ChangesInterface) => {
                                 disabled={history.currentActionIndex === -1}
                                 onMouseDown={pressStopPropagation}
                                 onClick={() => createActionHistoryUndoAction()}
-                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="Undo">
+                                data-bs-toggle="tooltip" data-bs-placement="bottom" title={"Undo (" + hotkey.hotkeys.find((h: { name: string; }) => h.name === "UNDO").hotkey + ")"}>
                             <i className="bi bi-arrow-counterclockwise undo-redo-button-icon"></i>
                         </button>
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
                                 disabled={history.currentActionIndex === history.actionHistory.length - 1}
                                 onMouseDown={pressStopPropagation}
                                 onClick={() => createActionHistoryRedoAction()}
-                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="Redo">
+                                data-bs-toggle="tooltip" data-bs-placement="bottom" title={"Redo (" + hotkey.hotkeys.find((h: { name: string; }) => h.name === "REDO").hotkey + ")"}>
                             <i className="bi bi-arrow-clockwise undo-redo-button-icon"></i>
                         </button>
                     </div>
@@ -149,7 +150,8 @@ const Changes = (props: ChangesInterface) => {
                             onMouseDown={pressStopPropagation}
                             onClick={createActionJobSaveChanges}
                             disabled={history.currentActionIndex === job.saveActionIndex}>
-                        <div className="d-flex align-items-center justify-content-center">
+                        <div className="d-flex align-items-center justify-content-center"
+                             data-bs-toggle="tooltip" data-bs-placement="bottom" title={"Save changes (" + hotkey.hotkeys.find((h: { name: string; }) => h.name === "SAVE").hotkey + ")"}>
                             <i className="fas fa-save me-2 save-button-icon"></i>
                             Save
                         </div>
