@@ -13,6 +13,7 @@ import { actionCreators } from "../state/Index";
 import { v4 as uuidv4 } from "uuid";
 import { UnassignedColor } from "../enums/SegmentColors";
 import sizeMe from "react-sizeme";
+import MediaElement from "wavesurfer.js/src/mediaelement";
 
 interface AudioPlayerInterface {
   updateElementGridSize: any,
@@ -172,6 +173,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
     normalize: true,
     partialRender: true,
     responsive: true,
+    backend: "MediaElement" as any,
     // vertical: true,
     barWidth: 1,
     waveColor: "#969393",
@@ -356,10 +358,10 @@ function AudioPlayer(props: AudioPlayerInterface) {
                         onChange={e => setPlaybackSpeed(Number(e.target.value))}
                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Playback speed">
                     <option value={1}>Normal</option>
-                    <option value={0.9}>0.9x</option>
-                    <option value={0.8}>0.8x</option>
+                    <option value={0.85}>0.85x</option>
                     <option value={0.7}>0.7x</option>
-                    <option value={0.6}>0.6x</option>
+                    <option value={0.55}>0.55x</option>
+                    <option value={0.4}>0.4x</option>
                 </select>
               </div>
 
