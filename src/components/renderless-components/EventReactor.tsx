@@ -56,7 +56,7 @@ const EventReactor = () => {
         var requestReturn;
         let request = "jobs/" + jobId + "/transcript";
       
-        requestReturn = await createHttpsRequest(transcriptData, request, "PUT");
+        requestReturn = await createHttpsRequest({data: transcriptData}, request, "PUT");
         if (requestReturn.status !== 200) {
           console.error("ERROR", requestReturn);
           return;
