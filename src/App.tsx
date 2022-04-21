@@ -10,7 +10,7 @@ function App() {
   const [settingsExpanded, setSettingsExpanded] = useState(false);
 
   useEffect(() => {
-    LogRocket.init('n3afcu/annotation-service');
+    LogRocket.init('jdskdq/annotationservice');
   }, []);
 
   return (
