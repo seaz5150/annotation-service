@@ -358,10 +358,9 @@ function AudioPlayer(props: AudioPlayerInterface) {
                         onChange={e => setPlaybackSpeed(Number(e.target.value))}
                         data-bs-toggle="tooltip" data-bs-placement="bottom" title="Playback speed">
                     <option value={1}>Normal</option>
-                    <option value={0.85}>0.85x</option>
-                    <option value={0.7}>0.7x</option>
-                    <option value={0.55}>0.55x</option>
-                    <option value={0.4}>0.4x</option>
+                    <option value={0.75}>0.75x</option>
+                    <option value={0.5}>0.5x</option>
+                    <option value={0.25}>0.25x</option>
                 </select>
               </div>
 
