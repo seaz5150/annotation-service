@@ -15,19 +15,19 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
             createActionDashboardResetLayout, 
             createActionAudioPlaySetPreplay,
             createActionTranscriptSegmentsShift,
-            createActionJobSetAutosaveInterval,
-            createActionJobToggleAutosave,
+            createActionTranscriptSetAutosaveInterval,
+            createActionTranscriptToggleAutosave,
             createActionHotkeySet,
             createActionHotkeySetRebindInProgress,
             createActionHotkeyReset,
             createActionDashboardToggleLockLayout } = bindActionCreators(actionCreators, dispatch);
 
     const audioPlay = useSelector((state: any) => state.audioPlay);
-    const job = useSelector((state: any) => state.job);
+    const transcript = useSelector((state: any) => state.recordingTranscript);
     const hotkey = useSelector((state: any) => state.hotkey);
     
     const [shiftAmount, setShiftAmount] = useState(0);
-    const [autosaveInterval, setAutosaveInterval] = useState(job.autosaveInterval / 1000);
+    const [autosaveInterval, setAutosaveInterval] = useState(transcript.autosaveInterval / 1000);
 
     const activeHotkeyRef = useRef("");
     const [hotkeyActive, setHotkeyActive] = useState(false);
@@ -39,7 +39,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
     }
 
     useEffect(() => {
-        createActionJobSetAutosaveInterval(autosaveInterval * 1000);
+        createActionTranscriptSetAutosaveInterval(autosaveInterval * 1000);
     }, [autosaveInterval]);
 
     const updateAutosaveInterval = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,17 +160,17 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                                 <input className="form-check-input custom-checkbox ms-auto me-2" 
                                        type="checkbox"
                                        onMouseDown={e => pressStopPropagation(e)} 
-                                       onChange={(e) => createActionJobToggleAutosave(e.target.checked)}
-                                       checked={job.autosaveEnabled}/>
+                                       onChange={(e) => createActionTranscriptToggleAutosave(e.target.checked)}
+                                       checked={transcript.autosaveEnabled}/>
                         </div>
-                        <span className={"title-small fw-normal mb-1 d-flex justify-content-between" + (!job.autosaveEnabled ? " disabled" : "")}>
+                        <span className={"title-small fw-normal mb-1 d-flex justify-content-between" + (!transcript.autosaveEnabled ? " disabled" : "")}>
                             Autosave interval (s):
                             <span>
                                 <input className="misc-input me-1"
                                        type="number" min="10" step="1"
                                        value={autosaveInterval} 
                                        onChange={(e) => updateAutosaveInterval(e)}
-                                       disabled={!job.autosaveEnabled}>
+                                       disabled={!transcript.autosaveEnabled}>
                                 </input>
                             </span>
                         </span>

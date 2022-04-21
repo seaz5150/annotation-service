@@ -15,6 +15,7 @@ function App() {
 
   return (
     <div className="App">
+      <a id="downloadAnchor" className="none" />
       {/* Renderless components */}
       <Initializator />
       <HotkeyListener />

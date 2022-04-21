@@ -214,10 +214,11 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
 
       if (childText.trim().length > 0) {
         let splitWords = childText.split(" ");
+        splitWords = splitWords.filter((w: string) => w !== "");
 
         for (let j in splitWords) {
           let currentWord = splitWords[j];
-          let newWord = {label: currentWord, text_tags: []} as any;
+          let newWord = {label: currentWord, start: null, end: null, confidence: null, text_tags: []} as any;
           
           if (!currentChild.unpairedTag && childLabels) {
             if (splitWords.length === 1) {

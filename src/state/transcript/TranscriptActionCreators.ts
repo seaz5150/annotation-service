@@ -1,3 +1,5 @@
+import { store } from '../Store'
+
 export const createActionTranscriptInitialize = (transcript: any) => {
   return (dispatch: any) => {
     dispatch({
@@ -194,6 +196,60 @@ export const createActionTranscriptSplitSegment = () => {
     dispatch({
       type: "TRANSCRIPT_SPLIT_SEGMENT",
       payload: null
+    })
+  }
+}
+
+export const createActionTranscriptConstructFullTranscript = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_CONSTRUCT_FULL_TRANSCRIPT",
+      payload: null
+    })
+  }
+}
+
+export const createActionTranscriptSetSaveActionIndex = (actionIndex: number) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_SET_SAVE_ACTION_INDEX",
+      payload: actionIndex
+    })
+  }
+}
+
+export const createActionTranscriptSaveChanges = () => {
+  if (store.getState().history.currentActionIndex === (store.getState().recordingTranscript as any).saveActionIndex) {
+    return (dispatch: any) => {
+      dispatch({
+        type: "TRANSCRIPT_SKIP_SAVE_CHANGES",
+        payload: null
+      })
+    }
+  }
+
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_SAVE_CHANGES",
+      payload: null
+    })
+  }
+}
+
+export const createActionTranscriptToggleAutosave = (value: boolean) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_TOGGLE_AUTOSAVE",
+      payload: value
+    })
+  }
+}
+
+export const createActionTranscriptSetAutosaveInterval = (interval: number) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "TRANSCRIPT_SET_AUTOSAVE_INTERVAL",
+      payload: interval
     })
   }
 }

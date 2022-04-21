@@ -2,6 +2,7 @@ import { bindActionCreators } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../../state/Index";
 import { useEffect } from "react";
+import { createHttpsRequest } from "../../utils/ApiRequests";
 
 // Component used for chaining events.
 const EventReactor = () => {
@@ -11,7 +12,7 @@ const EventReactor = () => {
             createActionEditorRequestDataSave,
             createActionEditorReinitializeWordsFromSaved,
             createActionEditorReinitializeWords,
-            createActionJobSetSaveActionIndex } = bindActionCreators(actionCreators, dispatch);
+            createActionTranscriptSetSaveActionIndex } = bindActionCreators(actionCreators, dispatch);
 
     const history = useSelector((state: any) => state.history);
     const transcript = useSelector((state: any) => state.recordingTranscript);
@@ -43,12 +44,24 @@ const EventReactor = () => {
       }, [history]);
 
       useEffect(() => {
-        switch (job.type) {
-          case "JOB_SAVE_CHANGES":
-            createActionJobSetSaveActionIndex(history.currentActionIndex);
+        switch (transcript.type) {
+          case "TRANSCRIPT_SAVE_CHANGES":
+            createActionTranscriptSetSaveActionIndex(history.currentActionIndex);
+            saveJobTranscript(job.jobId, JSON.stringify(transcript.fullTranscript, null, 2));
             break;
         }
-      }, [job]);
+      }, [transcript]);
+
+      const saveJobTranscript = async (jobId: string, transcriptData: any) => {
+        var requestReturn;
+        let request = "jobs/" + jobId + "/transcript";
+      
+        requestReturn = await createHttpsRequest(transcriptData, request, "PUT");
+        if (requestReturn.status !== 200) {
+          console.error("ERROR", requestReturn);
+          return;
+        }
+      }
 
       useEffect(() => {
         switch (transcript.type) {

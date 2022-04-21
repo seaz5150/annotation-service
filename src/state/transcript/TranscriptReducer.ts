@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { SegmentColors } from "../../enums/SegmentColors"
-import { TagColors } from "../../enums/TextLabelColors";
+import { SegmentColors } from "../../enums/SegmentColors";
+import moment from "moment";
 
 type PlayerAction = {
     type: string,
@@ -10,6 +10,7 @@ type PlayerAction = {
 };
 
 const initialState = {
+    fullTranscript: [] as any[],
     speakerTags: [] as any[],
     segmentTags: null,
     segments: [] as any[],
@@ -29,7 +30,12 @@ const initialState = {
     // For split undo.
     segmentToSplit: {},
     segmentAfterSplit: {},
-    addedSplitSegment: {}
+    addedSplitSegment: {},
+
+    saveActionIndex: -1,
+    transcriptLastSaveTime: null,
+    autosaveEnabled: true,
+    autosaveInterval: 120000
 };
 
 const RecordingTranscriptReducer = (state = initialState, action: any) => {
@@ -67,6 +73,7 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
 
             return {
                 ...state,
+                fullTranscript: action.payload,
                 speakerTags: speakerTags,
                 segmentTags: action.payload.segment_tags,
                 segments: segments,
@@ -377,6 +384,43 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 type: "TRANSCRIPT_GATHER_SPLIT_INFO"
+            };
+        case "TRANSCRIPT_CONSTRUCT_FULL_TRANSCRIPT":
+            var constructedTranscript = JSON.parse(JSON.stringify(state.fullTranscript));
+            constructedTranscript.segments = JSON.parse(JSON.stringify(state.segments));
+            constructedTranscript.segments.map((s: { id: any; }) => delete s.id);
+            constructedTranscript.speaker_tags = JSON.parse(JSON.stringify(state.speakerTags));
+            constructedTranscript.speaker_tags.map((st: { color: any; }) => delete st.color);
+
+            return {
+                ...state,
+                fullTranscript: constructedTranscript,
+                type: "TRANSCRIPT_CONSTRUCT_FULL_TRANSCRIPT"
+            };
+        case "TRANSCRIPT_SET_SAVE_ACTION_INDEX":
+            return {
+                ...state,
+                saveActionIndex: action.payload,
+                type: "TRANSCRIPT_SET_SAVE_ACTION_INDEX"
+            };
+        case "TRANSCRIPT_SAVE_CHANGES":
+            let currentTime = moment();
+            return {
+                ...state,
+                transcriptLastSaveTime: currentTime,
+                type: "TRANSCRIPT_SAVE_CHANGES"
+            };
+            case "TRANSCRIPT_TOGGLE_AUTOSAVE":
+            return {
+                ...state,
+                autosaveEnabled: action.payload,
+                type: "TRANSCRIPT_TOGGLE_AUTOSAVE"
+            };
+            case "TRANSCRIPT_SET_AUTOSAVE_INTERVAL":
+            return {
+                ...state,
+                autosaveInterval: action.payload,
+                type: "TRANSCRIPT_SET_AUTOSAVE_INTERVAL"
             };
         default:
             return state;

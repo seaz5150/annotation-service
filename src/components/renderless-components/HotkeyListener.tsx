@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 // Component used for listening for key shortcuts and dispatching related actions.
 const HotkeyListener = () => {
     const dispatch = useDispatch();
-    const { createActionJobSaveChanges,
+    const { createActionTranscriptSaveChanges,
             createActionTranscriptGatherSplitInfo,
             createActionTranscriptSplitSegment,
             createActionTranscriptUpdateWords,
@@ -71,7 +71,7 @@ const HotkeyListener = () => {
             let keyString = event2string(e);
             if (keyString === saveHotkey.current) {
                 e.preventDefault();
-                createActionJobSaveChanges();
+                createActionTranscriptSaveChanges();
             }
             else if (keyString === splitHotkey.current) {
                 e.preventDefault();

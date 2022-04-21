@@ -16,18 +16,40 @@ const Changes = (props: ChangesInterface) => {
     const { createActionHistoryUndoAction, 
             createActionHistoryRedoAction, 
             createActionDashboardToggleModule,
-            createActionJobSaveChanges } = bindActionCreators(actionCreators, dispatch);
+            createActionTranscriptSaveChanges,
+            createActionTranscriptUpdateWords,
+            createActionTranscriptConstructFullTranscript } = bindActionCreators(actionCreators, dispatch);
     const history = useSelector((state: any) => state.history);
-    const job = useSelector((state: any) => state.job);
     const hotkey = useSelector((state: any) => state.hotkey);
+    const transcript = useSelector((state: any) => state.recordingTranscript);
 
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [timeSinceSaveString, setTimeSinceSaveString] = useState("");
     const [timeSinceSaveColor, setTimeSinceSaveColor] = useState("text-success");
     const timeSinceSaveTimer = useRef<any>();
     const autosaveSaveTimer = useRef<any>();
+    const transcriptRef = useRef<any>();
 
     const { width, height } = props.size;
+
+    useEffect(() => {
+        transcriptRef.current = transcript;
+    }, [transcript]);
+
+    const downloadTranscript = () => {
+        createActionTranscriptUpdateWords();
+        setTimeout(() => {
+            createActionTranscriptConstructFullTranscript();
+            setTimeout(() => {
+                // Inspired by https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
+                var transcriptUri = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transcriptRef.current.fullTranscript, null, 2));
+                var dlAnchorElem = document.getElementById('downloadAnchor');
+                dlAnchorElem?.setAttribute("href", transcriptUri);
+                dlAnchorElem?.setAttribute("download", "transcript.json");
+                dlAnchorElem?.click();
+            }, 10);
+        }, 10);
+    }
 
     useEffect(() => {
         props.updateElementGridSize("Changes", height);
@@ -43,10 +65,10 @@ const Changes = (props: ChangesInterface) => {
             clearInterval(autosaveSaveTimer.current);
         }
         startAutosaveTimer();
-    }, [job.autosaveInterval]);
+    }, [transcript.autosaveInterval]);
 
     useEffect(() => {
-        if (job.autosaveEnabled) {
+        if (transcript.autosaveEnabled) {
             startAutosaveTimer();
         }
         else {
@@ -54,12 +76,12 @@ const Changes = (props: ChangesInterface) => {
                 clearInterval(autosaveSaveTimer.current);
             }
         }
-    }, [job.autosaveEnabled]);
+    }, [transcript.autosaveEnabled]);
 
     const startAutosaveTimer = () => {
         autosaveSaveTimer.current = setInterval(() => {
-            createActionJobSaveChanges();
-        }, job.autosaveInterval);
+            createActionTranscriptSaveChanges();
+        }, transcript.autosaveInterval);
     };
 
     useEffect(() => {
@@ -67,7 +89,7 @@ const Changes = (props: ChangesInterface) => {
             clearInterval(timeSinceSaveTimer.current);
         }
         startTimeSinceSaveTimer();
-    }, [job.jobLastSaveTime]);
+    }, [transcript.transcriptLastSaveTime]);
 
     const startTimeSinceSaveTimer = () => {
         timeSinceSaveTimer.current = setInterval(() => {
@@ -80,12 +102,12 @@ const Changes = (props: ChangesInterface) => {
             clearInterval(timeSinceSaveTimer.current);
         }
         startTimeSinceSaveTimer();
-    }, [job.jobLastSaveTime]);
+    }, [transcript.transcriptLastSaveTime]);
 
     const updateTimeSinceSaveString = () => {
-        if (job.jobLastSaveTime) {
+        if (transcript.transcriptLastSaveTime) {
             let currentTime = moment();
-            let timeDifference = moment(currentTime,"DD/MM/YYYY HH:mm:ss").diff(moment(job.jobLastSaveTime,"DD/MM/YYYY HH:mm:ss"));
+            let timeDifference = moment(currentTime,"DD/MM/YYYY HH:mm:ss").diff(moment(transcript.transcriptLastSaveTime,"DD/MM/YYYY HH:mm:ss"));
             let timeSince = moment.utc(timeDifference);
             updateTimeSinceSaveColor(timeDifference);
             setTimeSinceSaveString(timeSince.format("HH:mm:ss"));
@@ -140,7 +162,8 @@ const Changes = (props: ChangesInterface) => {
                         </button>
                     </div>
                     <button className="text-tag-button btn-secondary custom-dropdown save-button justify-self-end"
-                            onMouseDown={pressStopPropagation}>
+                            onMouseDown={pressStopPropagation}
+                            onClick={downloadTranscript}>
                         <div className="d-flex align-items-center justify-content-center">
                             <i className="fas fa-download me-2 export-button-icon"></i>
                             Export
@@ -148,8 +171,8 @@ const Changes = (props: ChangesInterface) => {
                     </button>
                     <button className="text-tag-button btn-secondary custom-dropdown save-button justify-self-end"
                             onMouseDown={pressStopPropagation}
-                            onClick={createActionJobSaveChanges}
-                            disabled={history.currentActionIndex === job.saveActionIndex}>
+                            onClick={createActionTranscriptSaveChanges}
+                            disabled={history.currentActionIndex === transcript.saveActionIndex}>
                         <div className="d-flex align-items-center justify-content-center"
                              data-bs-toggle="tooltip" data-bs-placement="bottom" title={"Save changes (" + hotkey.hotkeys.find((h: { name: string; }) => h.name === "SAVE").hotkey + ")"}>
                             <i className="fas fa-save me-2 save-button-icon"></i>

@@ -1,15 +1,10 @@
-import moment from "moment";
 import { TagColors } from "../../enums/TextLabelColors";
 
 const initialState = {
     jobId: "", // cJoQKr9yWZw5bOtJ
     jobData: null,
     textTags: null,
-    unpairedTags: null,
-    jobLastSaveTime: null,
-    autosaveEnabled: true,
-    autosaveInterval: 120000,
-    saveActionIndex: -1
+    unpairedTags: null
 };
 
 const JobReducer = (state = initialState, action: any) => {
@@ -59,31 +54,6 @@ const JobReducer = (state = initialState, action: any) => {
             textTags: textTags,
             type: "JOB_INITIALIZE"
         };
-    case "JOB_SAVE_CHANGES":
-      let currentTime = moment();
-      return {
-          ...state,
-          jobLastSaveTime: currentTime,
-          type: "JOB_SAVE_CHANGES"
-      };
-    case "JOB_TOGGLE_AUTOSAVE":
-      return {
-          ...state,
-          autosaveEnabled: action.payload,
-          type: "JOB_TOGGLE_AUTOSAVE"
-      };
-    case "JOB_SET_AUTOSAVE_INTERVAL":
-      return {
-          ...state,
-          autosaveInterval: action.payload,
-          type: "JOB_SET_AUTOSAVE_INTERVAL"
-      };
-    case "JOB_SET_SAVE_ACTION_INDEX":
-      return {
-          ...state,
-          saveActionIndex: action.payload,
-          type: "JOB_SET_SAVE_ACTION_INDEX"
-      };
     default:
         return state;
   }
