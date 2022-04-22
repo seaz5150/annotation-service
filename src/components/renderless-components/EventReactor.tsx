@@ -1,7 +1,7 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../../state/Index";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { createHttpsRequest } from "../../utils/ApiRequests";
 
 // Component used for chaining events.
@@ -12,11 +12,19 @@ const EventReactor = () => {
             createActionEditorRequestDataSave,
             createActionEditorReinitializeWordsFromSaved,
             createActionEditorReinitializeWords,
-            createActionTranscriptSetSaveActionIndex } = bindActionCreators(actionCreators, dispatch);
+            createActionTranscriptSetSaveActionIndex,
+            createActionTranscriptUpdateWords,
+            createActionTranscriptConstructFullTranscript } = bindActionCreators(actionCreators, dispatch);
 
     const history = useSelector((state: any) => state.history);
     const transcript = useSelector((state: any) => state.recordingTranscript);
     const job = useSelector((state: any) => state.job);
+
+    const transcriptRef = useRef<any>();
+
+    useEffect(() => {
+      transcriptRef.current = transcript;
+    }, [transcript]);
 
     useEffect(() => {
         switch (history.type) {
@@ -47,7 +55,13 @@ const EventReactor = () => {
         switch (transcript.type) {
           case "TRANSCRIPT_SAVE_CHANGES":
             createActionTranscriptSetSaveActionIndex(history.currentActionIndex);
-            saveJobTranscript(job.jobId, JSON.stringify(transcript.fullTranscript, null, 2));
+            createActionTranscriptUpdateWords();
+            setTimeout(() => {
+                createActionTranscriptConstructFullTranscript();
+                setTimeout(() => {
+                  saveJobTranscript(job.jobId, JSON.stringify(transcriptRef.current.fullTranscript, null, 2));
+                }, 10)
+            }, 10);
             break;
         }
       }, [transcript]);
