@@ -43,7 +43,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     const segmentColor = (segmentSpeaker ? segmentSpeaker.color : UnassignedColor + segmentColorAlphaHex);
 
     const [speakerId, setSpeakerId] = useState((segment.speaker));
-    const [segmentTags, setSegmentTags] = useState((segment.segmentTags));
+    const [segmentTags, setSegmentTags] = useState((segment.segment_tags));
     const [segmentWords, setSegmentWords] = useState((segment.words));
 
     const amountUpdated = useSelector((state: any) => state.recordingTranscript.amountUpdated);
@@ -58,7 +58,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     }, [speakerId]);
 
     useEffect(() => {
-        if (segmentTags !== segment.segmentTags) {
+        if (segmentTags !== segment.segment_tags) {
             createActionHistoryAddAction("AnnotationSegment", segment.id);
             createActionTranscriptPlayerAddAction("UPDATE", undefined, {id: segment.id, segmentTags: segmentTags});
             createActionTranscriptSegmentUpdate(segment.id, undefined, undefined, undefined, segmentTags);
@@ -192,7 +192,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false"
                                     >
-                                        {availableSegmentTags && "Segment labels " + (segment.segmentTags ? segment.segmentTags.length : "0") + "/" + availableSegmentTags.length}
+                                        {availableSegmentTags && "Segment labels " + (segment.segment_tags ? segment.segment_tags.length : "0") + "/" + availableSegmentTags.length}
                                     </button>
                                     <ul className="dropdown-menu dropdown-menu-end segment-label-dropdown-menu"
                                         aria-labelledby="dropdownMenuButton1" 
@@ -205,7 +205,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                                                         {availableSegmentTag.label}
                                                         <input className="form-check-input custom-checkbox col-2 ms-auto me-3" 
                                                                type="checkbox"
-                                                               checked={segment.segmentTags ? Array.from(segment.segmentTags).some((tag: any) => tag === availableSegmentTag.id) : false}
+                                                               checked={segment.segment_tags ? Array.from(segment.segment_tags).some((tag: any) => tag === availableSegmentTag.id) : false}
                                                                onMouseDown={e => pressStopPropagation(e)}
                                                                onChange={e => setSegmentTag(e, availableSegmentTag.id)}
                                                         />

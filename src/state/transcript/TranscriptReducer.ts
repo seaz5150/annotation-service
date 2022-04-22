@@ -89,7 +89,7 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                             start: (action.payload.segmentStart ? action.payload.segmentStart : segment.start),
                             end: (action.payload.segmentEnd ? action.payload.segmentEnd : segment.end),
                             speaker: ((action.payload.segmentSpeakerId || action.payload.segmentSpeakerId === "") ? action.payload.segmentSpeakerId : segment.speaker),
-                            segmentTags: (action.payload.segmentTags ? action.payload.segmentTags : segment.segmentTags),
+                            segment_tags: (action.payload.segmentTags ? action.payload.segmentTags : segment.segment_tags),
                             words: (action.payload.segmentWords ? action.payload.segmentWords : segment.words),
                         }
                     : segment
