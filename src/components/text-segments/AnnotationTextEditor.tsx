@@ -424,6 +424,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       const [node, path] = nodeEntry.value;
       if ((node as any).tagLabels && (node as any).tagLabels.length > 0) {
         alreadyTagged = true;
+        alert("Please remove any already existing tags in the selection before tagging it again.");
         break;
       }
 
