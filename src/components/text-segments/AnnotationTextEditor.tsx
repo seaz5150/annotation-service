@@ -419,14 +419,8 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
     });
 
     let nodeEntry = topLevelBlockNodesInSelection.next();
-    let alreadyTagged = false;
     while (!nodeEntry.done) {
       const [node, path] = nodeEntry.value;
-      if ((node as any).tagLabels && (node as any).tagLabels.length > 0) {
-        alreadyTagged = true;
-        alert("Please remove any already existing tags in the selection before tagging it again.");
-        break;
-      }
 
       let nodeText = (node as any).text;
 
@@ -461,24 +455,23 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
       nodeEntry = topLevelBlockNodesInSelection.next();
     }
 
-    if (!alreadyTagged) {
-      let selectedText = Editor.string(slateEditor, {
+    let selectedText = Editor.string(slateEditor, {
+      anchor: selectionAnchor,
+      focus: selectionFocus,
+    });
+
+    if (selectedText.replace(/\s/g, '').length > 0) {
+      HistoryEditor.withoutMerging(slateEditor, () => Transforms.select(slateEditor, {
         anchor: selectionAnchor,
         focus: selectionFocus,
-      });
+      }));
 
-      if (selectedText.replace(/\s/g, '').length > 0) {
-        HistoryEditor.withoutMerging(slateEditor, () => Transforms.select(slateEditor, {
-          anchor: selectionAnchor,
-          focus: selectionFocus,
-        }));
-  
-        slateEditor.addMark("tagLabels", [tagId]);
-        slateEditor.addMark("tagId", uuidv4());
+      slateEditor.addMark("tagLabels", [tagId]);
+      slateEditor.addMark("tagId", uuidv4());
 
-        Transforms.collapse(slateEditor, {edge: "end"});
-      }
+      Transforms.collapse(slateEditor, {edge: "end"});
     }
+
     setTimeout(() => {createActionEditorSetFocusedEditor(props.segmentId)}, 100);
   };
 
