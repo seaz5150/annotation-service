@@ -42,7 +42,8 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
           createActionTranscriptSegmentUpdate,
           createActionTranscriptIncreaseAmountUpdated,
           createActionEditorPopData,
-          createActionTranscriptInputEditorSplitInfo } = bindActionCreators(actionCreators, dispatch);
+          createActionTranscriptInputEditorSplitInfo,
+          createActionEditorSetFocusedEditor } = bindActionCreators(actionCreators, dispatch);
         
   let initialValue: Descendant[] = [
     {
@@ -64,7 +65,6 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   const transcript = useSelector((state: any) => state.recordingTranscript);
   const job = useSelector((state: any) => state.job);
 
-  const [editorFocused, setEditorFocused] = useState(false);
   const [historyPrevious, setHistoryPrevious] = useState<History | null>(null);
 
   // Used for forcing editor re-render.
@@ -150,7 +150,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   }, [transcript]);
 
   const inputSplitInfo = () => {
-    if (editorFocused) {
+    if (editor.focusedEditorSegmentId === props.segmentId) {
       if (Range.isCollapsed(slateEditor.selection as Range)) {
         let children = JSON.parse(JSON.stringify((value as any)[0].children));
         let wordCount = 0;
@@ -393,16 +393,16 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   };
 
   const insertUnpairedTag = (tagId: string) => {
-      if (!editorFocused) return;
+      if (editor.focusedEditorSegmentId !== props.segmentId) return;
       if (!slateEditor.selection) return;
 
       const unpairedTag = unpairedTags?.find(tag => tag.id === tagId);
       Transforms.insertNodes(slateEditor, {text: "[" + unpairedTag?.label + "]", tagLabels: [tagId], tagId: uuidv4(), unpairedTag: true}, {mode: "lowest"});
-      setTimeout(() => {setEditorFocused(true)}, 100);
+      setTimeout(() => {createActionEditorSetFocusedEditor(props.segmentId)}, 100);
   };
 
   const tagSelection = (tagId: string) => {
-    if (!editorFocused) return;
+    if (editor.focusedEditorSegmentId !== props.segmentId) return;
     let selection = slateEditor.selection;
     if (!selection) return;
 
@@ -478,13 +478,12 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
         Transforms.collapse(slateEditor, {edge: "end"});
       }
     }
-    setTimeout(() => {setEditorFocused(true)}, 100);
+    setTimeout(() => {createActionEditorSetFocusedEditor(props.segmentId)}, 100);
   };
 
   return (
     <div className="annotation-editor-wrapper" 
-         onFocus={() => setEditorFocused(true)}
-         onBlur={() => setEditorFocused(false)}>
+         onFocus={() => createActionEditorSetFocusedEditor(props.segmentId)}>
       {value &&
         <Slate key={key} editor={slateEditor} value={value} onChange={newValue => setValue(newValue)}>
           <Editable onMouseDown={pressStopPropagation} renderLeaf={leaf} />

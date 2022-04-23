@@ -2,7 +2,8 @@ const initialState = {
     tagId: null,
     segmentId: null,
     editorData: [] as any[],
-    segmentIds: []
+    segmentIds: [],
+    focusedEditorSegmentId: null
 };
 
 const EditorReducer = (state = initialState, action: any) => {
@@ -30,6 +31,12 @@ const EditorReducer = (state = initialState, action: any) => {
                 ...state,
                 segmentIds: action.payload,
                 type: "EDITOR_REINITIALIZE_WORDS_FROM_SAVED"
+            };
+        case "EDITOR_SET_FOCUSED_EDITOR":
+            return {
+                ...state,
+                focusedEditorSegmentId: action.payload,
+                type: "EDITOR_SET_FOCUSED_EDITOR"
             };
         case "EDITOR_REQUEST_DATA_SAVE":
             return {

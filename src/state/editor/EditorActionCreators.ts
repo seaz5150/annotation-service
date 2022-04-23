@@ -67,3 +67,12 @@ export const createActionEditorSaveData = (segmentId: string, history: any, valu
     })
   }
 }
+
+export const createActionEditorSetFocusedEditor = (segmentId: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "EDITOR_SET_FOCUSED_EDITOR",
+      payload: segmentId
+    })
+  }
+}
