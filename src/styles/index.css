@@ -618,27 +618,34 @@ code {
 }
 
 /* SETTINGS MENU */
-.settings-button {
+.settings-button-container {
   position: fixed;
-  bottom: 0.5em;
-  right: 1em;
-  color: rgba(0, 0, 0, 0.5);
+  bottom: 0.7em;
+  right: 0.7em;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 0.25em;
+  padding: 0.25em;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%);
+}
+
+.settings-button {
+  color: rgb(214, 214, 214);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
   display: flex;
   align-items: center;
-  text-shadow: rgba(0, 0, 0, 0.3) 0px 0px 3px;
+  text-shadow: rgba(75, 173, 203, 0.2) 0px 0px 3px;
 }
 
 .settings-button-gear-icon {
-  font-size: 35px;
+  font-size: 32px;
 }
 
 .settings-button-caret-icon {
-  font-size: 25px;
+  font-size: 20px;
 }
 
 .settings-button:hover, .settings-button:active {
-  color: rgba(0, 0, 0, 0.9);
+  color: rgba(255, 255, 255, 1);
 }
 
 .settings-window {

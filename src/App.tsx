@@ -23,13 +23,15 @@ function App() {
       {/* Renderless components */}
       
       <Dashboard />
-      <button className="settings-button strip-button-style"
-              onClick={() => setSettingsExpanded(!settingsExpanded)}>
-        {settingsExpanded ? <i className="fas fa-caret-down settings-button-caret-icon me-1"></i>
-          : <i className="fas fa-caret-up settings-button-caret-icon me-1"></i>
-        }
-        <i className="fas fa-cog settings-button-gear-icon"></i>
-      </button>
+      <div className="settings-button-container">
+        <button className="settings-button strip-button-style"
+                onClick={() => setSettingsExpanded(!settingsExpanded)}>
+          {settingsExpanded ? <i className="fas fa-caret-down settings-button-caret-icon me-1"></i>
+            : <i className="fas fa-caret-up settings-button-caret-icon me-1"></i>
+          }
+          <i className="fas fa-cog settings-button-gear-icon"></i>
+        </button>
+      </div>
       <SettingsWindow settingsExpanded={settingsExpanded} />
     </div>
   );
