@@ -94,6 +94,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     }
 
     const mergeNextSegmentStepOne = () => {
+        createActionTranscriptResetAmountUpdated();
         createActionTranscriptUpdateWords();
         setMergeInProgress(true);
     }

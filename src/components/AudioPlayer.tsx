@@ -128,8 +128,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
         id: segmentObj.id,
         start: segmentObj.start,
         end: segmentObj.end,
-        color: segmentSpeakerTagColor,
-        minLength: 0.2
+        color: segmentSpeakerTagColor
       });
     }
   };
