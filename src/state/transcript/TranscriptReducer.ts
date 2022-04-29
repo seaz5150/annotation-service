@@ -325,14 +325,17 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             };
         case "TRANSCRIPT_SPLIT_SEGMENT":
             if (state.splitWord) {
+                alert("Split failed: please place the cursor in between words.");
                 return {...state, splitCompleted: false};
             }
 
             if (state.splitPlayerSegmentId !== state.splitEditorSegmentId) {
+                alert("Split failed: please make sure you are in the correct segment on the waveform and your cursor is in the text of the same segment.");
                 return {...state, splitCompleted: false};
             }
 
             if (state.splitTime === undefined || state.splitPlayerSegmentId === "") {
+                alert("Split failed: please make sure you are in the correct segment on the waveform and your cursor is in the text of the same segment.");
                 return {...state, splitCompleted: false};
             }
 
