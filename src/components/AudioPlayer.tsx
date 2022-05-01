@@ -348,7 +348,11 @@ function AudioPlayer(props: AudioPlayerInterface) {
                 >
                     <i className="audiocontrols-button-icon bi bi-zoom-in"></i>
                 </button>
-                <select className="form-select form-select-sm custom-dropdown ms-2"
+                <span className="d-inline-flex align-items-center ms-2">
+                  <span className="title-small">
+                    Playback speed:
+                  </span>
+                  <select style={{width: "unset"}}  className="form-select form-select-sm custom-dropdown ms-1"
                         onMouseDown={e => pressStopPropagation(e)}
                         value={playbackSpeed}
                         onChange={e => setPlaybackSpeed(Number(e.target.value))}
@@ -358,7 +362,8 @@ function AudioPlayer(props: AudioPlayerInterface) {
                     <option value={0.8}>0.8x</option>
                     <option value={0.7}>0.7x</option>
                     <option value={0.6}>0.6x</option>
-                </select>
+                  </select>
+                </span>
               </div>
 
               <button className="btn audiocontrols-button me-2" 
