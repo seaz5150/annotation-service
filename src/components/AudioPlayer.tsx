@@ -13,7 +13,6 @@ import { actionCreators } from "../state/Index";
 import { v4 as uuidv4 } from "uuid";
 import { UnassignedColor } from "../enums/SegmentColors";
 import sizeMe from "react-sizeme";
-import MediaElement from "wavesurfer.js/src/mediaelement";
 
 interface AudioPlayerInterface {
   updateElementGridSize: any,
@@ -180,8 +179,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
     height: 70,
     plugins: [
       RegionsPlugin.create({
-        dragSelection: true,
-        minLength: 0.2
+        dragSelection: true
       }),
       TimelinePlugin.create({
           container: "#wave-timeline",
