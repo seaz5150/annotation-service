@@ -119,7 +119,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                                     Reset layout
                                 </div>
                         </button>
-                        <button className="text-tag-button btn-secondary custom-dropdown save-button add-label-button" 
+                        {/* <button className="text-tag-button btn-secondary custom-dropdown save-button add-label-button" 
                                 onMouseDown={pressStopPropagation}
                                 onClick={() => createActionDashboardToggleLockLayout()}>
                                 <div className="d-flex align-items-center justify-content-center">
@@ -135,7 +135,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
                                         </>
                                     }
                                 </div>
-                        </button>
+                        </button> */}
                     </div>
                 </div>
                 <div className="settings-column col">
