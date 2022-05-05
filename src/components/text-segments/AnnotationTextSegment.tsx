@@ -60,7 +60,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     useEffect(() => {
         if (segmentTags !== segment.segment_tags) {
             createActionHistoryAddAction("AnnotationSegment", segment.id);
-            createActionTranscriptPlayerAddAction("UPDATE", undefined, {id: segment.id, segmentTags: segmentTags});
+            createActionTranscriptPlayerAddAction("UPDATE", undefined, {id: segment.id, segment_tags: segmentTags});
             createActionTranscriptSegmentUpdate(segment.id, undefined, undefined, undefined, segmentTags);
         }
     }, [segmentTags]);

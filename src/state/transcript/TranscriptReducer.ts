@@ -179,7 +179,7 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     if (segmentToRevert) {
                         segmentToRevert.start = currentHistoryAction.segmentBefore.start;
                         segmentToRevert.end = currentHistoryAction.segmentBefore.end;
-                        segmentToRevert.segmentTags = currentHistoryAction.segmentBefore.segmentTags;
+                        segmentToRevert.segment_tags = currentHistoryAction.segmentBefore.segment_tags;
                         segmentToRevert.speaker = currentHistoryAction.segmentBefore.speaker;
                     }
                     else {
@@ -237,7 +237,7 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                     if (segmentToRevert) {
                         segmentToRevert.start = currentHistoryAction.segmentAfter.start ? currentHistoryAction.segmentAfter.start : segmentToRevert.start;
                         segmentToRevert.end = currentHistoryAction.segmentAfter.end ? currentHistoryAction.segmentAfter.end : segmentToRevert.end;
-                        segmentToRevert.segmentTags = currentHistoryAction.segmentAfter.segmentTags ? currentHistoryAction.segmentAfter.segmentTags : segmentToRevert.segmentTags;
+                        segmentToRevert.segment_tags = currentHistoryAction.segmentAfter.segment_tags ? currentHistoryAction.segmentAfter.segment_tags : segmentToRevert.segment_tags;
                         segmentToRevert.speaker = currentHistoryAction.segmentAfter.speaker ? currentHistoryAction.segmentAfter.speaker : segmentToRevert.speaker;
                     }
                     else {
