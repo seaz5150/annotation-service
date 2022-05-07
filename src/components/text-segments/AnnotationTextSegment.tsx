@@ -5,14 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import React from "react";
 import { UnassignedColor } from "../../enums/SegmentColors";
-import AnnotationEditor from "./AnnotationTextEditor";
+import AnnotationTextEditor from "./AnnotationTextEditor";
 
-interface AnnotationSegmentInterface {
+interface AnnotationTextSegmentInterface {
     segmentId: string,
     segmentRef: any
 }
 
-const AnnotationSegment = (props: AnnotationSegmentInterface) => {
+const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
     const dispatch = useDispatch();
     const { createActionAudioPlaySegment,
             createActionAudioPlayFromTime,
@@ -51,7 +51,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
 
     useEffect(() => {
         if (speakerId !== segment.speaker) {
-            createActionHistoryAddAction("AnnotationSegment", segment.id);
+            createActionHistoryAddAction("AnnotationTextSegment", segment.id);
             createActionTranscriptPlayerAddAction("UPDATE", undefined, {id: segment.id, speaker: speakerId});
             createActionTranscriptSegmentUpdate(segment.id, undefined, undefined, speakerId);
         }
@@ -59,14 +59,14 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
 
     useEffect(() => {
         if (segmentTags !== segment.segment_tags) {
-            createActionHistoryAddAction("AnnotationSegment", segment.id);
+            createActionHistoryAddAction("AnnotationTextSegment", segment.id);
             createActionTranscriptPlayerAddAction("UPDATE", undefined, {id: segment.id, segment_tags: segmentTags});
             createActionTranscriptSegmentUpdate(segment.id, undefined, undefined, undefined, segmentTags);
         }
     }, [segmentTags]);
 
     const deleteSegmentTag = () => {
-        createActionHistoryAddAction("AnnotationSegment", segment.id);
+        createActionHistoryAddAction("AnnotationTextSegment", segment.id);
         createActionTranscriptPlayerAddAction("REMOVE", undefined, {id: segment.id});
         createActionEditorRequestDataSave(segment.id);
         setTimeout(() => {createActionTranscriptSegmentDelete(segment.id)}, 10);
@@ -107,7 +107,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
         resultSegment.end = nextSegment.end;
         resultSegment.words = resultSegment.words.concat(nextSegment.words);
 
-        createActionHistoryAddAction("AnnotationSegment", resultSegment.id);
+        createActionHistoryAddAction("AnnotationTextSegment", resultSegment.id);
         createActionTranscriptPlayerAddAction("MERGE", undefined, JSON.parse(JSON.stringify(resultSegment)), JSON.parse(JSON.stringify(nextSegment)));
 
         createActionEditorRequestDataSave(resultSegment.id);
@@ -167,7 +167,7 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
                             </div>
                         </div>
                         <div className="segment-text-panel ms-2">
-                            <AnnotationEditor segmentId={segment.id}
+                            <AnnotationTextEditor segmentId={segment.id}
                                               words={segmentWords}
                                               textTags={availableTextTags}
                                               unpairedTags={availableUnpairedTags} 
@@ -230,4 +230,4 @@ const AnnotationSegment = (props: AnnotationSegmentInterface) => {
     );
 }
 
-export default AnnotationSegment;
+export default AnnotationTextSegment;

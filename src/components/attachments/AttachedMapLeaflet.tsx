@@ -1,9 +1,6 @@
-import { bindActionCreators } from "@reduxjs/toolkit";
-import { ReactChild, ReactFragment, ReactPortal, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import sizeMe from "react-sizeme";
 import { pressStopPropagation } from "../../utils/CommonUtilities";
-import { actionCreators } from "../../state/Index";
 
 interface SpeakerLabelsInterface {
     updateElementGridSize: any,
@@ -11,11 +8,8 @@ interface SpeakerLabelsInterface {
     view: any
 }
 
-const MapLeaflet = (props: SpeakerLabelsInterface) => {
+const AttachedMapLeaflet = (props: SpeakerLabelsInterface) => {
     const { width, height } = props.size;
-    const dispatch = useDispatch();
-    const { createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
-    const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
         props.updateElementGridSize(props.view.label, height);
@@ -23,9 +17,9 @@ const MapLeaflet = (props: SpeakerLabelsInterface) => {
     
     return (  
         <div>
-                <iframe className="border-radius-025em" src={props.view.url} width={width - 10} height="400" onMouseDown={pressStopPropagation}> </iframe>
+            <iframe className="border-radius-025em" src={props.view.url} width={width - 10} height="400" onMouseDown={pressStopPropagation}> </iframe>
         </div>
     );
 }
  
-export default sizeMe({ monitorHeight: true })(MapLeaflet)
+export default sizeMe({ monitorHeight: true })(AttachedMapLeaflet)

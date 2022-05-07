@@ -84,7 +84,7 @@ const HotkeyListener = () => {
                         setTimeout(() => {
                             // Split was completed
                             if (splitCompleted.current) {
-                                createActionHistoryAddAction("AnnotationSegment", splitSegmentBefore.current.id);
+                                createActionHistoryAddAction("AnnotationTextSegment", splitSegmentBefore.current.id);
                                 createActionTranscriptPlayerAddAction("SPLIT", splitSegmentBefore.current, splitSegmentAfter.current, splitSegmentAdded.current);
                                 createActionEditorRequestDataSave(splitSegmentBefore.current.id);
                                 setTimeout(() => {createActionEditorReinitializeWords([splitSegmentBefore.current.id]);}, 10);

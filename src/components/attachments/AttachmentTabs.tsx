@@ -1,22 +1,21 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import sizeMe from "react-sizeme";
 import { pressStopPropagation } from "../../utils/CommonUtilities";
 import { actionCreators } from "../../state/Index";
 import AttachedImage from "./AttachedImage";
-import MapLeaflet from "./AttachedMapLeaflet";
+import AttachedMapLeaflet from "./AttachedMapLeaflet";
 
-interface JobControlInterface {
+interface AttachmentTabsInterface {
     updateElementGridSize: any,
     size: any
 }
 
-const JobControl = (props: JobControlInterface) => {
+const AttachmentTabs = (props: AttachmentTabsInterface) => {
     const dispatch = useDispatch();
     const { createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
 
-    const dashboard = useSelector((state: any) => state.dashboard);
     const jobData = useSelector((state: any) => state.job.jobData);
 
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -32,7 +31,7 @@ const JobControl = (props: JobControlInterface) => {
         switch(view.type) {
             case "iframe":
                 return (<div key={title}>
-                           <MapLeaflet updateElementGridSize={props.updateElementGridSize} view={view} />
+                           <AttachedMapLeaflet updateElementGridSize={props.updateElementGridSize} view={view} />
                        </div>);
             case "img":
                 return (<div key={title}>
@@ -82,4 +81,4 @@ const JobControl = (props: JobControlInterface) => {
     );
 }
  
-export default sizeMe({ monitorHeight: true })(JobControl)
+export default sizeMe({ monitorHeight: true })(AttachmentTabs)

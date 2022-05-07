@@ -33,7 +33,7 @@ const EventReactor = () => {
             if (historyItem.componentName === "AudioPlayer") {
               createActionTranscriptPlayerRedoAction();
             }
-            if (historyItem.componentName === "AnnotationSegment") {
+            if (historyItem.componentName === "AnnotationTextSegment") {
               createActionTranscriptPlayerRedoAction();
             }
             break;
@@ -44,7 +44,7 @@ const EventReactor = () => {
               createActionEditorRequestDataSave(historyItem.segmentId);
               setTimeout(() => {createActionTranscriptPlayerUndoAction()}, 10);
             }
-            if (historyItem.componentName === "AnnotationSegment") {
+            if (historyItem.componentName === "AnnotationTextSegment") {
               createActionTranscriptPlayerUndoAction();
             }
             break;

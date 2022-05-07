@@ -1,4 +1,4 @@
-export const TagColors : { [key: string]: any } = {
+export const TextLabelColors : { [key: string]: any } = {
     Color1: "#bd00ffCC",
     Color2: "#ff8c00CC",
     Color3: "#bad80aCC",

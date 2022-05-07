@@ -4,8 +4,8 @@ import "react-grid-layout/css/styles.css"
 import "react-resizable/css/styles.css"
 
 import AudioPlayer from "./AudioPlayer"
-import TextTags from "./TextLabels"
-import AnnotationText from "./text-segments/AnnotationTextSegmentContainer"
+import TextLabels from "./TextLabels"
+import AnnotationTextSegmentContainer from "./text-segments/AnnotationTextSegmentContainer"
 import RecordingDetails from "./RecordingDetails"
 
 import {
@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from '@reduxjs/toolkit';
 import { actionCreators } from '../state/Index';
 import { getFromLS, saveToLS } from '../utils/CommonUtilities';
-import Plaintext from './attachments/AttachedPlaintext';
+import AttachedPlaintext from './attachments/AttachedPlaintext';
 import AttachmentTabs from './attachments/AttachmentTabs';
 
 type SizeParams = {
@@ -35,7 +35,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             createActionDashboardInitializeModules
           } = bindActionCreators(actionCreators, dispatch);
 
-    const defaultModules = ["AudioPlayer", "AnnotationText", "TextTags", "RecordingDetails", "Changes", "JobControl", "SpeakerLabels"];
+    const defaultModules = ["AudioPlayer", "AnnotationTextSegmentContainer", "TextLabels", "RecordingDetails", "Changes", "JobControl", "SpeakerLabels"];
     const [modules, setModules] = useState(getFromLS("modules") as string[] || defaultModules);
     const [layoutBackups, setLayoutBackups] = useState(getFromLS("layoutBackups") as any[] || [] as any[]);
     const jobData = useSelector((state: any) => state.job.jobData);
@@ -43,8 +43,8 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
     const defaultLayouts = {
         lg: [
             { i: 'AudioPlayer', x: 3, y: 0, w: 12, h: 7.4, isResizable: false},
-            { i: 'AnnotationText', x: 3, y: 2, w: 6, h: 2, isResizable: false},
-            { i: 'TextTags', x: 0, y: 3, w: 2.7, h: 11.4, isResizable: false},
+            { i: 'AnnotationTextSegmentContainer', x: 3, y: 2, w: 6, h: 2, isResizable: false},
+            { i: 'TextLabels', x: 0, y: 3, w: 2.7, h: 11.4, isResizable: false},
             { i: 'RecordingDetails', x: 10, y: 0, w: 2.7, h: 11.4, isResizable: false},
             { i: 'Changes', x: 0, y: 1, w: 2.7, h: 11.4, isResizable: false},
             { i: 'JobControl', x: 0, y: 2, w: 2.7, h: 11.4, isResizable: false},
@@ -185,7 +185,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
         switch(view.type) {
             case "text":
                 return (<div key={title}>
-                           <Plaintext updateElementGridSize={updateElementGridSize} view={view} />
+                           <AttachedPlaintext updateElementGridSize={updateElementGridSize} view={view} />
                        </div>);
             default: 
                 return null;
@@ -205,14 +205,14 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
                     <AudioPlayer updateElementGridSize={updateElementGridSize} />
                 </div>
             }
-            {modules.some(m => m === "AnnotationText") &&
-                <div key="AnnotationText">
-                    <AnnotationText updateElementGridSize={updateElementGridSize} />
+            {modules.some(m => m === "AnnotationTextSegmentContainer") &&
+                <div key="AnnotationTextSegmentContainer">
+                    <AnnotationTextSegmentContainer updateElementGridSize={updateElementGridSize} />
                 </div>
             }
-            {modules.some(m => m === "TextTags") &&
-                <div key="TextTags">
-                    <TextTags updateElementGridSize={updateElementGridSize} />
+            {modules.some(m => m === "TextLabels") &&
+                <div key="TextLabels">
+                    <TextLabels updateElementGridSize={updateElementGridSize} />
                 </div>
             }
             {modules.some(m => m === "RecordingDetails") &&

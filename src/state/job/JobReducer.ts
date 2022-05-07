@@ -1,4 +1,4 @@
-import { TagColors } from "../../enums/TextLabelColors";
+import { TextLabelColors } from "../../enums/TextLabelColors";
 
 const initialState = {
     jobId: "", // cJoQKr9yWZw5bOtJ
@@ -23,7 +23,7 @@ const JobReducer = (state = initialState, action: any) => {
         let colorCounter = 0;
         for (let i in textTags) {
             let textTag = textTags[i];
-            textTag.color = TagColors[Object.keys(TagColors)[colorCounter]];
+            textTag.color = TextLabelColors[Object.keys(TextLabelColors)[colorCounter]];
 
             if (colorCounter >= textTags.length - 1) {
                 colorCounter = 0;
@@ -36,7 +36,7 @@ const JobReducer = (state = initialState, action: any) => {
         colorCounter = textTags.length;
         for (let i in unpairedTags) {
             let unpairedTag = unpairedTags[i];
-            unpairedTag.color = TagColors[Object.keys(TagColors)[colorCounter]];
+            unpairedTag.color = TextLabelColors[Object.keys(TextLabelColors)[colorCounter]];
 
             if (colorCounter >= unpairedTag.length - 1) {
                 colorCounter = 0;

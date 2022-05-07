@@ -1,7 +1,7 @@
 import React, {
   useEffect,
   useRef} from "react";
-import AnnotationSegment from './AnnotationTextSegment';
+import AnnotationTextSegment from './AnnotationTextSegment';
 import { bindActionCreators } from "redux";
 import { actionCreators } from "../../state/Index";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,7 @@ interface AnnotationTextInterface {
     size: any
 }
 
-function AnnotationText(props: AnnotationTextInterface) {
+function AnnotationTextSegmentContainer(props: AnnotationTextInterface) {
     const dispatch = useDispatch();
     const { createActionSegmentReferencesInitialize } = bindActionCreators(actionCreators, dispatch);
 
@@ -26,7 +26,7 @@ function AnnotationText(props: AnnotationTextInterface) {
     const updateElementGridSize = props.updateElementGridSize;
 
     useEffect(() => {
-        updateElementGridSize("AnnotationText", height);
+        updateElementGridSize("AnnotationTextSegmentContainer", height);
     }, [height]);
 
     const addToSegmentRefs = (segmentEl: any, segmentId: any) => {
@@ -45,7 +45,7 @@ function AnnotationText(props: AnnotationTextInterface) {
             <React.Fragment>
                 {(segments.length > 0) ?
                     segments.map((segment: any) => 
-                        <AnnotationSegment segmentId={segment.id} key={segment.id} segmentRef={(el: any) => addToSegmentRefs(el, segment.id)}/>
+                        <AnnotationTextSegment segmentId={segment.id} key={segment.id} segmentRef={(el: any) => addToSegmentRefs(el, segment.id)}/>
                     )
                     :
                     <div className="module module-content segment segment-placeholder">
@@ -59,4 +59,4 @@ function AnnotationText(props: AnnotationTextInterface) {
     );
 }
 
-export default sizeMe({ monitorHeight: true })(AnnotationText)
+export default sizeMe({ monitorHeight: true })(AnnotationTextSegmentContainer)

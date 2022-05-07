@@ -16,7 +16,7 @@ const DashboardReducer = (state = initialState, action: any) => {
                 let currentModule = modules[i];
                 let currentModuleListItem: {name: string, viewName?: string} = {name: currentModule};
                 switch (currentModule) {
-                    case "TextTags":
+                    case "TextLabels":
                         currentModuleListItem.viewName = "Text labels";
                         break;
                     case "RecordingDetails":

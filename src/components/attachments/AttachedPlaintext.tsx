@@ -1,6 +1,6 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
-import { ReactChild, ReactFragment, ReactPortal, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import sizeMe from "react-sizeme";
 import { pressStopPropagation } from "../../utils/CommonUtilities";
 import { actionCreators } from "../../state/Index";
@@ -11,7 +11,7 @@ interface SpeakerLabelsInterface {
     view: any
 }
 
-const Plaintext = (props: SpeakerLabelsInterface) => {
+const AttachedPlaintext = (props: SpeakerLabelsInterface) => {
     const { width, height } = props.size;
     const dispatch = useDispatch();
     const { createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
@@ -45,4 +45,4 @@ const Plaintext = (props: SpeakerLabelsInterface) => {
     );
 }
  
-export default sizeMe({ monitorHeight: true })(Plaintext)
+export default sizeMe({ monitorHeight: true })(AttachedPlaintext)

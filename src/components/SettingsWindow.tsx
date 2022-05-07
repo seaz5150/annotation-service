@@ -19,8 +19,7 @@ const SettingsWindow = (props: SettingsWindowInterface) => {
             createActionTranscriptToggleAutosave,
             createActionHotkeySet,
             createActionHotkeySetRebindInProgress,
-            createActionHotkeyReset,
-            createActionDashboardToggleLockLayout } = bindActionCreators(actionCreators, dispatch);
+            createActionHotkeyReset } = bindActionCreators(actionCreators, dispatch);
 
     const audioPlay = useSelector((state: any) => state.audioPlay);
     const transcript = useSelector((state: any) => state.recordingTranscript);

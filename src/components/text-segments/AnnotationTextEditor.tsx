@@ -28,14 +28,14 @@ declare module 'slate' {
   }
 }
 
-interface AnnotationEditorInterface {
+interface AnnotationTextEditorInterface {
   words: any,
   textTags: [{label: string, id: string, color: string}],
   unpairedTags: [{label: string, id: string, color: string}],
   segmentId: string
 }
 
-const AnnotationEditor = (props: AnnotationEditorInterface) => {
+const AnnotationTextEditor = (props: AnnotationTextEditorInterface) => {
   const dispatch = useDispatch();
   const { createActionHistoryAddAction,
           createActionEditorSaveData,
@@ -84,7 +84,7 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
         }
         else {
           setHistoryPrevious(JSON.parse(JSON.stringify(slateEditor.history)));
-          createActionHistoryAddAction("AnnotationEditor", props.segmentId);
+          createActionHistoryAddAction("AnnotationTextEditor", props.segmentId);
         }
       }
     }
@@ -124,13 +124,13 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
     switch (history.type) {
       case "HISTORY_REDO_ACTION":
         var historyItem = history.actionHistory[history.currentActionIndex];
-        if (historyItem.componentName === "AnnotationEditor" && historyItem.segmentId === props.segmentId) {
+        if (historyItem.componentName === "AnnotationTextEditor" && historyItem.segmentId === props.segmentId) {
           slateEditor.redo();
         }
         break;
       case "HISTORY_UNDO_ACTION":
         var historyItem = history.actionHistory[history.currentActionIndex + 1];
-        if (historyItem.componentName === "AnnotationEditor" && historyItem.segmentId === props.segmentId) {
+        if (historyItem.componentName === "AnnotationTextEditor" && historyItem.segmentId === props.segmentId) {
           slateEditor.undo();
         }
         break;
@@ -488,4 +488,4 @@ const AnnotationEditor = (props: AnnotationEditorInterface) => {
   );
 }
 
-export default AnnotationEditor;
+export default AnnotationTextEditor;

@@ -15,8 +15,7 @@ interface SpeakerLabelsInterface {
 const AttachedImage = (props: SpeakerLabelsInterface) => {
     const { width, height } = props.size;
     const dispatch = useDispatch();
-    const { createActionDashboardToggleModule, createActionDashboardToggleModuleStatic } = bindActionCreators(actionCreators, dispatch);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const { createActionDashboardToggleModuleStatic } = bindActionCreators(actionCreators, dispatch);
     const [imageDimensions, setImageDimensions] = useState({height: 0, width: 0});
 
     useEffect(() => {

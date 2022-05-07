@@ -10,7 +10,7 @@ interface AudioPlayerInterface {
     size: any
 }
 
-const TextTags = (props: AudioPlayerInterface) => {
+const TextLabels = (props: AudioPlayerInterface) => {
     const dispatch = useDispatch();
     const { createActionEditorAddSectionTag, 
             createActionEditorAddUnpairedTag, 
@@ -22,7 +22,7 @@ const TextTags = (props: AudioPlayerInterface) => {
     const availableUnpairedTags = useSelector((state: any) => state.job.unpairedTags);
 
     useEffect(() => {
-        props.updateElementGridSize("TextTags", height);
+        props.updateElementGridSize("TextLabels", height);
     }, [height]);
 
     return (  
@@ -37,7 +37,7 @@ const TextTags = (props: AudioPlayerInterface) => {
                 </button>
                 <button className="strip-button-style module-header-button"
                         onMouseDown={pressStopPropagation}
-                        onClick={() => createActionDashboardToggleModule("TextTags", false)}>
+                        onClick={() => createActionDashboardToggleModule("TextLabels", false)}>
                     <i className="bi bi-x-lg"></i>
                 </button>
             </span>
@@ -78,4 +78,4 @@ const TextTags = (props: AudioPlayerInterface) => {
     );
 }
  
-export default sizeMe({ monitorHeight: true })(TextTags)
+export default sizeMe({ monitorHeight: true })(TextLabels)
