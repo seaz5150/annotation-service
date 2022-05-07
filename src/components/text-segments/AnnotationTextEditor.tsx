@@ -192,7 +192,7 @@ const AnnotationTextEditor = (props: AnnotationTextEditorInterface) => {
             wordCount += currentWordsCount;
           }
         }
-        createActionTranscriptInputEditorSplitInfo(props.segmentId, wordCount, splitWord)
+        createActionTranscriptInputEditorSplitInfo(props.segmentId, wordCount, splitWord);
       }
     }
   };
@@ -312,6 +312,7 @@ const AnnotationTextEditor = (props: AnnotationTextEditorInterface) => {
         let currentTagSplit = currentTag.split("_");
         let currentTagPrefix = currentTagSplit[0];
         let tagWithoutPrefix = currentTagSplit[1];
+
         if (currentTagPrefix === "!START") {
           if (paragraphChildren.length !== 0) {
             paragraphChildren.push({text: " "});

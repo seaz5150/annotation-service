@@ -1,3 +1,4 @@
+// Toggles module on/off depending on given value.
 export const createActionDashboardToggleModule = (moduleName: string, value: boolean) => {
   return (dispatch: any) => {
     dispatch({

@@ -1,3 +1,4 @@
+// Plays the segment with given ID.
 export const createActionAudioPlaySegment = (segmentId: string) => {
   return (dispatch: any) => {
     dispatch({
@@ -9,6 +10,7 @@ export const createActionAudioPlaySegment = (segmentId: string) => {
   }
 }
 
+// Plays the audio from given time.
 export const createActionAudioPlayFromTime = (time: number) => {
   return (dispatch: any) => {
     dispatch({
@@ -20,6 +22,7 @@ export const createActionAudioPlayFromTime = (time: number) => {
   }
 }
 
+// Sets amount of time that the audio will be played earlier when playing a segment.
 export const createActionAudioPlaySetPreplay = (prePlay: number) => {
   return (dispatch: any) => {
     dispatch({
@@ -29,6 +32,7 @@ export const createActionAudioPlaySetPreplay = (prePlay: number) => {
   }
 }
 
+// Toggles playing of the audio.
 export const createActionAudioTogglePlay = () => {
   return (dispatch: any) => {
     dispatch({

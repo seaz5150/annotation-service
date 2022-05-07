@@ -187,12 +187,7 @@ code {
   padding-top: 0 !important;
 }
 
-#waveform{
-  /* display: flex !important;
-  height: 600px !important; */
-}
-
-/* https://stackoverflow.com/questions/2460100/remove-the-complete-styling-of-an-html-button-submit */
+/* Inspired by: https://stackoverflow.com/questions/2460100/remove-the-complete-styling-of-an-html-button-submit */
 .strip-button-style{
   background: none;
 	color: inherit;
@@ -545,10 +540,6 @@ code {
   padding-left: 8px;
   padding-top: 1px;
   padding-bottom: 1px;
-}
-
-.export-button-icon {
-
 }
 
 .job-control-button {
