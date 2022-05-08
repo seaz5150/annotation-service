@@ -171,7 +171,6 @@ function AudioPlayer(props: AudioPlayerInterface) {
     partialRender: true,
     responsive: true,
     // vertical: true,
-    barWidth: 1,
     waveColor: "#969393",
     progressColor: "rgba(42, 171, 210, 0.3)",
     cursorColor: "#2aabd2",
@@ -223,6 +222,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
           }
         });
 
+        // Prevent region overlap.
         wavesurfer.current?.on("region-updated", (region) => {
           let regionsList = [] as any[];
           for (let index in wavesurfer.current?.regions.list) {
