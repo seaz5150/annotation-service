@@ -197,6 +197,7 @@ const AnnotationTextEditor = (props: AnnotationTextEditorInterface) => {
     }
   };
 
+  // Parse words from Slate editor format into SpokenData API JSON format.
   const parseWords = () => {
     let children = JSON.parse(JSON.stringify((value as any)[0].children));
     let result = [] as any[];
@@ -271,6 +272,7 @@ const AnnotationTextEditor = (props: AnnotationTextEditorInterface) => {
     }
   }, [editor]);
 
+  // Parse words from SpokenData API JSON format into Slate editor format.
   const initializeText = () => {
     let paragraphChildren = (initialValue[0] as any).children;
     let currentTags;
@@ -344,6 +346,7 @@ const AnnotationTextEditor = (props: AnnotationTextEditorInterface) => {
     setValue(initialValue);
   };
 
+  // Rendering of tags.
   const leaf = useCallback(({ attributes, children, leaf }) => {
     let tagLabels = leaf.tagLabels;
     if (tagLabels && tagLabels.length > 0) {

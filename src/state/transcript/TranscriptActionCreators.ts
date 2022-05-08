@@ -98,6 +98,7 @@ export const createActionTranscriptSpeakerUpdate = (speakerId: string, speakerLa
   }
 }
 
+// Add undoable/redoable action.
 export const createActionTranscriptPlayerAddAction = (actionType: string, segmentBefore: any | undefined, segmentAfter: any, additionalSegment?: any) => {
   return (dispatch: any) => {
     dispatch({
@@ -139,6 +140,7 @@ export const createActionTranscriptUpdateWords = () => {
   }
 }
 
+// Increment amount of segment words updated from editors.
 export const createActionTranscriptIncreaseAmountUpdated = () => {
   return (dispatch: any) => {
     dispatch({
@@ -157,6 +159,7 @@ export const createActionTranscriptResetAmountUpdated = () => {
   }
 }
 
+// Request segment split info gathering.
 export const createActionTranscriptGatherSplitInfo = () => {
   return (dispatch: any) => {
     dispatch({
@@ -166,6 +169,7 @@ export const createActionTranscriptGatherSplitInfo = () => {
   }
 }
 
+// Add player segment split info.
 export const createActionTranscriptInputPlayerSplitInfo = (segmentId: string, time: number | undefined) => {
   return (dispatch: any) => {
     dispatch({
@@ -178,6 +182,7 @@ export const createActionTranscriptInputPlayerSplitInfo = (segmentId: string, ti
   }
 }
 
+// Add editor segment split info.
 export const createActionTranscriptInputEditorSplitInfo = (segmentId: string, wordIndex: number, splitWord: boolean) => {
   return (dispatch: any) => {
     dispatch({
@@ -200,6 +205,7 @@ export const createActionTranscriptSplitSegment = () => {
   }
 }
 
+// Assemble full transcript structure.
 export const createActionTranscriptConstructFullTranscript = () => {
   return (dispatch: any) => {
     dispatch({
@@ -209,6 +215,7 @@ export const createActionTranscriptConstructFullTranscript = () => {
   }
 }
 
+// Set action index at time of last save.
 export const createActionTranscriptSetSaveActionIndex = (actionIndex: number) => {
   return (dispatch: any) => {
     dispatch({

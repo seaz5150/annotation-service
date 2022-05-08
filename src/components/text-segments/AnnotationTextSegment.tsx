@@ -93,6 +93,7 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
         setSegmentTags(newSegmentTags);
     }
 
+    // Preparation for segment merge.
     const mergeNextSegmentStepOne = () => {
         createActionTranscriptResetAmountUpdated();
         createActionTranscriptUpdateWords();
@@ -119,6 +120,7 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
     }
 
     useEffect(() => {
+        // Continue with merge once words are parsed from all editors.
         if (mergeInProgress && amountUpdated === segments.length) {
             setMergeInProgress(false);
             createActionTranscriptResetAmountUpdated();

@@ -50,6 +50,7 @@ export const createActionDashboardResetLayout = () => {
   }
 }
 
+// Unused for now
 export const createActionDashboardToggleLockLayout = () => {
   return (dispatch: any) => {
     dispatch({

@@ -19,6 +19,7 @@ export const createActionHotkeySetRebindInProgress = (value: boolean) => {
   }
 }
 
+// Reset hotkeys to default.
 export const createActionHotkeyReset = () => {
   return (dispatch: any) => {
     dispatch({

@@ -55,6 +55,7 @@ export const createActionEditorReinitializeWordsFromSaved = (segmentIds: string[
   }
 }
 
+// Save editor data (before deleting a segment etc.)
 export const createActionEditorSaveData = (segmentId: string, history: any, value: any) => {
   return (dispatch: any) => {
     dispatch({
