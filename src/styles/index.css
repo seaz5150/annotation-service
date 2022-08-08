@@ -375,6 +375,7 @@ code {
 .custom-checkbox{
   padding: 0 !important;
   margin-top: 0 !important;
+  cursor: pointer;
 }
 
 .segment-label-dropdown-menu{
@@ -738,4 +739,8 @@ code {
 
 .hotkey-button:focus, .hotkey-button:active {
   background-color: #0d6efd !important;
+}
+
+.dropdown-item:focus {
+  background-color: rgb(83, 83, 83) !important;
 }

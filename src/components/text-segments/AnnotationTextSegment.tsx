@@ -72,16 +72,14 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
         setTimeout(() => {createActionTranscriptSegmentDelete(segment.id)}, 10);
     }
 
-    const setSegmentTag = (e: React.ChangeEvent<HTMLInputElement>, segmentTagId: string) => {
+    const toggleSegmentTag = (segmentTagId: string) => {
         let newSegmentTags = Array();
         if (segmentTags !== undefined) {
             newSegmentTags = segmentTags.map((tag: string) => tag);
         }
 
-        if (e.target.checked) {
-            if (!newSegmentTags.some((tag: string) => tag === segmentTagId)){
-                newSegmentTags.push(segmentTagId);
-            }
+        if (!newSegmentTags.some((tag: string) => tag === segmentTagId)) {
+            newSegmentTags.push(segmentTagId);
         }
         else {
             const index = newSegmentTags.indexOf(segmentTagId);
@@ -187,7 +185,7 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
                                         )
                                     }
                                 </select>
-                                <div className="dropdown d-flex align-items-center">
+                                <div className="dropstart d-flex align-items-center" data-bs-boundary="body">
                                     <span className="segment-label-counter pe-2"></span>
                                     <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"
                                             onMouseDown={e => pressStopPropagation(e)}
@@ -197,20 +195,21 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
                                     >
                                         {availableSegmentTags && "Segment labels " + (segment.segment_tags ? segment.segment_tags.length : "0") + "/" + availableSegmentTags.length}
                                     </button>
-                                    <ul className="dropdown-menu dropdown-menu-end segment-label-dropdown-menu"
-                                        aria-labelledby="dropdownMenuButton1" 
+                                    <ul className="dropdown-menu position-fixed segment-label-dropdown-menu"
+                                        aria-labelledby="dropdownMenuButton1"
                                         onMouseDown={e => pressStopPropagation(e)}
                                     >
                                         <li>
                                             {availableSegmentTags &&
                                                 availableSegmentTags.map((availableSegmentTag: any) =>
-                                                    <a className="dropdown-item segment-label-dropdown-item me-3" href="#" key={availableSegmentTag.id}>
+                                                    <a className="dropdown-item segment-label-dropdown-item me-3" 
+                                                       href="#" 
+                                                       key={availableSegmentTag.id} 
+                                                       onClick={(e) => {pressStopPropagation(e); toggleSegmentTag(availableSegmentTag.id);}}>
                                                         {availableSegmentTag.label}
                                                         <input className="form-check-input custom-checkbox col-2 ms-auto me-3" 
                                                                type="checkbox"
                                                                checked={segment.segment_tags ? Array.from(segment.segment_tags).some((tag: any) => tag === availableSegmentTag.id) : false}
-                                                               onMouseDown={e => pressStopPropagation(e)}
-                                                               onChange={e => setSegmentTag(e, availableSegmentTag.id)}
                                                         />
                                                     </a>                                              
                                                 )
