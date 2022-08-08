@@ -7,15 +7,17 @@ import { createHttpsRequest } from "../../utils/ApiRequests";
 // Component used for initializing neccessary data (job, transcript...).
 const Initializator = () => {
     const dispatch = useDispatch();
-    const { createActionJobInitialize, createActionTranscriptInitialize } = bindActionCreators(actionCreators, dispatch);
+    const { createActionJobInitialize, 
+            createActionTranscriptInitialize, 
+            createActionJobListInitialize } = bindActionCreators(actionCreators, dispatch);
 
+    const [jobList, setJobList] = useState(null);
     const [jobData, setJobData] = useState(null);
     const [jobTranscript, setJobTranscript] = useState(null);
+    const job = useSelector((state: any) => state.job);
 
     useEffect(() => {
-      let currentJobId = window.location.pathname.substring(1);
-      getJob(currentJobId);
-      setTimeout(() => getJobTranscript(currentJobId), 10);
+      getJobList();
     }, [window.location.pathname]);
 
     useEffect(() => {
@@ -29,6 +31,20 @@ const Initializator = () => {
         createActionJobInitialize(jobData);
       }
     }, [jobData]);
+
+    useEffect(() => {
+      if (jobList !== null) {
+        createActionJobListInitialize(jobList);
+      }
+    }, [jobList]);
+
+    useEffect(() => {
+      if (job.jobList.length != 0) {
+        let currentJobId = window.location.pathname.substring(1);
+        getJob(currentJobId);
+        setTimeout(() => getJobTranscript(currentJobId), 10);
+      }
+    }, [job.jobList]);
 
     const getJobTranscript = async (jobId: string) => {
       var requestReturn;
@@ -55,6 +71,19 @@ const Initializator = () => {
       
         setJobData(requestReturn.data);
     }
+
+    const getJobList = async () => {
+      var requestReturn;
+      let request = "jobs";
+  
+      requestReturn = await createHttpsRequest({}, request, "GET");
+      if (requestReturn.status !== 200) {
+        console.error("ERROR", requestReturn);
+        return;
+      }
+    
+      setJobList(requestReturn.data);
+  }
 
     return null;
 }

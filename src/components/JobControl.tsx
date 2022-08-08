@@ -1,6 +1,6 @@
 import { bindActionCreators } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from 'react-redux';
 import sizeMe from "react-sizeme";
 import { pressStopPropagation } from "../utils/CommonUtilities";
 import { actionCreators } from "../state/Index";
@@ -12,9 +12,13 @@ interface JobControlInterface {
 
 const JobControl = (props: JobControlInterface) => {
     const dispatch = useDispatch();
-    const { createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
+    const { createActionDashboardToggleModule, 
+            createActionJobNext, 
+            createActionJobPrevious } = bindActionCreators(actionCreators, dispatch);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const { width, height } = props.size;
+
+    const job = useSelector((state: any) => state.job);
 
     useEffect(() => {
         props.updateElementGridSize("JobControl", height);
@@ -46,7 +50,9 @@ const JobControl = (props: JobControlInterface) => {
                             Close as REFUSED
                         </button>
                         <button className="text-tag-button custom-dropdown job-control-button job-control-skip-button float-end"
-                                onMouseDown={pressStopPropagation}>
+                                onMouseDown={pressStopPropagation}
+                                disabled={!job.canJumpPrevious}
+                                onClick={() => createActionJobPrevious()}>
                             <i className="bi bi-arrow-left me-1"></i>
                             Previous job
                         </button>
@@ -58,7 +64,9 @@ const JobControl = (props: JobControlInterface) => {
                             Close as DONE
                         </button>
                         <button className="text-tag-button custom-dropdown job-control-button job-control-skip-button float-start"
-                                onMouseDown={pressStopPropagation}>
+                                onMouseDown={pressStopPropagation}
+                                disabled={!job.canJumpNext}
+                                onClick={() => createActionJobNext()}>
                             Next job
                             <i className="bi bi-arrow-right ms-1"></i>
                         </button>

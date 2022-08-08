@@ -210,6 +210,7 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
                                                         <input className="form-check-input custom-checkbox col-2 ms-auto me-3" 
                                                                type="checkbox"
                                                                checked={segment.segment_tags ? Array.from(segment.segment_tags).some((tag: any) => tag === availableSegmentTag.id) : false}
+                                                               readOnly
                                                         />
                                                     </a>                                              
                                                 )

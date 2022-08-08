@@ -23,6 +23,16 @@ const EventReactor = () => {
     const transcriptRef = useRef<any>();
 
     useEffect(() => {
+      switch (job.type) {
+        case "JOB_NEXT":
+        case "JOB_PREVIOUS":
+          var newJobId = job.jobId;
+          window.location.href="/" + newJobId;
+          break;
+      }
+    }, [job]);
+
+    useEffect(() => {
       transcriptRef.current = transcript;
     }, [transcript]);
 

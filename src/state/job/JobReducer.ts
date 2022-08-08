@@ -4,7 +4,11 @@ const initialState = {
     jobId: "", // cJoQKr9yWZw5bOtJ
     jobData: null,
     textTags: null,
-    unpairedTags: null
+    unpairedTags: null,
+    jobList: [] as any[],
+    currentJobIndex: null,
+    canJumpNext: false,
+    canJumpPrevious: false
 };
 
 const JobReducer = (state = initialState, action: any) => {
@@ -46,13 +50,46 @@ const JobReducer = (state = initialState, action: any) => {
             }
         }
 
+        var newJobIndex = state.jobList.findIndex((j: { id: any; }) => j.id == action.payload.id);
+        var newCanJumpNext = newJobIndex != state.jobList.length - 1;
+        var newCanJumpPrevious = newJobIndex != 0;
+
         return {
             ...state,
             jobId: action.payload.id,
             jobData: action.payload,
             unpairedTags: unpairedTags, 
             textTags: textTags,
+            currentJobIndex: newJobIndex,
+            canJumpNext: newCanJumpNext,
+            canJumpPrevious: newCanJumpPrevious,
             type: "JOB_INITIALIZE"
+        };
+    case "JOB_LIST_INITIALIZE":
+        // Remove non-ATCO2 jobs from the list.
+        var newJobList = action.payload.filter((j: { pipeline: { id: string; }; }) => j.pipeline?.id == "ATCO2");
+        return {
+            ...state,
+            jobList: newJobList,
+            type: "JOB_LIST_INITIALIZE"
+        };
+    case "JOB_NEXT":
+        var newJobIndex: number = (state.currentJobIndex as any) + 1;
+        var newJob = state.jobList.at(newJobIndex);
+
+        return {
+            ...state,
+            jobId: newJob.id,
+            type: "JOB_NEXT"
+        };
+    case "JOB_PREVIOUS":
+        var newJobIndex: number = (state.currentJobIndex as any) - 1;
+        var newJob = state.jobList.at(newJobIndex);
+
+        return {
+            ...state,
+            jobId: newJob.id,
+            type: "JOB_PREVIOUS"
         };
     default:
         return state;
