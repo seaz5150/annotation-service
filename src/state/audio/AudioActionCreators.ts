@@ -41,3 +41,41 @@ export const createActionAudioTogglePlay = () => {
     })
   }
 }
+
+export const createActionAudioSetCurrentTime = (time: number) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "AUDIO_SET_CURRENT_TIME",
+      payload: time
+    })
+  }
+}
+
+export const createActionAudioPauseSegment = (segmentId: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "AUDIO_PAUSE_SEGMENT",
+      payload: {
+        segmentId: segmentId
+      }
+    })
+  }
+}
+
+export const createActionAudioClearPlayingSegment = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "AUDIO_CLEAR_PLAYING_SEGMENT",
+      payload: null
+    })
+  }
+}
+
+export const createActionAudioClearPausedSegment = () => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "AUDIO_CLEAR_PAUSED_SEGMENT",
+      payload: null
+    })
+  }
+}

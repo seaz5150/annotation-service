@@ -1,16 +1,48 @@
 const initialState = {
-    segmentId: null,
     time: null,
     type: null,
-    prePlay: 0
+    prePlay: 0,
+
+    // For the ability to pause and resume segment play.
+    currentTime: null,
+    currentlyPlayingSegmentId: null,
+    segmentPauseTime: null,
+    pausedSegmentId: null
 };
 
 const AudioPlayReducer = (state = initialState, action: any) => {
     switch (action.type) {
+        case "AUDIO_SET_CURRENT_TIME":
+            return {
+                ...state,
+                currentTime: action.payload,
+                type: "AUDIO_SET_CURRENT_TIME"
+            };
+        case "AUDIO_PAUSE_SEGMENT":
+            return {
+                ...state,
+                segmentPauseTime: state.currentTime,
+                pausedSegmentId: action.payload.segmentId,
+                currentlyPlayingSegmentId: null,
+                type: "AUDIO_PAUSE_SEGMENT"
+            };
+        case "AUDIO_CLEAR_PLAYING_SEGMENT":
+            return {
+                ...state,
+                currentlyPlayingSegmentId: null,
+                type: "AUDIO_CLEAR_PLAYING_SEGMENT"
+            };
+        case "AUDIO_CLEAR_PAUSED_SEGMENT":
+            return {
+                ...state,
+                pausedSegmentId: null,
+                segmentPauseTime: null,
+                type: "AUDIO_CLEAR_PAUSED_SEGMENT"
+            };
         case "AUDIO_PLAY_SEGMENT":
             return {
                 ...state,
-                segmentId: action.payload.segmentId,
+                currentlyPlayingSegmentId: action.payload.segmentId,
                 type: "AUDIO_PLAY_SEGMENT"
             };
         case "AUDIO_PLAY_FROM_TIME":

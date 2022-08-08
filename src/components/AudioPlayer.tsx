@@ -50,7 +50,10 @@ function AudioPlayer(props: AudioPlayerInterface) {
           createActionHistoryAddAction,
           createActionTranscriptPlayerAddAction,
           createActionTranscriptInitializeLength,
-          createActionTranscriptInputPlayerSplitInfo } = bindActionCreators(actionCreators, dispatch);
+          createActionTranscriptInputPlayerSplitInfo,
+          createActionAudioSetCurrentTime,
+          createActionAudioClearPlayingSegment,
+          createActionAudioClearPausedSegment } = bindActionCreators(actionCreators, dispatch);
 
   const windingUnit = 0.1;
   const windingSpeed = 10;
@@ -63,6 +66,18 @@ function AudioPlayer(props: AudioPlayerInterface) {
   const job = useSelector((state: any) => state.job);
 
   const enteredSegment = useRef("");
+
+  useEffect(() => {
+    createActionAudioSetCurrentTime(currentTime as number);
+
+    if (audioPlay.currentlyPlayingSegmentId != null) {
+      const inaccuracyCompensation = 0.01;
+      if ((currentTime as number + inaccuracyCompensation) >= segments.find((s: { id: any; }) => s.id === audioPlay.currentlyPlayingSegmentId).end) {
+        // Played segment just finished playing.
+        createActionAudioClearPlayingSegment();
+      }
+    }
+  }, [currentTime]);
 
   useEffect(() => {
     if (job.jobData) {
@@ -145,25 +160,44 @@ function AudioPlayer(props: AudioPlayerInterface) {
     if (audioReady) {
       switch (audioPlay.type) {
         case "AUDIO_PLAY_SEGMENT":
-          let segment = wavesurfer.current?.regions.list[audioPlay.segmentId];
+          let segment = wavesurfer.current?.regions.list[audioPlay.currentlyPlayingSegmentId];
+
           if (segment) {
-            let resultStart = segment.start - audioPlay.prePlay;
-            if (resultStart < 0) resultStart = 0.001;
-            segment?.play(resultStart);
+            if (audioPlay.pausedSegmentId != audioPlay.currentlyPlayingSegmentId) {
+              let resultStart = segment.start - audioPlay.prePlay;
+              if (resultStart < 0) resultStart = 0.001;
+              segment?.play(resultStart);
+            }
+            else {
+              createActionAudioClearPausedSegment();
+              let resultStart = audioPlay.segmentPauseTime - audioPlay.prePlay;
+              if (resultStart < 0) resultStart = 0.001;
+              segment?.play(resultStart);
+            }
           }
           break;
         case "AUDIO_PLAY_FROM_TIME":
+          clearSegmentPlayInfo();
           let resultStart = audioPlay.time - audioPlay.prePlay;
           if (resultStart < 0) resultStart = 0;
           wavesurfer.current?.play(resultStart);
           break;
         case "AUDIO_TOGGLE_PLAY":
+          clearSegmentPlayInfo();
           playAudio();
+          break;
+        case "AUDIO_PAUSE_SEGMENT":
+          wavesurfer.current?.pause();
           break;
         default:
       }
     }
   }, [audioPlay]);
+
+  const clearSegmentPlayInfo = () => {
+    createActionAudioClearPausedSegment();
+    createActionAudioClearPlayingSegment();
+  };
 
   const formWaveSurferOptions = (ref: any) => ({
     container: ref,
@@ -280,16 +314,19 @@ function AudioPlayer(props: AudioPlayerInterface) {
   }
 
   const playAudio = () => {
+    clearSegmentPlayInfo();
     wavesurfer.current?.playPause();
   };
 
   const replayAudio = () => {
+    clearSegmentPlayInfo();
     wavesurfer.current?.stop();
     playAudio();
   };
 
   // TODO: Fix sound being stuck on mute when forwarding at the end of audio.
   const startSkip = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, direction: string) => {
+    clearSegmentPlayInfo();
     handlePress(e)
     if (intervalRef.current) return;
     wavesurfer.current?.setMute(true);

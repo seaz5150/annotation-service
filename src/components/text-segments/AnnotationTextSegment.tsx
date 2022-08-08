@@ -23,7 +23,8 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
             createActionEditorRequestDataSave,
             createActionTranscriptUpdateWords,
             createActionEditorReinitializeWords,
-            createActionTranscriptResetAmountUpdated
+            createActionTranscriptResetAmountUpdated,
+            createActionAudioPauseSegment
           } = bindActionCreators(actionCreators, dispatch);
 
     
@@ -35,6 +36,8 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
     const availableSegmentTags = useSelector((state: any) => state.recordingTranscript.segmentTags);
     const availableTextTags = useSelector((state: any) => state.job.textTags);
     const availableUnpairedTags = useSelector((state: any) => state.job.unpairedTags);
+
+    const audioPlay = useSelector((state: any) => state.audioPlay);
 
     const segmentColorAlpha = 0.75; // Alpha values 0-1
     const segmentColorAlphaHex = rgbaToHexAlpha(segmentColorAlpha);
@@ -142,13 +145,21 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
                         }
                         <div className="p-0 segment-play-panel">
                             <div className="segment-play-panel-content">
-                                <button className="strip-button-style segment-play-button"
-                                        onMouseDown={e => pressStopPropagation(e)}
-                                        onClick={() => createActionAudioPlaySegment(segment.id)}
-                                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Play segment"
-                                >
-                                    <i className="bi bi-play-fill"></i>
-                                </button>
+                                {audioPlay.currentlyPlayingSegmentId == segment.id ?
+                                    <button className="strip-button-style segment-play-button"
+                                            onMouseDown={e => pressStopPropagation(e)}
+                                            onClick={() => createActionAudioPauseSegment(segment.id)}
+                                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Pause segment">
+                                        <i className="bi bi-pause-fill"></i>
+                                    </button>
+                                    :
+                                    <button className="strip-button-style segment-play-button"
+                                            onMouseDown={e => pressStopPropagation(e)}
+                                            onClick={() => createActionAudioPlaySegment(segment.id)}
+                                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Play segment">
+                                        <i className="bi bi-play-fill"></i>
+                                    </button>
+                                }
                                 <div className="segment-times ps-1"
                                         onMouseDown={e => pressStopPropagation(e)}
                                 >
