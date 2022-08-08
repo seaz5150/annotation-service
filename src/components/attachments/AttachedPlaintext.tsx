@@ -18,11 +18,11 @@ const AttachedPlaintext = (props: SpeakerLabelsInterface) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
-        props.updateElementGridSize(props.view.title, height);
+        //props.updateElementGridSize(props.view.title, height);
     }, [height]);
     
     return (  
-        <div className="module module-settings">
+        <div className="module module-settings h-100">
             <div className="card-header d-flex justify-content-between">
                 {props.view.title}
                 <span className="d-flex align-content-center">
@@ -38,8 +38,8 @@ const AttachedPlaintext = (props: SpeakerLabelsInterface) => {
                     </button>
                 </span>
             </div>
-            <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "p-1 m-0")}>
-                <textarea rows={5} className="form-control form-control-sm custom-textarea" onMouseDown={pressStopPropagation} readOnly defaultValue={props.view.text} />
+            <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "text-module-margin m-0")}>
+                <textarea rows={5} className="form-control form-control-sm custom-textarea textarea-disable-resize h-100" onMouseDown={pressStopPropagation} readOnly defaultValue={props.view.text} />
             </div>
         </div>
     );

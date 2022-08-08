@@ -372,10 +372,28 @@ code {
   color: rgb(201, 201, 201) !important;
 }
 
+.textarea-disable-resize {
+  resize: none;
+}
+
+.react-grid-item > .react-resizable-handle::after {
+  border-right: 2px solid rgba(0, 0, 0, 0);
+  border-bottom: 2px solid rgba(0, 0, 0, 0);
+}
+
+.react-grid-item > .react-resizable-handle::after {
+  border-right: 2px solid rgba(201, 201, 201, 1) !important;
+  border-bottom: 2px solid rgba(201, 201, 201, 1) !important;
+}
+
 .custom-checkbox{
   padding: 0 !important;
   margin-top: 0 !important;
   cursor: pointer;
+}
+
+.text-module-margin {
+  padding: 0.4rem!important;
 }
 
 .segment-label-dropdown-menu{

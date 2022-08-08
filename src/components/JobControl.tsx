@@ -41,8 +41,8 @@ const JobControl = (props: JobControlInterface) => {
                     </button>
                 </span>
             </div>
-            <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "mt-1 pb-2")}>
-                <div className="row ms-auto">
+            <div className={"module-content card-body d-flex justify-content-center " + (isCollapsed ? "module-content-collapsed" : "mt-1 pb-2")}>
+                <div className="row">
                     <div className="col" style={{maxWidth: "200px"}}>
                         <button className="text-tag-button custom-dropdown job-control-button job-control-refuse-button float-end"
                                 onMouseDown={pressStopPropagation}>

@@ -40,16 +40,17 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
     const [layoutBackups, setLayoutBackups] = useState(getFromLS("layoutBackups") as any[] || [] as any[]);
     const jobData = useSelector((state: any) => state.job.jobData);
 
+    const sidePanelWidth = 8;
     const defaultLayouts = {
         lg: [
-            { i: 'AudioPlayer', x: 3, y: 0, w: 12, h: 7.4, isResizable: false},
-            { i: 'AnnotationTextSegmentContainer', x: 3, y: 2, w: 6, h: 2, isResizable: false},
-            { i: 'TextLabels', x: 0, y: 3, w: 2.7, h: 11.4, isResizable: false},
-            { i: 'RecordingDetails', x: 10, y: 0, w: 2.7, h: 11.4, isResizable: false},
-            { i: 'Changes', x: 0, y: 1, w: 2.7, h: 11.4, isResizable: false},
-            { i: 'JobControl', x: 0, y: 2, w: 2.7, h: 11.4, isResizable: false},
-            { i: 'SpeakerLabels', x: 10, y: 1, w: 2.7, h: 11.4, isResizable: false},
-            { i: "AttachmentTabs", x: 4, y: 1, w: 4, h: 11.4, isResizable: false}
+            { i: 'AudioPlayer', x: 9, y: 0, w: 36, h: 7.4, isResizable: false},
+            { i: 'AnnotationTextSegmentContainer', x: 9, y: 2, w: 18, h: 1, isResizable: false},
+            { i: 'TextLabels', x: 0, y: 3, w: sidePanelWidth, h: 1, isResizable: false},
+            { i: 'RecordingDetails', x: 30, y: 0, w: sidePanelWidth, h: 1, isResizable: false},
+            { i: 'Changes', x: 0, y: 1, w: sidePanelWidth, h: 1, isResizable: false},
+            { i: 'JobControl', x: 0, y: 2, w: sidePanelWidth, h: 1, isResizable: false},
+            { i: 'SpeakerLabels', x: 30, y: 1, w: sidePanelWidth, h: 1, isResizable: false},
+            { i: "AttachmentTabs", x: 12, y: 1, w: 12, h: 1, isResizable: false}
         ]
     };
 
@@ -78,7 +79,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             let updatedLayouts = JSON.parse(JSON.stringify(layouts));
             let view = jobData.user_interface.views.find((v: { title: string; }) => v.title === moduleName);
             if (view.type === "text") {
-                updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: 2.7, h: 11.4, isResizable: false});
+                updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: sidePanelWidth, h: 11.4, isResizable: true});
             }
             setLayouts(updatedLayouts);
         }
@@ -196,7 +197,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
         <ResponsiveGridLayout className="layout"
                               layouts={layouts}
                               breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-                              cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+                              cols={{ lg: 36, md: 30, sm: 18, xs: 12, xxs: 6 }}
                               rowHeight={10}
                               width={width}
                               onLayoutChange={onLayoutChange}>
