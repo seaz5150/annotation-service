@@ -41,6 +41,8 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
     const jobData = useSelector((state: any) => state.job.jobData);
 
     const sidePanelWidth = 8;
+    const moduleCollapsedHeight = 1.62;
+    const plaintextModuleDefaultHeight = 11;
     const defaultLayouts = {
         lg: [
             { i: 'AudioPlayer', x: 9, y: 0, w: 36, h: 7.4, isResizable: false},
@@ -79,7 +81,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             let updatedLayouts = JSON.parse(JSON.stringify(layouts));
             let view = jobData.user_interface.views.find((v: { title: string; }) => v.title === moduleName);
             if (view.type === "text") {
-                updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: sidePanelWidth, h: 11, isResizable: true, minW: 8, minH: 11});
+                updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: sidePanelWidth, h: plaintextModuleDefaultHeight, isResizable: true, minW: 8, minH: 11});
             }
             setLayouts(updatedLayouts);
         }
@@ -111,8 +113,8 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             }
             break;
         case "DASHBOARD_TOGGLE_MODULE_STATIC":
-            let updatedLayouts = JSON.parse(JSON.stringify(layouts));
-            let layoutItem = updatedLayouts.lg.find((l: { i: string; }) => l.i === dashboard.moduleName);
+            var updatedLayouts = JSON.parse(JSON.stringify(layouts));
+            var layoutItem = updatedLayouts.lg.find((l: { i: string; }) => l.i === dashboard.moduleName);
             if (layoutItem) {
                 layoutItem.static = dashboard.value;
             }
@@ -139,6 +141,19 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
 
             setLayouts(resetLayouts);
             setLayoutBackups([]);
+            break;
+        case "DASHBOARD_TOGGLE_RESIZABLE_COLLAPSE":
+            var updatedLayouts = JSON.parse(JSON.stringify(layouts));
+            var layoutItem = updatedLayouts.lg.find((l: { i: string; }) => l.i === dashboard.moduleName);
+            if (layoutItem) {
+                if (layoutItem.h == plaintextModuleDefaultHeight) {
+                    layoutItem.h = moduleCollapsedHeight;
+                }
+                else {
+                    layoutItem.h = plaintextModuleDefaultHeight;
+                }
+            }
+            setLayouts(updatedLayouts);
             break;
         // case "DASHBOARD_TOGGLE_LOCK_LAYOUT":
         //     if (dashboard.lockLayout) {

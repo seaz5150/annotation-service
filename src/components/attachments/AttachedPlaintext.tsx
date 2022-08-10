@@ -14,7 +14,8 @@ interface SpeakerLabelsInterface {
 const AttachedPlaintext = (props: SpeakerLabelsInterface) => {
     const { width, height } = props.size;
     const dispatch = useDispatch();
-    const { createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
+    const { createActionDashboardToggleModule, 
+            createActionDashboardToggleResizableCollapse } = bindActionCreators(actionCreators, dispatch);
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
@@ -28,7 +29,7 @@ const AttachedPlaintext = (props: SpeakerLabelsInterface) => {
                 <span className="d-flex align-content-center">
                     <button className="strip-button-style module-header-button pe-2"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => setIsCollapsed(!isCollapsed)}>
+                            onClick={() => {setIsCollapsed(!isCollapsed); createActionDashboardToggleResizableCollapse(props.view.title)}}>
                         <i style={{fontSize: "1.2em"}} className="bi bi-dash-lg"></i>
                     </button>
                     <button className="strip-button-style module-header-button"

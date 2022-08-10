@@ -70,6 +70,12 @@ const DashboardReducer = (state = initialState, action: any) => {
                 lockLayout: !state.lockLayout,
                 type: "DASHBOARD_TOGGLE_LOCK_LAYOUT"
             };
+        case "DASHBOARD_TOGGLE_RESIZABLE_COLLAPSE":
+            return {
+                ...state,
+                moduleName: action.payload,
+                type: "DASHBOARD_TOGGLE_RESIZABLE_COLLAPSE"
+            };
         default:
             return state;
     }
