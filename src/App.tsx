@@ -27,7 +27,8 @@ function App() {
         <span className="me-2">Loading transcript</span>
         <TailSpin height = "20"
                   width = "20"
-                  color = 'white'
+                  color = 'rgb(42, 171, 210)'
+                  
         />
       </div>
       <div className={transcriptLoaded ? "" : "loading-overlay"}>
