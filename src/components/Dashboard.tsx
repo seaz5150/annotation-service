@@ -79,7 +79,7 @@ function Dashboard({ size: { width, height } }: {size: SizeParams}) {
             let updatedLayouts = JSON.parse(JSON.stringify(layouts));
             let view = jobData.user_interface.views.find((v: { title: string; }) => v.title === moduleName);
             if (view.type === "text") {
-                updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: sidePanelWidth, h: 11.4, isResizable: true});
+                updatedLayouts.lg.push({ i: moduleName, x: 0, y: 9999, w: sidePanelWidth, h: 11, isResizable: true, minW: 8, minH: 11});
             }
             setLayouts(updatedLayouts);
         }

@@ -22,7 +22,7 @@ const AttachedPlaintext = (props: SpeakerLabelsInterface) => {
     }, [height]);
     
     return (  
-        <div className="module module-settings h-100">
+        <div className={"module module-settings " + (isCollapsed ? "module-hide-resize-handle" : "h-100")}>
             <div className="card-header d-flex justify-content-between">
                 {props.view.title}
                 <span className="d-flex align-content-center">

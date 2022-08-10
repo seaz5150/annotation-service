@@ -143,6 +143,10 @@ code {
   padding-bottom: 0 !important;
 }
 
+.module-hide-resize-handle + .react-resizable-handle {
+  display: none;
+}
+
 *:focus:not(:focus-visible) {
   outline: 0 !important;
   box-shadow: none !important;
