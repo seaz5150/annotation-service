@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { SegmentColors } from "../../enums/SegmentColors";
 import moment from "moment";
+import { getFromLS, saveToLS } from "../../utils/CommonUtilities";
 
 type PlayerAction = {
     type: string,
@@ -34,8 +35,8 @@ const initialState = {
 
     saveActionIndex: -1,
     transcriptLastSaveTime: null,
-    autosaveEnabled: true,
-    autosaveInterval: 120000
+    autosaveEnabled: (getFromLS("autosaveEnabled") != null ? getFromLS("autosaveEnabled") as boolean : true),
+    autosaveInterval: (getFromLS("autosaveInterval") ? getFromLS("autosaveInterval") as number : 120000)
 };
 
 const RecordingTranscriptReducer = (state = initialState, action: any) => {
@@ -413,13 +414,15 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 transcriptLastSaveTime: currentTime,
                 type: "TRANSCRIPT_SAVE_CHANGES"
             };
-            case "TRANSCRIPT_TOGGLE_AUTOSAVE":
+        case "TRANSCRIPT_TOGGLE_AUTOSAVE":
+            saveToLS("autosaveEnabled", action.payload);
             return {
                 ...state,
                 autosaveEnabled: action.payload,
                 type: "TRANSCRIPT_TOGGLE_AUTOSAVE"
             };
-            case "TRANSCRIPT_SET_AUTOSAVE_INTERVAL":
+        case "TRANSCRIPT_SET_AUTOSAVE_INTERVAL":
+            saveToLS("autosaveInterval", action.payload);
             return {
                 ...state,
                 autosaveInterval: action.payload,

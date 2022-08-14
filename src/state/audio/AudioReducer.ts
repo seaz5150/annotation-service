@@ -1,7 +1,9 @@
+import { getFromLS, saveToLS } from "../../utils/CommonUtilities";
+
 const initialState = {
     time: null,
     type: null,
-    prePlay: 0,
+    prePlay: (getFromLS("prePlay") ? getFromLS("prePlay") as number : null),
 
     // For the ability to pause and resume segment play.
     currentTime: null,
@@ -52,6 +54,7 @@ const AudioPlayReducer = (state = initialState, action: any) => {
                 type: "AUDIO_PLAY_FROM_TIME"
             };
         case "AUDIO_SET_PREPLAY":
+            saveToLS("prePlay", action.payload);
             return {
                 ...state,
                 prePlay: action.payload,
