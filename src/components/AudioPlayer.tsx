@@ -71,7 +71,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
     createActionAudioSetCurrentTime(currentTime as number);
 
     if (audioPlay.currentlyPlayingSegmentId != null) {
-      const inaccuracyCompensation = 0.01;
+      const inaccuracyCompensation = 0.02;
       if ((currentTime as number + inaccuracyCompensation) >= segments.find((s: { id: any; }) => s.id === audioPlay.currentlyPlayingSegmentId).end) {
         // Played segment just finished playing.
         createActionAudioClearPlayingSegment();
