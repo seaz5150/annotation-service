@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import sizeMe from "react-sizeme";
 import { pressStopPropagation } from "../utils/CommonUtilities";
 import { actionCreators } from "../state/Index";
+import { SegmentColors } from "../enums/SegmentColors";
 
 interface SpeakerLabelsInterface {
     updateElementGridSize: any,
@@ -19,11 +20,12 @@ const SpeakerLabels = (props: SpeakerLabelsInterface) => {
 
     const availableSpeakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
     const dashboard = useSelector((state: any) => state.dashboard);
+    const transcript = useSelector((state: any) => state.recordingTranscript);
 
     const { width, height } = props.size;
     const moduleName = "SpeakerLabels";
-
     let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const [ranOutOfSpeakerColorsOrLetters, setRanOutOfSpeakerColorsOrLetters] = useState(false);
 
     useEffect(() => {
         props.updateElementGridSize(moduleName, height);
@@ -31,10 +33,13 @@ const SpeakerLabels = (props: SpeakerLabelsInterface) => {
 
     const setLabel = (e: { target: { value: string; }; }, labelId: string, currentLabel: string) => {
         if (e.target.value !== currentLabel) {
-            console.log(e.target.value)
             createActionTranscriptSpeakerUpdate(labelId, e.target.value);
         }
     };
+
+    useEffect(() => {
+        setRanOutOfSpeakerColorsOrLetters(transcript.speakerTags.length >= Object.keys(SegmentColors).length || transcript.speakerTags.length >= alphabet.length);
+    }, [transcript.speakerTags.length]);
     
     return (  
         <div className="module module-settings">
@@ -68,7 +73,8 @@ const SpeakerLabels = (props: SpeakerLabelsInterface) => {
                 <div className="d-flex justify-content-end pt-2">
                     <button className="text-tag-button btn-secondary custom-dropdown save-button m-0 add-label-button" 
                             onMouseDown={pressStopPropagation}
-                            onClick={() => createActionTranscriptSpeakerCreate(alphabet[availableSpeakerTags.length], "")}>
+                            onClick={() => createActionTranscriptSpeakerCreate(alphabet[availableSpeakerTags.length], "")}
+                            disabled={ranOutOfSpeakerColorsOrLetters}>
                             <div className="d-flex align-items-center justify-content-center">
                                 <i className="bi bi-plus-lg me-1"></i>
                                 Add label
