@@ -22,8 +22,8 @@ const HotkeyReducer = (state = initialState, action: any) => {
                 rebindInProgress: action.payload
             };
         case "HOTKEY_SET":
-            let newHotkeys = JSON.parse(JSON.stringify(state.hotkeys));
-            let foundHotkey = newHotkeys.find((h: { name: any; }) => h.name === action.payload.name);
+            var newHotkeys = JSON.parse(JSON.stringify(state.hotkeys));
+            var foundHotkey = newHotkeys.find((h: { name: any; }) => h.name === action.payload.name);
             foundHotkey.hotkey = action.payload.hotkey;
             saveToLS("hotkeys", newHotkeys);
 
@@ -36,6 +36,24 @@ const HotkeyReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 hotkeys: defaultHotkeys
+            };
+        case "HOTKEY_ADD_TEXT_TAGS":
+            var newHotkeys = JSON.parse(JSON.stringify(state.hotkeys));
+            action.payload.textTags.forEach((t: { id: string; label: string }, index: number) => {
+                var indexPp = index + 1;
+                if (indexPp <= 12) {
+                    newHotkeys.push({name: t.label, hotkey: "Shift + F" + indexPp, label: "Tag selection as \"" + t.label.toLowerCase() + "\"", tagHotkey: true, unpairedTag: false});
+                }
+            })
+            action.payload.unpairedTags.forEach((t: { id: string; label: string }, index: number) => {
+                var indexPpTotal = action.payload.textTags.length + index + 1;
+                if (indexPpTotal <= 12) {
+                    newHotkeys.push({name: t.id, hotkey: "Shift + F" + indexPpTotal, label: "Insert \"" + t.label.toLowerCase() + "\" tag at cursor", tagHotkey: true, unpairedTag: true});
+                }
+            })
+            return {
+                ...state,
+                hotkeys: newHotkeys
             };
         default:
             return state;

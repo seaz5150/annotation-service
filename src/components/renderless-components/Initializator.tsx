@@ -9,12 +9,14 @@ const Initializator = () => {
     const dispatch = useDispatch();
     const { createActionJobInitialize, 
             createActionTranscriptInitialize, 
-            createActionJobListInitialize } = bindActionCreators(actionCreators, dispatch);
+            createActionJobListInitialize,
+            createActionHotkeyAddTextTags } = bindActionCreators(actionCreators, dispatch);
+
+    const job = useSelector((state: any) => state.job);
 
     const [jobList, setJobList] = useState(null);
     const [jobData, setJobData] = useState(null);
     const [jobTranscript, setJobTranscript] = useState(null);
-    const job = useSelector((state: any) => state.job);
 
     useEffect(() => {
       getJobList();
@@ -29,6 +31,7 @@ const Initializator = () => {
     useEffect(() => {
       if (jobData !== null) {
         createActionJobInitialize(jobData);
+        createActionHotkeyAddTextTags((jobData as any).user_interface.text_tags, job.unpairedTags);
       }
     }, [jobData]);
 

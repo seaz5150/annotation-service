@@ -324,7 +324,6 @@ function AudioPlayer(props: AudioPlayerInterface) {
     playAudio();
   };
 
-  // TODO: Fix sound being stuck on mute when forwarding at the end of audio.
   const startSkip = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, direction: string) => {
     clearSegmentPlayInfo();
     handlePress(e)

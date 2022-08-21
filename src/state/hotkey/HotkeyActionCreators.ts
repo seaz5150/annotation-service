@@ -28,3 +28,16 @@ export const createActionHotkeyReset = () => {
     })
   }
 }
+
+// Adds hotkeys for tagging current selection.
+export const createActionHotkeyAddTextTags = (textTags: any[], unpairedTags: any[]) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "HOTKEY_ADD_TEXT_TAGS",
+      payload: {
+        textTags: textTags,
+        unpairedTags: unpairedTags
+      }
+    })
+  }
+}

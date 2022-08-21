@@ -16,7 +16,9 @@ const HotkeyListener = () => {
             createActionHistoryAddAction,
             createActionTranscriptPlayerAddAction,
             createActionEditorRequestDataSave,
-            createActionAudioTogglePlay } = bindActionCreators(actionCreators, dispatch);
+            createActionAudioTogglePlay,
+            createActionEditorAddSectionTag, 
+            createActionEditorAddUnpairedTag} = bindActionCreators(actionCreators, dispatch);
     const hotkey = useSelector((state: any) => state.hotkey);
     const transcript = useSelector((state: any) => state.recordingTranscript);
     
@@ -28,6 +30,7 @@ const HotkeyListener = () => {
     const undoHotkey = useRef("");
     const redoHotkey = useRef("");
     const togglePlayHotkey = useRef("");
+    const tagSelectionHotkeys = useRef([]);
 
     const splitCompleted = useRef(false);
     const splitSegmentBefore = useRef<any>();
@@ -40,6 +43,7 @@ const HotkeyListener = () => {
         undoHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "UNDO").hotkey;
         redoHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "REDO").hotkey;
         togglePlayHotkey.current = hotkey.hotkeys.find((h: { name: string; }) => h.name === "TOGGLE_PLAY").hotkey;
+        tagSelectionHotkeys.current = hotkey.hotkeys.filter((h: { tagHotkey: boolean; }) => h.tagHotkey === true);
     }, [hotkey.hotkeys]);
 
     useEffect(() => {
@@ -104,6 +108,16 @@ const HotkeyListener = () => {
             else if (keyString === togglePlayHotkey.current) {
                 e.preventDefault();
                 createActionAudioTogglePlay();
+            }
+            else if (tagSelectionHotkeys.current.find((h: {hotkey: string}) => h.hotkey === keyString) != null) {
+                var tag = (tagSelectionHotkeys.current.find((h: { hotkey: string; }) => h.hotkey === keyString) as any);
+                e.preventDefault();
+                if (tag.unpairedTag === false) {
+                    createActionEditorAddSectionTag(tag.name);
+                }
+                else {
+                    createActionEditorAddUnpairedTag(tag.name);
+                }
             }
         }
     }

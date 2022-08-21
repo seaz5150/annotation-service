@@ -4,7 +4,14 @@ const initialState = {
     jobId: "", // cJoQKr9yWZw5bOtJ
     jobData: null,
     textTags: null,
-    unpairedTags: null,
+    unpairedTags: [
+        {"label": "Unknown", "id": "[unk]"},
+        {"label": "Hesitation", "id": "[hes]"},
+        {"label": "Noise", "id": "[noise]"},
+        {"label": "Speaker noise", "id": "[spk]"},
+        {"label": "Double-press PTT", "id": "[key]"},
+        {"label": "Crosstalk", "id": "[XT]"}
+      ] as any,
     jobList: [] as any[],
     currentJobIndex: null,
     canJumpNext: false,
@@ -15,14 +22,6 @@ const JobReducer = (state = initialState, action: any) => {
   switch (action.type) {
     case "JOB_INITIALIZE":
         var textTags = action.payload.user_interface.text_tags;
-        var unpairedTags = [
-          {"label": "Unknown", "id": "[unk]"},
-          {"label": "Hesitation", "id": "[hes]"},
-          {"label": "Noise", "id": "[noise]"},
-          {"label": "Speaker noise", "id": "[spk]"},
-          {"label": "Double-press PTT", "id": "[key]"},
-          {"label": "Crosstalk", "id": "[XT]"}
-        ] as any;
 
         let colorCounter = 0;
         for (let i in textTags) {
@@ -38,8 +37,8 @@ const JobReducer = (state = initialState, action: any) => {
         }
 
         colorCounter = textTags.length;
-        for (let i in unpairedTags) {
-            let unpairedTag = unpairedTags[i];
+        for (let i in state.unpairedTags) {
+            let unpairedTag = state.unpairedTags[i];
             unpairedTag.color = TextLabelColors[Object.keys(TextLabelColors)[colorCounter]];
 
             if (colorCounter >= unpairedTag.length - 1) {
@@ -50,15 +49,15 @@ const JobReducer = (state = initialState, action: any) => {
             }
         }
 
-        var newJobIndex = state.jobList.findIndex((j: { id: any; }) => j.id == action.payload.id);
-        var newCanJumpNext = newJobIndex != state.jobList.length - 1;
-        var newCanJumpPrevious = newJobIndex != 0;
+        var newJobIndex = state.jobList.findIndex((j: { id: any; }) => j.id === action.payload.id);
+        var newCanJumpNext = newJobIndex !== state.jobList.length - 1;
+        var newCanJumpPrevious = newJobIndex !== 0;
 
         return {
             ...state,
             jobId: action.payload.id,
             jobData: action.payload,
-            unpairedTags: unpairedTags, 
+            unpairedTags: state.unpairedTags, 
             textTags: textTags,
             currentJobIndex: newJobIndex,
             canJumpNext: newCanJumpNext,
@@ -67,7 +66,7 @@ const JobReducer = (state = initialState, action: any) => {
         };
     case "JOB_LIST_INITIALIZE":
         // Remove non-ATCO2 jobs from the list.
-        var newJobList = action.payload.filter((j: { pipeline: { id: string; }; }) => j.pipeline?.id == "ATCO2");
+        var newJobList = action.payload.filter((j: { pipeline: { id: string; }; }) => j.pipeline?.id === "ATCO2");
         return {
             ...state,
             jobList: newJobList,

@@ -49,12 +49,12 @@ const TextLabels = (props: AudioPlayerInterface) => {
             <p className="title-small">Section labels:</p>
             <div className="tag-container" onMouseDown={pressStopPropagation}>
                 {availableTextTags && 
-                    availableTextTags.map((textTag: any) => 
+                    availableTextTags.map((textTag: any, index: number) => 
                         <button key={textTag.label} 
                                 onMouseDown={() => createActionEditorAddSectionTag(textTag.label)}
                                 className="text-tag-button btn-secondary custom-dropdown">
                             <div className="d-flex align-items-center">
-                                <span className="tag-button-color text-tag-button-color me-1" style={{backgroundColor: textTag.color}}></span>
+                                <span className="tag-button-color text-tag-button-color me-1" style={{backgroundColor: textTag.color}}>{index + 1}</span>
                                 {textTag.label}
                             </div>
                         </button>
@@ -64,12 +64,12 @@ const TextLabels = (props: AudioPlayerInterface) => {
             <p className="title-small">Transcription tags:</p>
             <div className="tag-container" onMouseDown={pressStopPropagation}>
                 {availableUnpairedTags && 
-                        availableUnpairedTags.map((unpairedTag: any) => 
+                        availableUnpairedTags.map((unpairedTag: any, index: number) => 
                             <button key={unpairedTag.id} 
                                     onMouseDown={() => createActionEditorAddUnpairedTag(unpairedTag.id)}
                                     className="text-tag-button btn-secondary custom-dropdown">
                                 <div className="d-flex align-items-center">
-                                    <span className="tag-button-color unpaired-tag-button-color me-1" style={{backgroundColor: unpairedTag.color}}></span>
+                                    <span className="tag-button-color unpaired-tag-button-color me-1" style={{backgroundColor: unpairedTag.color}}>{availableTextTags?.length + index + 1}</span>
                                     {unpairedTag.label}
                                 </div>
                             </button>
