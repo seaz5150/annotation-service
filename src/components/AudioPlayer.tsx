@@ -272,16 +272,16 @@ function AudioPlayer(props: AudioPlayerInterface) {
           let difference = 0;
           if (nextRegion && (region.end > nextRegion.start)) {
             difference = region.end - nextRegion.start;
-            region.end = nextRegion.start;
-            if (!region.isResizing) {
-              region.start -= difference;
+            region.onResize(-difference);
+            if (region.isDragging) {
+              region.onResize(-difference, 'start');
             }
           }
           if (previousRegion && (region.start < previousRegion.end)) {
             difference = previousRegion.end - region.start;
-            region.start = previousRegion.end;
-            if (!region.isResizing) {
-              region.end += difference;
+            region.onResize(difference, 'start');
+            if (region.isDragging) {
+              region.onResize(difference);
             }
           }
         });
