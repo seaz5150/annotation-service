@@ -14,14 +14,16 @@ const JobControl = (props: JobControlInterface) => {
     const dispatch = useDispatch();
     const { createActionDashboardToggleModule, 
             createActionJobNext, 
-            createActionJobPrevious } = bindActionCreators(actionCreators, dispatch);
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const { width, height } = props.size;
-
+            createActionJobPrevious,
+            createActionDashboardToggleCollapsedModule } = bindActionCreators(actionCreators, dispatch);
     const job = useSelector((state: any) => state.job);
+    const dashboard = useSelector((state: any) => state.dashboard);
+
+    const { width, height } = props.size;
+    const moduleName = "JobControl";
 
     useEffect(() => {
-        props.updateElementGridSize("JobControl", height);
+        props.updateElementGridSize(moduleName, height);
     }, [height]);
     
     return (  
@@ -31,17 +33,17 @@ const JobControl = (props: JobControlInterface) => {
                 <span className="d-flex align-content-center">
                     <button className="strip-button-style module-header-button pe-2"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => setIsCollapsed(!isCollapsed)}>
+                            onClick={() => createActionDashboardToggleCollapsedModule(moduleName)}>
                         <i style={{fontSize: "1.2em"}} className="bi bi-dash-lg"></i>
                     </button>
                     <button className="strip-button-style module-header-button"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => createActionDashboardToggleModule("JobControl", false)}>
+                            onClick={() => createActionDashboardToggleModule(moduleName, false)}>
                         <i className="bi bi-x-lg"></i>
                     </button>
                 </span>
             </div>
-            <div className={"module-content card-body d-flex justify-content-center " + (isCollapsed ? "module-content-collapsed" : "mt-1 pb-2")}>
+            <div className={"module-content card-body d-flex justify-content-center " + (dashboard.collapsedModules.find((m: string) => m == moduleName) ? "module-content-collapsed" : "mt-1 pb-2")}>
                 <div className="row">
                     <div className="col" style={{maxWidth: "200px"}}>
                         <button className="text-tag-button custom-dropdown job-control-button job-control-refuse-button float-end"

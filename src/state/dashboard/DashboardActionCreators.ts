@@ -68,3 +68,12 @@ export const createActionDashboardToggleResizableCollapse = (moduleName: string)
     })
   }
 }
+
+export const createActionDashboardToggleCollapsedModule = (moduleName: string) => {
+  return (dispatch: any) => {
+    dispatch({
+      type: "DASHBOARD_TOGGLE_COLLAPSED_MODULE",
+      payload: moduleName
+    })
+  }
+}

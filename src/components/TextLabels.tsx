@@ -14,15 +14,18 @@ const TextLabels = (props: AudioPlayerInterface) => {
     const dispatch = useDispatch();
     const { createActionEditorAddSectionTag, 
             createActionEditorAddUnpairedTag, 
-            createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+            createActionDashboardToggleModule,
+            createActionDashboardToggleCollapsedModule } = bindActionCreators(actionCreators, dispatch);
 
-    const { width, height } = props.size;
     const availableTextTags = useSelector((state: any) => state.job.textTags);
     const availableUnpairedTags = useSelector((state: any) => state.job.unpairedTags);
+    const dashboard = useSelector((state: any) => state.dashboard);
+
+    const { width, height } = props.size;
+    const moduleName = "TextLabels";
 
     useEffect(() => {
-        props.updateElementGridSize("TextLabels", height);
+        props.updateElementGridSize(moduleName, height);
     }, [height]);
 
     return (  
@@ -32,17 +35,17 @@ const TextLabels = (props: AudioPlayerInterface) => {
             <span className="d-flex align-content-center">
                 <button className="strip-button-style module-header-button pe-2"
                         onMouseDown={pressStopPropagation}
-                        onClick={() => setIsCollapsed(!isCollapsed)}>
+                        onClick={() => createActionDashboardToggleCollapsedModule(moduleName)}>
                     <i style={{fontSize: "1.2em"}} className="bi bi-dash-lg"></i>
                 </button>
                 <button className="strip-button-style module-header-button"
                         onMouseDown={pressStopPropagation}
-                        onClick={() => createActionDashboardToggleModule("TextLabels", false)}>
+                        onClick={() => createActionDashboardToggleModule(moduleName, false)}>
                     <i className="bi bi-x-lg"></i>
                 </button>
             </span>
         </div>
-        <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "mt-1 pb-2")}>
+        <div className={"module-content card-body " + (dashboard.collapsedModules.find((m: string) => m == moduleName) ? "module-content-collapsed" : "mt-1 pb-2")}>
             <p className="title-small">Section labels:</p>
             <div className="tag-container" onMouseDown={pressStopPropagation}>
                 {availableTextTags && 

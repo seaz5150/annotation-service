@@ -1,9 +1,12 @@
+import { getFromLS, saveToLS } from "../../utils/CommonUtilities";
+
 const initialState = {
     moduleName: "",
     value: false,
     allModules: [] as {name: string, viewName?: string}[],
     openModules: [] as string[],
     openAttachmentTabs: [] as string[],
+    collapsedModules: (getFromLS("collapsedModules") ? getFromLS("collapsedModules") as string[] : [] as string[]),
     lockLayout: false
 };
 
@@ -75,6 +78,20 @@ const DashboardReducer = (state = initialState, action: any) => {
                 ...state,
                 moduleName: action.payload,
                 type: "DASHBOARD_TOGGLE_RESIZABLE_COLLAPSE"
+            };
+        case "DASHBOARD_TOGGLE_COLLAPSED_MODULE":
+            var newCollapsedModules = JSON.parse(JSON.stringify(state.collapsedModules));
+            if (newCollapsedModules.find((m: string) => m == action.payload)) {
+                newCollapsedModules = newCollapsedModules.filter((m: string) => m != action.payload);
+            }
+            else {
+                newCollapsedModules.push(action.payload);
+            }
+            saveToLS("collapsedModules", newCollapsedModules);
+            return {
+                ...state,
+                collapsedModules: newCollapsedModules,
+                type: "DASHBOARD_TOGGLE_COLLAPSED_MODULE"
             };
         default:
             return state;

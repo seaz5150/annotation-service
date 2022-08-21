@@ -12,20 +12,21 @@ interface RecordingDetailsInterface {
 
 const RecordingDetails = (props: RecordingDetailsInterface) => {
     const dispatch = useDispatch();
-    const { createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
+    const { createActionDashboardToggleModule,
+            createActionDashboardToggleCollapsedModule } = bindActionCreators(actionCreators, dispatch);
 
     const jobData = useSelector((state: any) => state.job.jobData);
     const dashboard = useSelector((state: any) => state.dashboard);
 
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const { width, height } = props.size;
+    const moduleName = "RecordingDetails";
 
     const handlePress = (e: any) => {
         e.stopPropagation();
     }
 
     useEffect(() => {
-        props.updateElementGridSize("RecordingDetails", height);
+        props.updateElementGridSize(moduleName, height);
     }, [height]);
 
     const toggleModule = (e: React.ChangeEvent<HTMLInputElement>, moduleName: string) => {
@@ -39,17 +40,17 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
                 <span className="d-flex align-content-center">
                     <button className="strip-button-style module-header-button pe-2"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => setIsCollapsed(!isCollapsed)}>
+                            onClick={() => createActionDashboardToggleCollapsedModule(moduleName)}>
                         <i style={{fontSize: "1.2em"}} className="bi bi-dash-lg"></i>
                     </button>
                     <button className="strip-button-style module-header-button"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => createActionDashboardToggleModule("RecordingDetails", false)}>
+                            onClick={() => createActionDashboardToggleModule(moduleName, false)}>
                         <i className="bi bi-x-lg"></i>
                     </button>
                 </span>
             </div>
-            <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "mt-1 pb-2")}>
+            <div className={"module-content card-body " + (dashboard.collapsedModules.find((m: string) => m == moduleName) ? "module-content-collapsed" : "mt-1 pb-2")}>
                 <div className="row">
                     <p className="title-small col-3">Name:</p>
                     <p className="text-small col-9 d-flex justify-content-end text-end">{jobData.title}</p>

@@ -11,18 +11,22 @@ interface SpeakerLabelsInterface {
 }
 
 const SpeakerLabels = (props: SpeakerLabelsInterface) => {
-    const { width, height } = props.size;
-    const availableSpeakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
     const dispatch = useDispatch();
     const { createActionTranscriptSpeakerCreate, 
             createActionTranscriptSpeakerUpdate, 
-            createActionDashboardToggleModule } = bindActionCreators(actionCreators, dispatch);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+            createActionDashboardToggleModule,
+            createActionDashboardToggleCollapsedModule } = bindActionCreators(actionCreators, dispatch);
+
+    const availableSpeakerTags = useSelector((state: any) => state.recordingTranscript.speakerTags);
+    const dashboard = useSelector((state: any) => state.dashboard);
+
+    const { width, height } = props.size;
+    const moduleName = "SpeakerLabels";
 
     let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     useEffect(() => {
-        props.updateElementGridSize("SpeakerLabels", height);
+        props.updateElementGridSize(moduleName, height);
     }, [height]);
 
     const setLabel = (e: { target: { value: string; }; }, labelId: string, currentLabel: string) => {
@@ -39,17 +43,17 @@ const SpeakerLabels = (props: SpeakerLabelsInterface) => {
                 <span className="d-flex align-content-center">
                     <button className="strip-button-style module-header-button pe-2"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => setIsCollapsed(!isCollapsed)}>
+                            onClick={() => createActionDashboardToggleCollapsedModule(moduleName)}>
                         <i style={{fontSize: "1.2em"}} className="bi bi-dash-lg"></i>
                     </button>
                     <button className="strip-button-style module-header-button"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => createActionDashboardToggleModule("SpeakerLabels", false)}>
+                            onClick={() => createActionDashboardToggleModule(moduleName, false)}>
                         <i className="bi bi-x-lg"></i>
                     </button>
                 </span>
             </div>
-            <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "mt-1 pb-2")}>
+            <div className={"module-content card-body " + (dashboard.collapsedModules.find((m: string) => m == moduleName) ? "module-content-collapsed" : "mt-1 pb-2")}>
                 <div className="speaker-label-container">
                     {availableSpeakerTags && availableSpeakerTags.map((tag: any, index: number) => 
                         <div key={tag.id} className="d-flex" onMouseDown={pressStopPropagation}>

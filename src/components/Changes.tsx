@@ -18,12 +18,13 @@ const Changes = (props: ChangesInterface) => {
             createActionDashboardToggleModule,
             createActionTranscriptSaveChanges,
             createActionTranscriptUpdateWords,
-            createActionTranscriptConstructFullTranscript } = bindActionCreators(actionCreators, dispatch);
+            createActionTranscriptConstructFullTranscript,
+            createActionDashboardToggleCollapsedModule } = bindActionCreators(actionCreators, dispatch);
     const history = useSelector((state: any) => state.history);
     const hotkey = useSelector((state: any) => state.hotkey);
     const transcript = useSelector((state: any) => state.recordingTranscript);
+    const dashboard = useSelector((state: any) => state.dashboard);
 
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const [timeSinceSaveString, setTimeSinceSaveString] = useState("");
     const [timeSinceSaveColor, setTimeSinceSaveColor] = useState("text-success");
     const timeSinceSaveTimer = useRef<any>();
@@ -31,6 +32,7 @@ const Changes = (props: ChangesInterface) => {
     const transcriptRef = useRef<any>();
 
     const { width, height } = props.size;
+    const moduleName = "Changes";
 
     useEffect(() => {
         transcriptRef.current = transcript;
@@ -52,7 +54,7 @@ const Changes = (props: ChangesInterface) => {
     }
 
     useEffect(() => {
-        props.updateElementGridSize("Changes", height);
+        props.updateElementGridSize(moduleName, height);
     }, [height]);
 
     useEffect(() => {
@@ -133,17 +135,17 @@ const Changes = (props: ChangesInterface) => {
                 <span className="d-flex align-content-center">
                     <button className="strip-button-style module-header-button pe-2"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => setIsCollapsed(!isCollapsed)}>
+                            onClick={() => createActionDashboardToggleCollapsedModule(moduleName)}>
                         <i style={{fontSize: "1.2em"}} className="bi bi-dash-lg"></i>
                     </button>
                     <button className="strip-button-style module-header-button"
                             onMouseDown={pressStopPropagation}
-                            onClick={() => createActionDashboardToggleModule("Changes", false)}>
+                            onClick={() => createActionDashboardToggleModule(moduleName, false)}>
                         <i className="bi bi-x-lg"></i>
                     </button>
                 </span>
             </div>
-            <div className={"module-content card-body " + (isCollapsed ? "module-content-collapsed" : "mt-1 pb-2")}>
+            <div className={"module-content card-body " + (dashboard.collapsedModules.find((m: string) => m == moduleName) ? "module-content-collapsed" : "mt-1 pb-2")}>
                 <div className="d-flex justify-content-between">
                     <div>
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
