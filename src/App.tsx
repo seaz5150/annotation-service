@@ -5,7 +5,7 @@ import EventReactor from './components/renderless-components/EventReactor';
 import HotkeyListener from './components/renderless-components/HotkeyListener';
 import Initializator from './components/renderless-components/Initializator';
 import SettingsWindow from './components/SettingsWindow';
-import { TailSpin } from  'react-loader-spinner'
+import { TailSpin } from  'react-loader-spinner';
 import { useSelector } from 'react-redux';
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
         <span className="me-2">Loading transcript</span>
         <TailSpin height = "20"
                   width = "20"
-                  color = 'rgb(42, 171, 210)'
+                  color = "rgb(42, 171, 210)"
                   
         />
       </div>

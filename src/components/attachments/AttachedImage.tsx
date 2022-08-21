@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import sizeMe from "react-sizeme";
 import { actionCreators } from "../../state/Index";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { TailSpin } from  'react-loader-spinner';
 
 interface SpeakerLabelsInterface {
     updateElementGridSize: any,
@@ -16,6 +17,7 @@ const AttachedImage = (props: SpeakerLabelsInterface) => {
     const dispatch = useDispatch();
     const { createActionDashboardToggleModuleStatic } = bindActionCreators(actionCreators, dispatch);
     const [imageDimensions, setImageDimensions] = useState({height: 0, width: 0});
+    const [imageIsLoaded, setImageIsLoaded] = useState(false);
 
     useEffect(() => {
         props.updateElementGridSize(props.view.label, height);
@@ -48,7 +50,20 @@ const AttachedImage = (props: SpeakerLabelsInterface) => {
                     className="d-flex justify-content-center">
                 <TransformWrapper>
                     <TransformComponent>
-                        <img className="border-radius-025em mb-1" src={props.view.url} width={imageDimensions.width} height={imageDimensions.height}></img>
+                        {!imageIsLoaded &&
+                            <div className="mb-2 mt-1">
+                                <TailSpin height = "20"
+                                        width = "20"
+                                        color = "rgb(42, 171, 210)"
+                                />
+                            </div>
+                        }
+                        <img className="border-radius-025em mb-1"
+                             src={props.view.url}
+                             width={imageDimensions.width} 
+                             height={imageDimensions.height}
+                             onLoad={() => setImageIsLoaded(true)} 
+                        />
                     </TransformComponent>
                 </TransformWrapper>
             </div>
