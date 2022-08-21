@@ -35,6 +35,12 @@ code {
   border-bottom: 3.1px;
 }
 
+#waveform {
+  background-color: #3838383d;
+  border-radius: 0.6em;
+  border: 1px solid #00000040;
+}
+
 .wavesurfer-handle {
   background-color: transparent !important;
   width: 6px !important;
