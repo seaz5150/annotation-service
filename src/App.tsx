@@ -1,4 +1,3 @@
-import LogRocket from 'logrocket';
 import { useEffect, useState } from 'react';
 import Dashboard from './components/Dashboard';
 import EventReactor from './components/renderless-components/EventReactor';
@@ -16,10 +15,6 @@ function App() {
   useEffect(() => {
     setTranscriptLoaded(transcript.fullTranscript.length != 0);
   }, [transcript.fullTranscript]);
-
-  useEffect(() => {
-    LogRocket.init('jdskdq/annotationservice');
-  }, []);
 
   return (
     <div className="App">
