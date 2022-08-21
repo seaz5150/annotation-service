@@ -51,7 +51,7 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 segmentObj.id = uuidv4();
 
                 // Some speaker labels may not be specified and used in the segments anyway, so add those.
-                if (!speakerTags.find((tag: { id: any; }) => tag.id === segmentObj.speaker)) {
+                if (segmentObj.speaker != "" && !speakerTags.find((tag: { id: any; }) => tag.id === segmentObj.speaker)) {
                     speakerTags.push({
                         id: segmentObj.speaker,
                         label: ""

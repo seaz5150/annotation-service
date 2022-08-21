@@ -289,7 +289,7 @@ function AudioPlayer(props: AudioPlayerInterface) {
         wavesurfer.current?.on("region-created", (region) => {
           const newRegionIdPrefix = "wavesurfer_";
           if ((region.id).substr(0, newRegionIdPrefix.length) === newRegionIdPrefix) {
-            region.color = "#dadada" + rgbaToHexAlpha(segmentColorAlpha);
+            region.color = UnassignedColor + rgbaToHexAlpha(segmentColorAlpha);
             region.id = uuidv4();
             regionCreatedByUser = true;
           }
