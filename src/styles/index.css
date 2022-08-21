@@ -313,7 +313,8 @@ code {
 .segment{
   display: flex !important;
   flex-direction: row !important;
-  border: none !important;
+  border: none;
+  border-bottom: 1px #00000026 solid !important;
   border-radius: 0 !important;
 }
 
@@ -336,6 +337,7 @@ code {
 .segment:last-of-type {
   border-bottom-left-radius: 0.25rem !important;
   border-bottom-right-radius: 0.25rem !important;
+  border: none !important;
 }
 
 .segment-label-counter {
