@@ -196,39 +196,59 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
                                         )
                                     }
                                 </select>
-                                <div className="dropstart d-flex align-items-center" data-bs-boundary="body">
-                                    <span className="segment-label-counter pe-2"></span>
-                                    <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"
+                                {availableSegmentTags.length > 3 || document.documentElement.clientWidth < 1231 ?
+                                    <div className="dropstart d-flex align-items-center" data-bs-boundary="body">
+                                        <span className="segment-label-counter pe-2"></span>
+                                        <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"
+                                                onMouseDown={e => pressStopPropagation(e)}
+                                                type="button" id="dropdownMenuButton1"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                        >
+                                            {availableSegmentTags && "Segment labels " + (segment.segment_tags ? segment.segment_tags.length : "0") + "/" + availableSegmentTags.length}
+                                        </button>
+                                        <ul className="dropdown-menu position-fixed segment-label-dropdown-menu"
+                                            aria-labelledby="dropdownMenuButton1"
                                             onMouseDown={e => pressStopPropagation(e)}
-                                            type="button" id="dropdownMenuButton1"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                    >
-                                        {availableSegmentTags && "Segment labels " + (segment.segment_tags ? segment.segment_tags.length : "0") + "/" + availableSegmentTags.length}
-                                    </button>
-                                    <ul className="dropdown-menu position-fixed segment-label-dropdown-menu"
-                                        aria-labelledby="dropdownMenuButton1"
-                                        onMouseDown={e => pressStopPropagation(e)}
-                                    >
-                                        <li>
-                                            {availableSegmentTags &&
-                                                availableSegmentTags.map((availableSegmentTag: any) =>
-                                                    <a className="dropdown-item segment-label-dropdown-item me-3" 
-                                                       href="#" 
-                                                       key={availableSegmentTag.id} 
-                                                       onClick={(e) => {pressStopPropagation(e); toggleSegmentTag(availableSegmentTag.id);}}>
-                                                        {availableSegmentTag.label}
-                                                        <input className="form-check-input custom-checkbox col-2 ms-auto me-3" 
-                                                               type="checkbox"
-                                                               checked={segment.segment_tags ? Array.from(segment.segment_tags).some((tag: any) => tag === availableSegmentTag.id) : false}
-                                                               readOnly
-                                                        />
-                                                    </a>                                              
-                                                )
-                                            }
-                                        </li>
-                                    </ul>
-                                </div>
+                                        >
+                                            <li>
+                                                {availableSegmentTags &&
+                                                    availableSegmentTags.map((availableSegmentTag: any) =>
+                                                        <a className="dropdown-item segment-label-dropdown-item me-3" 
+                                                        href="#" 
+                                                        key={availableSegmentTag.id} 
+                                                        onClick={(e) => {pressStopPropagation(e); toggleSegmentTag(availableSegmentTag.id);}}>
+                                                            {availableSegmentTag.label}
+                                                            <input className="form-check-input custom-checkbox col-2 ms-auto me-3" 
+                                                                type="checkbox"
+                                                                checked={segment.segment_tags ? Array.from(segment.segment_tags).some((tag: any) => tag === availableSegmentTag.id) : false}
+                                                                readOnly
+                                                            />
+                                                        </a>                                              
+                                                    )
+                                                }
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    :
+                                    <div>
+                                        {availableSegmentTags &&
+                                            availableSegmentTags.map((availableSegmentTag: any) =>
+                                                <button className="btn btn-sm segment-label-button me-1 justify-content-center align-items-center"  
+                                                        key={availableSegmentTag.id} 
+                                                        onMouseDown={e => pressStopPropagation(e)}
+                                                        onClick={(e) => {pressStopPropagation(e); toggleSegmentTag(availableSegmentTag.id);}}>
+                                                    {availableSegmentTag.label}
+                                                    <input className="form-check-input col-2 ms-2 segment-label-button-checkbox" 
+                                                        type="checkbox"
+                                                        checked={segment.segment_tags ? Array.from(segment.segment_tags).some((tag: any) => tag === availableSegmentTag.id) : false}
+                                                        readOnly
+                                                    />
+                                                </button>                                              
+                                            )
+                                        }
+                                    </div>
+                                }
                                 <button className="strip-button-style segment-delete-button"
                                         onMouseDown={e => pressStopPropagation(e)}
                                         onClick={() => deleteSegmentTag()}

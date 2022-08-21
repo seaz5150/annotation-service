@@ -803,3 +803,27 @@ code {
 .dropdown-item:focus {
   background-color: rgb(83, 83, 83) !important;
 }
+
+.segment-label-button {
+  color: rgb(224, 224, 224) !important;
+  background-color: rgb(36, 36, 36) !important;
+  border-color: rgb(85, 85, 85) !important;
+  font-size: 0.8em !important;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  border-radius: 0.2rem;
+}
+
+.segment-label-button-checkbox {
+  cursor: pointer;
+}
+
+.segment-label-button:hover, .segment-label-button:focus {
+  background-color: rgb(49, 49, 49) !important;
+}
+
+.speaker-label-dropdown-button {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
