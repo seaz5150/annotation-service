@@ -380,6 +380,11 @@ code {
 .speaker-select{
   max-width: 132px !important;
   margin-right: 0.5em;
+  padding-top: 0.15rem !important;
+  padding-bottom: 0.15rem !important;
+  padding-left: 0.4rem !important;
+  padding-right: 0.4rem !important;
+  border-radius: 0.2rem !important;
 }
 
 .segment-tag-bar{
@@ -809,10 +814,11 @@ code {
   background-color: rgb(36, 36, 36) !important;
   border-color: rgb(85, 85, 85) !important;
   font-size: 0.8em !important;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  padding-left: 0.5rem;
-  border-radius: 0.2rem;
+  padding-top: 0.15rem !important;
+  padding-bottom: 0.15rem !important;
+  padding-left: 0.4rem !important;
+  padding-right: 0.4rem !important;
+  border-radius: 0.2rem !important;
 }
 
 .segment-label-button-checkbox {
