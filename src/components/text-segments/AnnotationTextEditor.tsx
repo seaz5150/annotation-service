@@ -80,7 +80,7 @@ const AnnotationTextEditor = (props: AnnotationTextEditorInterface) => {
         // Slate adds selection changes to the history - remove that.
         let lastUndo = currentUndos[currentUndos.length - 1];
         if (lastUndo && (lastUndo.length === 1) && (lastUndo[0].type === "set_selection")) {
-          slateEditor.history.undos.pop();
+          return;
         }
         else {
           setHistoryPrevious(JSON.parse(JSON.stringify(slateEditor.history)));
