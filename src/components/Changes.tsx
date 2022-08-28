@@ -149,14 +149,14 @@ const Changes = (props: ChangesInterface) => {
                 <div className="d-flex justify-content-between">
                     <div>
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
-                                disabled={history.currentActionIndex === -1}
+                                disabled={history.actionUndos.length === 0}
                                 onMouseDown={pressStopPropagation}
                                 onClick={() => createActionHistoryUndoAction()}
                                 data-bs-toggle="tooltip" data-bs-placement="bottom" title={"Undo (" + hotkey.hotkeys.find((h: { name: string; }) => h.name === "UNDO").hotkey + ")"}>
                             <i className="bi bi-arrow-counterclockwise undo-redo-button-icon"></i>
                         </button>
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
-                                disabled={history.currentActionIndex === history.actionHistory.length - 1}
+                                disabled={history.actionRedos.length === 0}
                                 onMouseDown={pressStopPropagation}
                                 onClick={() => createActionHistoryRedoAction()}
                                 data-bs-toggle="tooltip" data-bs-placement="bottom" title={"Redo (" + hotkey.hotkeys.find((h: { name: string; }) => h.name === "REDO").hotkey + ")"}>
@@ -174,7 +174,7 @@ const Changes = (props: ChangesInterface) => {
                     <button className="text-tag-button btn-secondary custom-dropdown save-button justify-self-end"
                             onMouseDown={pressStopPropagation}
                             onClick={createActionTranscriptSaveChanges}
-                            disabled={history.currentActionIndex === transcript.saveActionIndex}>
+                            disabled={history.actionUndos.length === transcript.saveActionUndosCount}>
                         <div className="d-flex align-items-center justify-content-center"
                              data-bs-toggle="tooltip" data-bs-placement="bottom" title={"Save changes (" + hotkey.hotkeys.find((h: { name: string; }) => h.name === "SAVE").hotkey + ")"}>
                             <i className="fas fa-save me-2 save-button-icon"></i>

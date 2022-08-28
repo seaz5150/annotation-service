@@ -35,7 +35,7 @@ function AnnotationTextSegmentContainer(props: AnnotationTextInterface) {
                 id: segmentId,
                 ref: segmentEl
             });
-            createActionSegmentReferencesInitialize(segmentRefs.current);
+            //createActionSegmentReferencesInitialize(segmentRefs.current);
         }
     }
 

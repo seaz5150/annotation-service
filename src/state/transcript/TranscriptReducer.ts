@@ -16,8 +16,9 @@ const initialState = {
     segmentTags: null,
     segments: [] as any[],
     segmentId: "",
-    playerActionHistory: [] as PlayerAction[],
-    playerActionHistoryIndex: -1,
+    playerActionUndos: [] as PlayerAction[],
+    playerActionRedos: [] as PlayerAction[],
+    lastSwappedAction: null,
     audioLength: 0,
     amountUpdated: 0,
 
@@ -33,7 +34,7 @@ const initialState = {
     segmentAfterSplit: {},
     addedSplitSegment: {},
 
-    saveActionIndex: -1,
+    saveActionUndosCount: 0,
     transcriptLastSaveTime: null,
     autosaveEnabled: (getFromLS("autosaveEnabled") != null ? getFromLS("autosaveEnabled") as boolean : true),
     autosaveInterval: (getFromLS("autosaveInterval") ? getFromLS("autosaveInterval") as number : 120000)
@@ -147,7 +148,7 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             };
         case "TRANSCRIPT_PLAYER_ADD_ACTION":
             var segmentBefore: any;
-            var newPlayerActionHistory;
+            var newPlayerActionRedos = JSON.parse(JSON.stringify(state.playerActionRedos));
             var actionType = action.payload.actionType;
 
             if ((actionType === "UPDATE" || actionType === "REMOVE" 
@@ -162,131 +163,132 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
 
             if (actionType === "REMOVE") {
                 // Remove all redos of the deleted segment, only its undos are kept.
-                newPlayerActionHistory = JSON.parse(JSON.stringify(state.playerActionHistory));
-                newPlayerActionHistory = newPlayerActionHistory.filter((a: { segmentBefore: { id: any; }; }, index: number) => (a.segmentBefore.id !== segmentBefore.id || a.segmentBefore.id !== segmentBefore.id && index <= state.playerActionHistoryIndex));
-                newPlayerActionHistory = [...newPlayerActionHistory, {type: actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter, additionalSegment: action.payload.additionalSegment}];
-            }
-            else {
-                newPlayerActionHistory = [...state.playerActionHistory, {type: actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter, additionalSegment: action.payload.additionalSegment}];
+                newPlayerActionRedos = newPlayerActionRedos.filter((a: { segmentId: any; }) => a.segmentId !== segmentBefore.segmentId);
             }
 
             return {
                 ...state,
                 type: "TRANSCRIPT_PLAYER_ADD_ACTION",
-                playerActionHistory: newPlayerActionHistory,
-                playerActionHistoryIndex: state.playerActionHistoryIndex + 1
+                playerActionUndos: [...state.playerActionUndos, {type: actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter, additionalSegment: action.payload.additionalSegment}],
+                playerActionRedos: newPlayerActionRedos
             };
         case "TRANSCRIPT_PLAYER_UNDO_ACTION":
-            if (state.playerActionHistoryIndex === -1) return state;
-            var currentHistoryAction = state.playerActionHistory[state.playerActionHistoryIndex];
+            var undosLength = state.playerActionUndos.length;
+            if (undosLength === 0) return state;
+            var actionToUndo = state.playerActionUndos[undosLength - 1];
 
             var newSegments = JSON.parse(JSON.stringify(state.segments));
-            switch (currentHistoryAction.type) {
+            switch (actionToUndo.type) {
                 case "CREATE":
-                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.segmentAfter.id);
+                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== actionToUndo.segmentAfter.id);
                     break;
                 case "REMOVE":
-                    newSegments.push(currentHistoryAction.segmentBefore);
+                    newSegments.push(actionToUndo.segmentBefore);
                     break;
                 case "UPDATE":
-                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === actionToUndo.segmentAfter.id);
                     if (segmentToRevert) {
-                        segmentToRevert.start = currentHistoryAction.segmentBefore.start;
-                        segmentToRevert.end = currentHistoryAction.segmentBefore.end;
-                        segmentToRevert.segment_tags = currentHistoryAction.segmentBefore.segment_tags;
-                        segmentToRevert.speaker = currentHistoryAction.segmentBefore.speaker;
+                        segmentToRevert.start = actionToUndo.segmentBefore.start;
+                        segmentToRevert.end = actionToUndo.segmentBefore.end;
+                        segmentToRevert.segment_tags = actionToUndo.segmentBefore.segment_tags;
+                        segmentToRevert.speaker = actionToUndo.segmentBefore.speaker;
                     }
                     else {
                         console.log("ERROR: Segment to undo update of was not found.")
                     }
                     break;
                 case "MERGE":
-                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === actionToUndo.segmentAfter.id);
                     if (segmentToRevert) {
-                        segmentToRevert.words = currentHistoryAction.segmentBefore.words;
+                        segmentToRevert.words = actionToUndo.segmentBefore.words;
                     }
                     else {
                         console.log("ERROR: Segment to undo update of was not found.")
                     }
-                    newSegments.push(currentHistoryAction.additionalSegment);
+                    newSegments.push(actionToUndo.additionalSegment);
                     break;
                 case "SPLIT":
-                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === actionToUndo.segmentAfter.id);
                     if (segmentToRevert) {
-                        segmentToRevert.start = currentHistoryAction.segmentBefore.start;
-                        segmentToRevert.end = currentHistoryAction.segmentBefore.end;
-                        segmentToRevert.words = currentHistoryAction.segmentBefore.words;
+                        segmentToRevert.start = actionToUndo.segmentBefore.start;
+                        segmentToRevert.end = actionToUndo.segmentBefore.end;
+                        segmentToRevert.words = actionToUndo.segmentBefore.words;
                     }
                     else {
                         console.log("ERROR: Segment to undo update of was not found.")
                     }
-                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.additionalSegment.id);
+                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== actionToUndo.additionalSegment.id);
                     break;
             }
 
             return {
                 ...state,
                 type: "TRANSCRIPT_PLAYER_UNDO_ACTION",
-                playerActionHistoryIndex: state.playerActionHistoryIndex - 1,
-                segments: newSegments
+                segments: newSegments,
+                playerActionRedos: [...state.playerActionRedos, actionToUndo],
+                playerActionUndos: state.playerActionUndos.filter((_a, index: number) => index !== undosLength - 1),
+                lastSwappedAction: actionToUndo
             };
         case "TRANSCRIPT_PLAYER_REDO_ACTION":
-            if (state.playerActionHistoryIndex === state.playerActionHistory.length - 1) return state;
-            var currentHistoryAction = state.playerActionHistory[state.playerActionHistoryIndex + 1];
+            var redosLength = state.playerActionRedos.length;
+            if (redosLength === 0) return state;
+            var actionToRedo = state.playerActionRedos[redosLength - 1];
 
             var newSegments = JSON.parse(JSON.stringify(state.segments));
-            switch (currentHistoryAction.type) {
+            switch (actionToRedo.type) {
                 case "CREATE":
-                    newSegments.push({id: currentHistoryAction.segmentAfter.id, 
-                                        start: currentHistoryAction.segmentAfter.start, 
-                                        end: currentHistoryAction.segmentAfter.end,
+                    newSegments.push({id: actionToRedo.segmentAfter.id, 
+                                        start: actionToRedo.segmentAfter.start, 
+                                        end: actionToRedo.segmentAfter.end,
                                         words: [], 
                                         speaker: ""});
                     break;
                 case "REMOVE":
-                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.segmentAfter.id);
+                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== actionToRedo.segmentAfter.id);
                     break;
                 case "UPDATE":
-                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === actionToRedo.segmentAfter.id);
                     if (segmentToRevert) {
-                        segmentToRevert.start = currentHistoryAction.segmentAfter.start ? currentHistoryAction.segmentAfter.start : segmentToRevert.start;
-                        segmentToRevert.end = currentHistoryAction.segmentAfter.end ? currentHistoryAction.segmentAfter.end : segmentToRevert.end;
-                        segmentToRevert.segment_tags = currentHistoryAction.segmentAfter.segment_tags ? currentHistoryAction.segmentAfter.segment_tags : segmentToRevert.segment_tags;
-                        segmentToRevert.speaker = currentHistoryAction.segmentAfter.speaker ? currentHistoryAction.segmentAfter.speaker : segmentToRevert.speaker;
+                        segmentToRevert.start = actionToRedo.segmentAfter.start ? actionToRedo.segmentAfter.start : segmentToRevert.start;
+                        segmentToRevert.end = actionToRedo.segmentAfter.end ? actionToRedo.segmentAfter.end : segmentToRevert.end;
+                        segmentToRevert.segment_tags = actionToRedo.segmentAfter.segment_tags ? actionToRedo.segmentAfter.segment_tags : segmentToRevert.segment_tags;
+                        segmentToRevert.speaker = actionToRedo.segmentAfter.speaker ? actionToRedo.segmentAfter.speaker : segmentToRevert.speaker;
                     }
                     else {
                         console.log("ERROR: Segment to undo update of was not found.")
                     }
                     break;
                 case "MERGE":
-                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === actionToRedo.segmentAfter.id);
                     if (segmentToRevert) {
-                        segmentToRevert.words = currentHistoryAction.segmentAfter.words;
+                        segmentToRevert.words = actionToRedo.segmentAfter.words;
                     }
                     else {
                         console.log("ERROR: Segment to undo update of was not found.")
                     }
-                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== currentHistoryAction.additionalSegment.id);
+                    newSegments = newSegments.filter((segment: { id: any; }) => segment.id !== actionToRedo.additionalSegment.id);
                     break;
                 case "SPLIT":
-                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === currentHistoryAction.segmentAfter.id);
+                    var segmentToRevert = newSegments.find((segment: { id: any; }) => segment.id === actionToRedo.segmentAfter.id);
                     if (segmentToRevert) {
-                        segmentToRevert.start = currentHistoryAction.segmentAfter.start;
-                        segmentToRevert.end = currentHistoryAction.segmentAfter.end;
-                        segmentToRevert.words = currentHistoryAction.segmentAfter.words;
+                        segmentToRevert.start = actionToRedo.segmentAfter.start;
+                        segmentToRevert.end = actionToRedo.segmentAfter.end;
+                        segmentToRevert.words = actionToRedo.segmentAfter.words;
                     }
                     else {
                         console.log("ERROR: Segment to undo update of was not found.")
                     }
-                    newSegments.push(currentHistoryAction.additionalSegment);
+                    newSegments.push(actionToRedo.additionalSegment);
                     break;
             }
 
             return {
                 ...state,
                 type: "TRANSCRIPT_PLAYER_REDO_ACTION",
-                playerActionHistoryIndex: state.playerActionHistoryIndex + 1,
-                segments: newSegments
+                segments: newSegments,
+                playerActionUndos: [...state.playerActionUndos, actionToRedo],
+                actionRedos: state.playerActionRedos.filter((_a, index: number) => index !== redosLength - 1),
+                lastSwappedAction: actionToRedo
             };
         case "TRANSCRIPT_SEGMENTS_SHIFT":
             var newSegments = JSON.parse(JSON.stringify(state.segments));
@@ -414,11 +416,11 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 fullTranscript: constructedTranscript,
                 type: "TRANSCRIPT_CONSTRUCT_FULL_TRANSCRIPT"
             };
-        case "TRANSCRIPT_SET_SAVE_ACTION_INDEX":
+        case "TRANSCRIPT_SET_SAVE_ACTION_UNDOS_COUNT":
             return {
                 ...state,
-                saveActionIndex: action.payload,
-                type: "TRANSCRIPT_SET_SAVE_ACTION_INDEX"
+                saveActionUndosCount: action.payload,
+                type: "TRANSCRIPT_SET_SAVE_ACTION_UNDOS_COUNT"
             };
         case "TRANSCRIPT_SAVE_CHANGES":
             let currentTime = moment();

@@ -4,50 +4,52 @@ type Action = {
 };
 
 const initialState = {
-    actionHistory: [] as Action[],
-    currentActionIndex: -1
+    actionUndos: [] as Action[],
+    actionRedos: [] as Action[],
+    lastSwappedAction: null
 };
 
 const HistoryReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case "HISTORY_ADD_ACTION":
-            var newActionHistory;
+            var newActionRedos = JSON.parse(JSON.stringify(state.actionRedos));
 
             var actionType = action.payload.actionType;
             var componentName = action.payload.componentName;
             var segmentId = action.payload.segmentId;
             if (componentName == "AnnotationTextSegment" && actionType !== null && actionType == "REMOVE") {
                 // Remove all redos of the deleted segment, only its undos are kept.
-                newActionHistory = JSON.parse(JSON.stringify(state.actionHistory));
-                newActionHistory = newActionHistory.filter((a: { segmentId: any; }, index: number) => (a.segmentId !== segmentId || a.segmentId === segmentId && index <= state.currentActionIndex));
-                newActionHistory = [...newActionHistory, {componentName: action.payload.componentName, segmentId: action.payload.segmentId}];
-            }
-            else {
-                newActionHistory = [...state.actionHistory, {componentName: action.payload.componentName, segmentId: action.payload.segmentId}];
+                newActionRedos = newActionRedos.filter((a: { segmentId: any; }) => a.segmentId !== segmentId);
             }
             return {
                 ...state,
-                actionHistory: newActionHistory,
-                currentActionIndex: state.currentActionIndex + 1,
+                actionUndos: [...state.actionUndos, {componentName: action.payload.componentName, segmentId: action.payload.segmentId}],
+                actionRedos: newActionRedos,
                 type: "HISTORY_ADD_ACTION"
             };
         case "HISTORY_UNDO_ACTION":
-            if (state.currentActionIndex === -1) return state;
+            var undosLength = state.actionUndos.length;
+            if (undosLength === 0) return state;
+            var actionToUndo = state.actionUndos[undosLength - 1];
 
             return {
                 ...state,
                 type: "HISTORY_UNDO_ACTION",
-                currentActionIndex: state.currentActionIndex - 1,
-                actionHistory: state.actionHistory
+                actionRedos: [...state.actionRedos, actionToUndo],
+                actionUndos: state.actionUndos.filter((_a, index: number) => index !== undosLength - 1),
+                lastSwappedAction: actionToUndo
             };
         case "HISTORY_REDO_ACTION":
-            if (state.currentActionIndex === state.actionHistory.length - 1) return state;
+            var redosLength = state.actionRedos.length;
+            if (redosLength === 0) return state;
+            var actionToRedo = state.actionRedos[redosLength - 1];
 
             return {
                 ...state,
                 type: "HISTORY_REDO_ACTION",
-                currentActionIndex: state.currentActionIndex + 1,
-                actionHistory: state.actionHistory
+                actionUndos: [...state.actionUndos, actionToRedo],
+                actionRedos: state.actionRedos.filter((_a, index: number) => index !== redosLength - 1),
+                lastSwappedAction: actionToRedo
             };
         default:
             return state;

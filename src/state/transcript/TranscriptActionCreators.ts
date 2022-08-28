@@ -215,18 +215,18 @@ export const createActionTranscriptConstructFullTranscript = () => {
   }
 }
 
-// Set action index at time of last save.
-export const createActionTranscriptSetSaveActionIndex = (actionIndex: number) => {
+// Set number of available undos at time of last save.
+export const createActionTranscriptSetSaveActionUndosCount = (undosCount: number) => {
   return (dispatch: any) => {
     dispatch({
-      type: "TRANSCRIPT_SET_SAVE_ACTION_INDEX",
-      payload: actionIndex
+      type: "TRANSCRIPT_SET_SAVE_ACTION_UNDOS_COUNT",
+      payload: undosCount
     })
   }
 }
 
 export const createActionTranscriptSaveChanges = () => {
-  if (store.getState().history.currentActionIndex === (store.getState().recordingTranscript as any).saveActionIndex) {
+  if ((store.getState().history as any).actionUndos.length === (store.getState().recordingTranscript as any).saveActionUndosCount) {
     return (dispatch: any) => {
       dispatch({
         type: "TRANSCRIPT_SKIP_SAVE_CHANGES",

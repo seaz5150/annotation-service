@@ -12,7 +12,7 @@ const EventReactor = () => {
             createActionEditorRequestDataSave,
             createActionEditorReinitializeWordsFromSaved,
             createActionEditorReinitializeWords,
-            createActionTranscriptSetSaveActionIndex,
+            createActionTranscriptSetSaveActionUndosCount,
             createActionTranscriptUpdateWords,
             createActionTranscriptConstructFullTranscript } = bindActionCreators(actionCreators, dispatch);
 
@@ -37,17 +37,16 @@ const EventReactor = () => {
     }, [transcript]);
 
     // The history undo and redo events can also be used to perform actions before the undo/redo happens, like saving editor data etc.
-    // Need to keep in mind that the action history index in the other reducer won't yet be updated though and needs to be adjusted accordingly if necessary.
     useEffect(() => {
         switch (history.type) {
           case "HISTORY_REDO_ACTION":
-            var historyItem = history.actionHistory[history.currentActionIndex];
+            var historyItem = history.lastSwappedAction;
             if (historyItem) {
               if (historyItem.componentName === "AudioPlayer") {
                 createActionTranscriptPlayerRedoAction();
               }
               else if (historyItem.componentName === "AnnotationTextSegment") {
-                var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1]; 
+                var currentHistoryAction = transcript.lastSwappedAction; 
                 if (currentHistoryAction) {
                   switch (currentHistoryAction.type) {
                     case "MERGE":
@@ -67,7 +66,7 @@ const EventReactor = () => {
             }
             break;
           case "HISTORY_UNDO_ACTION":
-            var historyItem = history.actionHistory[history.currentActionIndex + 1];
+            var historyItem = history.lastSwappedAction;
             if (historyItem) {
               if (historyItem.componentName === "AudioPlayer") {
                 // We could be undoing the creation of a segment, so save the editor history first.
@@ -85,7 +84,7 @@ const EventReactor = () => {
       useEffect(() => {
         switch (transcript.type) {
           case "TRANSCRIPT_SAVE_CHANGES":
-            createActionTranscriptSetSaveActionIndex(history.currentActionIndex);
+            createActionTranscriptSetSaveActionUndosCount(history.actionUndos.length);
             createActionTranscriptUpdateWords();
             setTimeout(() => {
                 createActionTranscriptConstructFullTranscript();
@@ -111,7 +110,7 @@ const EventReactor = () => {
       useEffect(() => {
         switch (transcript.type) {
             case "TRANSCRIPT_PLAYER_UNDO_ACTION":
-                var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1];
+                var currentHistoryAction = transcript.lastSwappedAction;
                 if (currentHistoryAction.type === "MERGE") {
                   createActionEditorReinitializeWordsFromSaved([currentHistoryAction.segmentAfter.id, currentHistoryAction.additionalSegment.id]);
                 }
@@ -120,7 +119,7 @@ const EventReactor = () => {
                 }
                 break;
             case "TRANSCRIPT_PLAYER_REDO_ACTION":
-                var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex];
+                var currentHistoryAction = transcript.lastSwappedAction;
                 if (currentHistoryAction.type === "MERGE") {
                   createActionEditorRequestDataSave(currentHistoryAction.segmentAfter.id);
                   setTimeout(() => {createActionEditorReinitializeWords([currentHistoryAction.segmentAfter.id])}, 10);

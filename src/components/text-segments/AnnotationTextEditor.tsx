@@ -123,13 +123,13 @@ const AnnotationTextEditor = (props: AnnotationTextEditorInterface) => {
   useEffect(() => {
     switch (history.type) {
       case "HISTORY_REDO_ACTION":
-        var historyItem = history.actionHistory[history.currentActionIndex];
+        var historyItem = history.lastSwappedAction;
         if (historyItem.componentName === "AnnotationTextEditor" && historyItem.segmentId === props.segmentId) {
           slateEditor.redo();
         }
         break;
       case "HISTORY_UNDO_ACTION":
-        var historyItem = history.actionHistory[history.currentActionIndex + 1];
+        var historyItem = history.lastSwappedAction;
         if (historyItem.componentName === "AnnotationTextEditor" && historyItem.segmentId === props.segmentId) {
           slateEditor.undo();
         }
