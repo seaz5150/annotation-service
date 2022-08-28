@@ -245,14 +245,14 @@ function AudioPlayer(props: AudioPlayerInterface) {
         wavesurfer.current?.on("region-update-end", (region) => {
           if (regionCreatedByUser === true) {
             regionCreatedByUser = false;
+            createActionHistoryAddAction("AudioPlayer", region.id);
             createActionTranscriptPlayerAddAction("CREATE", undefined, {id: region.id, start: region.start, end: region.end});
             createActionTranscriptSegmentCreate(region.id, region.start, region.end);
-            createActionHistoryAddAction("AudioPlayer", region.id);
           }
           else {
+            createActionHistoryAddAction("AudioPlayer", region.id);
             createActionTranscriptPlayerAddAction("UPDATE", undefined, {id: region.id, start: region.start, end: region.end});
             createActionTranscriptSegmentUpdate(region.id, region.start, region.end, undefined);
-            createActionHistoryAddAction("AudioPlayer", region.id);
           }
         });
 
