@@ -39,6 +39,8 @@ const HotkeyReducer = (state = initialState, action: any) => {
             };
         case "HOTKEY_ADD_TEXT_TAGS":
             var newHotkeys = JSON.parse(JSON.stringify(state.hotkeys));
+            newHotkeys = newHotkeys.filter((h: { tagHotkey: boolean; }) => h.tagHotkey !== true);
+            
             action.payload.textTags.forEach((t: { id: string; label: string }, index: number) => {
                 var indexPp = index + 1;
                 if (indexPp <= 12) {

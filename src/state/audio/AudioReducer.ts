@@ -3,7 +3,7 @@ import { getFromLS, saveToLS } from "../../utils/CommonUtilities";
 const initialState = {
     time: null,
     type: null,
-    prePlay: (getFromLS("prePlay") ? getFromLS("prePlay") as number : null),
+    prePlay: (getFromLS("prePlay") ? getFromLS("prePlay") as number : 0),
 
     // For the ability to pause and resume segment play.
     currentTime: null,
