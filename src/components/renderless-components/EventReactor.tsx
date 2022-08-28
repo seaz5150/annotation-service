@@ -36,6 +36,8 @@ const EventReactor = () => {
       transcriptRef.current = transcript;
     }, [transcript]);
 
+    // The history undo and redo events can also be used to perform actions before the undo/redo happens, like saving editor data etc.
+    // Need to keep in mind that the action history index in the other reducer won't yet be updated though and needs to be adjusted accordingly if necessary.
     useEffect(() => {
         switch (history.type) {
           case "HISTORY_REDO_ACTION":
@@ -44,7 +46,14 @@ const EventReactor = () => {
               createActionTranscriptPlayerRedoAction();
             }
             if (historyItem.componentName === "AnnotationTextSegment") {
-              createActionTranscriptPlayerRedoAction();
+              var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1]; 
+              if (currentHistoryAction.type === "MERGE") {
+                createActionEditorRequestDataSave(currentHistoryAction.additionalSegment.id);
+                setTimeout(() => {createActionTranscriptPlayerRedoAction()}, 10);
+              }
+              else {
+                createActionTranscriptPlayerRedoAction();
+              }
             }
             break;
           case "HISTORY_UNDO_ACTION":
@@ -92,7 +101,7 @@ const EventReactor = () => {
             case "TRANSCRIPT_PLAYER_UNDO_ACTION":
                 var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1];
                 if (currentHistoryAction.type === "MERGE") {
-                    createActionEditorReinitializeWordsFromSaved([currentHistoryAction.segmentAfter.id, currentHistoryAction.additionalSegment.id]);
+                  createActionEditorReinitializeWordsFromSaved([currentHistoryAction.segmentAfter.id, currentHistoryAction.additionalSegment.id]);
                 }
                 else if (currentHistoryAction.type === "SPLIT") {
                   createActionEditorReinitializeWordsFromSaved([currentHistoryAction.segmentAfter.id]);
@@ -101,8 +110,8 @@ const EventReactor = () => {
             case "TRANSCRIPT_PLAYER_REDO_ACTION":
                 var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex];
                 if (currentHistoryAction.type === "MERGE") {
-                    createActionEditorRequestDataSave(currentHistoryAction.segmentAfter.id);
-                    setTimeout(() => { createActionEditorReinitializeWords([currentHistoryAction.segmentAfter.id])}, 10);
+                  createActionEditorRequestDataSave(currentHistoryAction.segmentAfter.id);
+                  setTimeout(() => {createActionEditorReinitializeWords([currentHistoryAction.segmentAfter.id])}, 10);
                 }
                 else if (currentHistoryAction.type === "SPLIT") {
                   createActionEditorReinitializeWords([currentHistoryAction.segmentAfter.id]);
