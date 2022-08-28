@@ -42,35 +42,41 @@ const EventReactor = () => {
         switch (history.type) {
           case "HISTORY_REDO_ACTION":
             var historyItem = history.actionHistory[history.currentActionIndex];
-            if (historyItem.componentName === "AudioPlayer") {
-              createActionTranscriptPlayerRedoAction();
-            }
-            if (historyItem.componentName === "AnnotationTextSegment") {
-              var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1]; 
-              switch (currentHistoryAction.type) {
-                case "MERGE":
-                  createActionEditorRequestDataSave(currentHistoryAction.additionalSegment.id);
-                  setTimeout(() => {createActionTranscriptPlayerRedoAction()}, 10);
-                  break;
-                case "REMOVE":
-                  createActionEditorRequestDataSave(currentHistoryAction.segmentBefore.id);
-                  setTimeout(() => {createActionTranscriptPlayerRedoAction()}, 10);
-                  break;
-                default:
-                  createActionTranscriptPlayerRedoAction();
-                  break;
+            if (historyItem) {
+              if (historyItem.componentName === "AudioPlayer") {
+                createActionTranscriptPlayerRedoAction();
+              }
+              else if (historyItem.componentName === "AnnotationTextSegment") {
+                var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1]; 
+                if (currentHistoryAction) {
+                  switch (currentHistoryAction.type) {
+                    case "MERGE":
+                      createActionEditorRequestDataSave(currentHistoryAction.additionalSegment.id);
+                      setTimeout(() => {createActionTranscriptPlayerRedoAction()}, 10);
+                      break;
+                    case "REMOVE":
+                      createActionEditorRequestDataSave(currentHistoryAction.segmentBefore.id);
+                      setTimeout(() => {createActionTranscriptPlayerRedoAction()}, 10);
+                      break;
+                    default:
+                      createActionTranscriptPlayerRedoAction();
+                      break;
+                  }
+                }
               }
             }
             break;
           case "HISTORY_UNDO_ACTION":
             var historyItem = history.actionHistory[history.currentActionIndex + 1];
-            if (historyItem.componentName === "AudioPlayer") {
-              // We could be undoing the creation of a segment, so save the editor history first.
-              createActionEditorRequestDataSave(historyItem.segmentId);
-              setTimeout(() => {createActionTranscriptPlayerUndoAction()}, 10);
-            }
-            if (historyItem.componentName === "AnnotationTextSegment") {
-              createActionTranscriptPlayerUndoAction();
+            if (historyItem) {
+              if (historyItem.componentName === "AudioPlayer") {
+                // We could be undoing the creation of a segment, so save the editor history first.
+                createActionEditorRequestDataSave(historyItem.segmentId);
+                setTimeout(() => {createActionTranscriptPlayerUndoAction()}, 10);
+              }
+              else if (historyItem.componentName === "AnnotationTextSegment") {
+                createActionTranscriptPlayerUndoAction();
+              }
             }
             break;
         }

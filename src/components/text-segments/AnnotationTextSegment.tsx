@@ -68,8 +68,8 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
         }
     }, [segmentTags]);
 
-    const deleteSegmentTag = () => {
-        createActionHistoryAddAction("AnnotationTextSegment", segment.id);
+    const deleteSegment = () => {
+        createActionHistoryAddAction("AnnotationTextSegment", segment.id, "REMOVE");
         createActionTranscriptPlayerAddAction("REMOVE", undefined, {id: segment.id});
         createActionEditorRequestDataSave(segment.id);
         setTimeout(() => {createActionTranscriptSegmentDelete(segment.id)}, 10);
@@ -251,7 +251,7 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
                                 }
                                 <button className="strip-button-style segment-delete-button"
                                         onMouseDown={e => pressStopPropagation(e)}
-                                        onClick={() => deleteSegmentTag()}
+                                        onClick={() => deleteSegment()}
                                 >
                                     <i className="bi bi-x"></i>
                                 </button>

@@ -1,10 +1,11 @@
-export const createActionHistoryAddAction = (componentName: string, segmentId?: string) => {
+export const createActionHistoryAddAction = (componentName: string, segmentId?: string, actionType?: string) => {
   return (dispatch: any) => {
     dispatch({
       type: "HISTORY_ADD_ACTION",
       payload: {
         componentName: componentName,
-        segmentId: segmentId
+        segmentId: segmentId,
+        actionType: actionType
       }
     })
   }

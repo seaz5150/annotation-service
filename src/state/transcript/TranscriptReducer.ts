@@ -147,8 +147,11 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             };
         case "TRANSCRIPT_PLAYER_ADD_ACTION":
             var segmentBefore: any;
-            if ((action.payload.actionType === "UPDATE" || action.payload.actionType === "REMOVE" 
-               || action.payload.actionType === "MERGE" || action.payload.actionType === "SPLIT")) {
+            var newPlayerActionHistory;
+            var actionType = action.payload.actionType;
+
+            if ((actionType === "UPDATE" || actionType === "REMOVE" 
+               || actionType === "MERGE" || actionType === "SPLIT")) {
                 if (action.payload.segmentBefore === undefined) {
                     segmentBefore = state.segments.find(segment => segment.id === action.payload.segmentAfter.id);
                 }
@@ -157,10 +160,20 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 }
             }
 
+            if (actionType === "REMOVE") {
+                // Remove all redos of the deleted segment, only its undos are kept.
+                newPlayerActionHistory = JSON.parse(JSON.stringify(state.playerActionHistory));
+                newPlayerActionHistory = newPlayerActionHistory.filter((a: { segmentBefore: { id: any; }; }, index: number) => (a.segmentBefore.id !== segmentBefore.id || a.segmentBefore.id !== segmentBefore.id && index <= state.playerActionHistoryIndex));
+                newPlayerActionHistory = [...newPlayerActionHistory, {type: actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter, additionalSegment: action.payload.additionalSegment}];
+            }
+            else {
+                newPlayerActionHistory = [...state.playerActionHistory, {type: actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter, additionalSegment: action.payload.additionalSegment}];
+            }
+
             return {
                 ...state,
                 type: "TRANSCRIPT_PLAYER_ADD_ACTION",
-                playerActionHistory: [...state.playerActionHistory, {type: action.payload.actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter, additionalSegment: action.payload.additionalSegment}],
+                playerActionHistory: newPlayerActionHistory,
                 playerActionHistoryIndex: state.playerActionHistoryIndex + 1
             };
         case "TRANSCRIPT_PLAYER_UNDO_ACTION":
