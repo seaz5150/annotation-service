@@ -558,7 +558,7 @@ code {
   height: 12px;
   width: 12px;
   display: inline-block;
-  line-height: 1em;
+  line-height: 1.2em;
   color: white;
 }
 
@@ -570,7 +570,7 @@ code {
   clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
   height: 14px;
   width: 14px;
-  line-height: 1.2em;
+  line-height: 1.3em;
 }
 
 .tag-container {
