@@ -287,7 +287,7 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 type: "TRANSCRIPT_PLAYER_REDO_ACTION",
                 segments: newSegments,
                 playerActionUndos: [...state.playerActionUndos, actionToRedo],
-                actionRedos: state.playerActionRedos.filter((_a, index: number) => index !== redosLength - 1),
+                playerActionRedos: state.playerActionRedos.filter((_a, index: number) => index !== redosLength - 1),
                 lastSwappedAction: actionToRedo
             };
         case "TRANSCRIPT_SEGMENTS_SHIFT":

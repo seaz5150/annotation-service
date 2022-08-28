@@ -46,7 +46,8 @@ const EventReactor = () => {
                 createActionTranscriptPlayerRedoAction();
               }
               else if (historyItem.componentName === "AnnotationTextSegment") {
-                var currentHistoryAction = transcript.lastSwappedAction; 
+                // Redo has not yet happened in the transcript reducer, so lastSwappedAction cannot be used - need to take it from playerActionRedos directly.
+                var currentHistoryAction = transcript.playerActionRedos[transcript.playerActionRedos.length - 1];
                 if (currentHistoryAction) {
                   switch (currentHistoryAction.type) {
                     case "MERGE":
