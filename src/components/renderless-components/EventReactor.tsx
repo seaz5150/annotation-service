@@ -47,12 +47,18 @@ const EventReactor = () => {
             }
             if (historyItem.componentName === "AnnotationTextSegment") {
               var currentHistoryAction = transcript.playerActionHistory[transcript.playerActionHistoryIndex + 1]; 
-              if (currentHistoryAction.type === "MERGE") {
-                createActionEditorRequestDataSave(currentHistoryAction.additionalSegment.id);
-                setTimeout(() => {createActionTranscriptPlayerRedoAction()}, 10);
-              }
-              else {
-                createActionTranscriptPlayerRedoAction();
+              switch (currentHistoryAction.type) {
+                case "MERGE":
+                  createActionEditorRequestDataSave(currentHistoryAction.additionalSegment.id);
+                  setTimeout(() => {createActionTranscriptPlayerRedoAction()}, 10);
+                  break;
+                case "REMOVE":
+                  createActionEditorRequestDataSave(currentHistoryAction.segmentBefore.id);
+                  setTimeout(() => {createActionTranscriptPlayerRedoAction()}, 10);
+                  break;
+                default:
+                  createActionTranscriptPlayerRedoAction();
+                  break;
               }
             }
             break;
