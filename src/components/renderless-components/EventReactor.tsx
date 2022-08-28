@@ -126,7 +126,8 @@ const EventReactor = () => {
                   setTimeout(() => {createActionEditorReinitializeWords([currentHistoryAction.segmentAfter.id])}, 10);
                 }
                 else if (currentHistoryAction.type === "SPLIT") {
-                  createActionEditorReinitializeWords([currentHistoryAction.segmentAfter.id]);
+                  createActionEditorRequestDataSave(currentHistoryAction.segmentAfter.id);
+                  setTimeout(() => {createActionEditorReinitializeWords([currentHistoryAction.segmentAfter.id])}, 10);
                 }
                 break;
         }
