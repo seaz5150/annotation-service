@@ -610,6 +610,7 @@ code {
 .job-control-button {
   text-transform: unset;
   font-size: 0.75em !important;
+  white-space: nowrap;
 }
 
 .job-control-refuse-button {

@@ -147,7 +147,7 @@ const Changes = (props: ChangesInterface) => {
             </div>
             <div className={"module-content card-body " + (dashboard.collapsedModules.find((m: string) => m == moduleName) ? "module-content-collapsed" : "mt-1 pb-2")}>
                 <div className="d-flex justify-content-between">
-                    <div>
+                    <div className="d-flex">
                         <button className="text-tag-button btn-secondary custom-dropdown undo-redo-button"
                                 disabled={history.actionUndos.length === 0}
                                 onMouseDown={pressStopPropagation}

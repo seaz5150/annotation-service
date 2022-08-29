@@ -9,7 +9,8 @@ import AnnotationTextEditor from "./AnnotationTextEditor";
 
 interface AnnotationTextSegmentInterface {
     segmentId: string,
-    segmentRef: any
+    segmentRef: any,
+    parentWidth: number
 }
 
 const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
@@ -196,7 +197,7 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
                                         )
                                     }
                                 </select>
-                                {availableSegmentTags.length > 3 || document.documentElement.clientWidth < 1231 ?
+                                {availableSegmentTags.length > 3 || props.parentWidth < 593 ?
                                     <div className="dropstart d-flex align-items-center" data-bs-boundary="body">
                                         <span className="segment-label-counter pe-2"></span>
                                         <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"

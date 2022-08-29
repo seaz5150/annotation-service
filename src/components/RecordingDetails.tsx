@@ -58,28 +58,28 @@ const RecordingDetails = (props: RecordingDetailsInterface) => {
                 <p className="title-small col-12 mb-1">Description:</p>
                 <textarea className="form-control form-control-sm custom-textarea" onMouseDown={e => handlePress(e)} readOnly defaultValue={jobData.description}/>
                 <p className="title-small col-12 mb-1 mt-2">Display attached resources:</p>
-                <div className="row">
+
                     {jobData.user_interface.views.map((v: any) => v.type === "text" &&
-                        <React.Fragment key={v.title}>
-                            <p className="title-small col-10 ms-2 fw-normal">{v.title}</p>
-                            <input className="form-check-input custom-checkbox col-2 ms-4" 
+                        <span className="d-flex align-items-center justify-content-between" key={v.title}>
+                            <p className="title-small ms-2 fw-normal">{v.title}</p>
+                            <input className="form-check-input custom-checkbox" 
                                     type="checkbox"
                                     onMouseDown={e => pressStopPropagation(e)} 
                                     onChange={(e) => toggleModule(e, v.title)}
                                     checked={(dashboard.openModules.some((om: string) => om === v.title) || dashboard.openAttachmentTabs.some((om: string) => om === v.title))}/>
-                        </React.Fragment>
+                        </span>
                     )}
                     {jobData.user_interface.views.some((v: any) => v.type === "img" || v.type === "iframe") &&
-                        <React.Fragment>
-                            <p className="title-small col-10 ms-2 fw-normal">Visual resources (images, maps...)</p>
-                            <input className="form-check-input custom-checkbox col-2 ms-4" 
+                        <span className="d-flex align-items-center justify-content-between">
+                            <p className="title-small ms-2 fw-normal">Visual resources (images, maps...)</p>
+                            <input className="form-check-input custom-checkbox" 
                                     type="checkbox"
                                     onMouseDown={e => pressStopPropagation(e)} 
                                     onChange={(e) => toggleModule(e, "AttachmentTabs")}
                                     checked={(dashboard.openModules.some((om: string) => om === "AttachmentTabs"))}/>
-                        </React.Fragment>
+                        </span>
                     }
-                </div>
+
                 <div className="row mt-3 align-items-center">
                     <p className="title-small col-7">Manuals and others:</p>
                     <div className="dropup col-5 d-flex justify-content-end">

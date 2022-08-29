@@ -44,7 +44,7 @@ const JobControl = (props: JobControlInterface) => {
                 </span>
             </div>
             <div className={"module-content card-body d-flex justify-content-center " + (dashboard.collapsedModules.find((m: string) => m == moduleName) ? "module-content-collapsed" : "mt-1 pb-2")}>
-                <div className="row">
+                <div className="row flex-nowrap">
                     <div className="col" style={{maxWidth: "200px"}}>
                         <button className="text-tag-button custom-dropdown job-control-button job-control-refuse-button float-end"
                                 onMouseDown={pressStopPropagation}>

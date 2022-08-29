@@ -45,7 +45,7 @@ function AnnotationTextSegmentContainer(props: AnnotationTextInterface) {
             <React.Fragment>
                 {(segments.length > 0) ?
                     segments.map((segment: any) => 
-                        <AnnotationTextSegment segmentId={segment.id} key={segment.id} segmentRef={(el: any) => addToSegmentRefs(el, segment.id)}/>
+                        <AnnotationTextSegment segmentId={segment.id} key={segment.id} segmentRef={(el: any) => addToSegmentRefs(el, segment.id)} parentWidth={width} />
                     )
                     :
                     <div className="module module-content segment segment-placeholder">
