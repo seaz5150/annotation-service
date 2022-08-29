@@ -200,7 +200,7 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
                                 {availableSegmentTags.length > 3 || props.parentWidth < 593 ?
                                     <div className="dropstart d-flex align-items-center" data-bs-boundary="body">
                                         <span className="segment-label-counter pe-2"></span>
-                                        <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown"
+                                        <button className="btn btn-sm btn-secondary dropdown-toggle custom-dropdown segment-label-dropdown-button"
                                                 onMouseDown={e => pressStopPropagation(e)}
                                                 type="button" id="dropdownMenuButton1"
                                                 data-bs-toggle="dropdown"
