@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { actionCreators } from "../../state/Index";
 import { useEffect, useRef, useState } from "react";
 import { createHttpsRequest } from "../../utils/ApiRequests";
+import { getFromLS, saveToLS } from "../../utils/CommonUtilities";
 
 // Component used for initializing neccessary data (job, transcript...).
 const Initializator = () => {
@@ -21,6 +22,14 @@ const Initializator = () => {
     useEffect(() => {
       getJobList();
     }, [window.location.pathname]);
+
+    useEffect(() => {
+      // For removing LS data from the old version.
+      if (getFromLS("newVersion") === undefined) {
+        global.localStorage.clear();
+        saveToLS("newVersion", true);
+      }
+    }, []);
 
     useEffect(() => {
       if (jobTranscript !== null) {
