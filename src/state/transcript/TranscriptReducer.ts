@@ -148,6 +148,7 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
             };
         case "TRANSCRIPT_PLAYER_ADD_ACTION":
             var segmentBefore: any;
+            var additionalSegment = action.payload.additionalSegment;
             var newPlayerActionRedos = JSON.parse(JSON.stringify(state.playerActionRedos));
             var actionType = action.payload.actionType;
 
@@ -161,15 +162,18 @@ const RecordingTranscriptReducer = (state = initialState, action: any) => {
                 }
             }
 
+            // Remove all redos of the deleted segment, only its undos are kept.
             if (actionType === "REMOVE") {
-                // Remove all redos of the deleted segment, only its undos are kept.
                 newPlayerActionRedos = newPlayerActionRedos.filter((a: { segmentId: any; }) => a.segmentId !== segmentBefore.segmentId);
+            }
+            else if (actionType === "MERGE") {
+                newPlayerActionRedos = newPlayerActionRedos.filter((a: { segmentId: any; }) => a.segmentId !== additionalSegment.segmentId);
             }
 
             return {
                 ...state,
                 type: "TRANSCRIPT_PLAYER_ADD_ACTION",
-                playerActionUndos: [...state.playerActionUndos, {type: actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter, additionalSegment: action.payload.additionalSegment}],
+                playerActionUndos: [...state.playerActionUndos, {type: actionType, segmentBefore: segmentBefore, segmentAfter: action.payload.segmentAfter, additionalSegment: additionalSegment}],
                 playerActionRedos: newPlayerActionRedos
             };
         case "TRANSCRIPT_PLAYER_UNDO_ACTION":

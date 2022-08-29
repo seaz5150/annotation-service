@@ -110,7 +110,7 @@ const AnnotationTextSegment = (props: AnnotationTextSegmentInterface) => {
         resultSegment.end = nextSegment.end;
         resultSegment.words = resultSegment.words.concat(nextSegment.words);
 
-        createActionHistoryAddAction("AnnotationTextSegment", resultSegment.id);
+        createActionHistoryAddAction("AnnotationTextSegment", resultSegment.id, "MERGE", nextSegment.id);
         createActionTranscriptPlayerAddAction("MERGE", undefined, JSON.parse(JSON.stringify(resultSegment)), JSON.parse(JSON.stringify(nextSegment)));
 
         createActionEditorRequestDataSave(resultSegment.id);

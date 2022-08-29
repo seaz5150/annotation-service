@@ -17,9 +17,15 @@ const HistoryReducer = (state = initialState, action: any) => {
             var actionType = action.payload.actionType;
             var componentName = action.payload.componentName;
             var segmentId = action.payload.segmentId;
-            if (componentName == "AnnotationTextSegment" && actionType !== null && actionType == "REMOVE") {
-                // Remove all redos of the deleted segment, only its undos are kept.
-                newActionRedos = newActionRedos.filter((a: { segmentId: any; }) => a.segmentId !== segmentId);
+            var additionalSegmentId = action.payload.additionalSegmentId;
+            // Remove all redos of the deleted segment, only its undos are kept.
+            if (componentName == "AnnotationTextSegment" && actionType !== null) {
+                if (actionType == "REMOVE") {
+                    newActionRedos = newActionRedos.filter((a: { segmentId: any; }) => a.segmentId !== segmentId);
+                }
+                else if (actionType == "MERGE" && additionalSegmentId != null) {
+                    newActionRedos = newActionRedos.filter((a: { segmentId: any; }) => a.segmentId !== additionalSegmentId);
+                }
             }
             return {
                 ...state,
